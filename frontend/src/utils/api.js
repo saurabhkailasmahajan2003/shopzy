@@ -1,0 +1,206 @@
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+
+// Helper function to make API requests
+const apiRequest = async (endpoint, options = {}) => {
+  const token = localStorage.getItem('token');
+  
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { Authorization: `Bearer ${token}` }),
+      ...options.headers,
+    },
+    ...options,
+  };
+
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Something went wrong');
+    }
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Auth API calls
+export const authAPI = {
+  signup: async (userData) => {
+    return apiRequest('/auth/signup', {
+      method: 'POST',
+      body: JSON.stringify(userData),
+    });
+  },
+
+  login: async (email, password) => {
+    return apiRequest('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+    });
+  },
+
+  getMe: async () => {
+    return apiRequest('/auth/me');
+  },
+};
+
+// Cart API calls
+export const cartAPI = {
+  getCart: async () => {
+    return apiRequest('/cart');
+  },
+
+  addToCart: async (product, quantity = 1, size = '', color = '') => {
+    return apiRequest('/cart/add', {
+      method: 'POST',
+      body: JSON.stringify({ product, quantity, size, color }),
+    });
+  },
+
+  updateCartItem: async (itemId, quantity) => {
+    return apiRequest(`/cart/update/${itemId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ quantity }),
+    });
+  },
+
+  removeFromCart: async (itemId) => {
+    return apiRequest(`/cart/remove/${itemId}`, {
+      method: 'DELETE',
+    });
+  },
+
+  clearCart: async () => {
+    return apiRequest('/cart/clear', {
+      method: 'DELETE',
+    });
+  },
+};
+
+// Wishlist API calls
+export const wishlistAPI = {
+  getWishlist: async () => {
+    return apiRequest('/wishlist');
+  },
+
+  addToWishlist: async (product) => {
+    return apiRequest('/wishlist/add', {
+      method: 'POST',
+      body: JSON.stringify({ product }),
+    });
+  },
+
+  removeFromWishlist: async (productId) => {
+    return apiRequest(`/wishlist/remove/${productId}`, {
+      method: 'DELETE',
+    });
+  },
+};
+
+// Order API calls
+export const orderAPI = {
+  getOrders: async () => {
+    return apiRequest('/orders');
+  },
+
+  getOrder: async (orderId) => {
+    return apiRequest(`/orders/${orderId}`);
+  },
+
+  createOrder: async (shippingAddress, paymentMethod = 'COD') => {
+    return apiRequest('/orders/create', {
+      method: 'POST',
+      body: JSON.stringify({ shippingAddress, paymentMethod }),
+    });
+  },
+};
+
+// Profile API calls
+export const profileAPI = {
+  getProfile: async () => {
+    return apiRequest('/profile');
+  },
+
+  updateProfile: async (data) => {
+    return apiRequest('/profile/update', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+};
+
+// Product API calls
+export const productAPI = {
+  getWatches: async (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    return apiRequest(`/products/watches${queryString ? `?${queryString}` : ''}`);
+  },
+
+  getWatchById: async (id) => {
+    return apiRequest(`/products/watches/${id}`);
+  },
+
+  getLenses: async (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    return apiRequest(`/products/lens${queryString ? `?${queryString}` : ''}`);
+  },
+
+  getLensById: async (id) => {
+    return apiRequest(`/products/lens/${id}`);
+  },
+
+  getAccessories: async (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    return apiRequest(`/products/accessories${queryString ? `?${queryString}` : ''}`);
+  },
+
+  getAccessoryById: async (id) => {
+    return apiRequest(`/products/accessories/${id}`);
+  },
+
+  getFashionItems: async (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    return apiRequest(`/products/fashion${queryString ? `?${queryString}` : ''}`);
+  },
+
+  getFashionItemById: async (id) => {
+    return apiRequest(`/products/fashion/${id}`);
+  },
+
+  // Helper to get all products from all categories
+  getAllProducts: async (params = {}) => {
+    try {
+      const [watches, lenses, accessories, fashion] = await Promise.all([
+        productAPI.getWatches(params),
+        productAPI.getLenses(params),
+        productAPI.getAccessories(params),
+        productAPI.getFashionItems(params),
+      ]);
+
+      const allProducts = [
+        ...(watches.success ? watches.data.products : []),
+        ...(lenses.success ? lenses.data.products : []),
+        ...(accessories.success ? accessories.data.products : []),
+        ...(fashion.success ? fashion.data.products : []),
+      ];
+
+      return {
+        success: true,
+        data: { products: allProducts },
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message,
+        data: { products: [] },
+      };
+    }
+  },
+};
+
+export default apiRequest;
+
