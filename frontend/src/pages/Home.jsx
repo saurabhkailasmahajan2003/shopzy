@@ -191,7 +191,7 @@ const Home = () => {
       {/* Stories Section - Hashtag Carousel - Above Hero Section */}
       <div className="bg-[#FAF9F6] py-2 sm:py-6 lg:py-1 border-b border-gray-200 mt-0 mb-4 sm:mt-0 sm:mb-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center gap-8 overflow-x-auto scrollbar-hide pb-2 pl-6 pr-4 sm:px-0 sm:gap-4">
+          <div className="flex justify-center gap-8 overflow-x-auto scrollbar-hide pb-2 pl-6 pr-4 sm:px-0 sm:gap-2">
             {stories.map((item, index) => (
               <div 
                 key={index} 
@@ -201,7 +201,7 @@ const Home = () => {
                   setIsStoryViewerOpen(true);
                 }}
               >
-                <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-visible p-0.5" style={{ background: 'linear-gradient(45deg, #fbbf24, #ef4444)' }}>
+                <div className="relative w-20 h-20 sm:w-17 sm:h-17 rounded-full overflow-visible p-0.5" style={{ background: 'linear-gradient(45deg, #fbbf24, #ef4444)' }}>
                     <div className="w-full h-full rounded-full overflow-hidden bg-white p-0.5">
                       <div className="w-full h-full rounded-full overflow-hidden">
                       {item.type === 'video' ? (
@@ -435,24 +435,23 @@ const Home = () => {
             className="group relative overflow-hidden"
           >
             <img
-              src="https://res.cloudinary.com/dbt2bu4tg/image/upload/v1763464307/Black_and_White_Modern_New_Arrivals_Blog_Banner_3_eflp9w.png"
+              src="https://res.cloudinary.com/de1bg8ivx/image/upload/v1763492921/Black_and_White_Modern_New_Arrivals_Blog_Banner_4_x9v1lw.png"
               alt="Explore Women's Shirts"
-              className="w-full h-72 object-cover duration-500"
+              className="w-full h-72 object-cover"
             />
-            <div className="absolute" />
           </Link>
 
           <Link
             to="/men/shirt"
-            className="group relative "
+            className="group"
           >
             <img
-              src="https://res.cloudinary.com/dbt2bu4tg/image/upload/v1763462593/Red_and_White_Modern_Men_s_Fashion_Facebook_Post_vam9ci.svg"
+              src="https://res.cloudinary.com/de1bg8ivx/image/upload/v1763493394/5ad7474b-2e60-47c5-b993-cdc9c1449c08.png"
               alt="Shop Men's Shirts"
-              className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-105"
+              className="w-full h-72 object-cover"
             />
-            <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors" />
           </Link>
+            
         </div>
       </div>
 
