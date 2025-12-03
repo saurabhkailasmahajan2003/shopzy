@@ -4,6 +4,51 @@ import Footer from '../components/Footer';
 import LazyProductSection from './LazyProductSection'; // Import the new component
 import { productAPI } from '../utils/api';
 import { handleImageError } from '../utils/imageFallback';
+import ScrollToTop from '../components/ScrollToTop';
+
+// --- API WRAPPERS FOR LAZY LOADING ---
+  // OPTIMIZATION: Reduced 'limit' to 4 to show only 1 row per section.
+  // This makes the page load much faster.
+  
+  const fetchNewArrivals = async () => {
+    // Changed limit: 12 -> limit: 4
+    const res = await productAPI.getAllProducts({ limit: 4, isNewArrival: true, sort: 'createdAt', order: 'desc' });
+    return res.success ? res.data.products : [];
+  };
+
+  const fetchSaleItems = async () => {
+    // Changed limit: 12 -> limit: 4
+    const res = await productAPI.getAllProducts({ limit: 4, onSale: true, sort: 'discountPercent', order: 'desc' });
+    return res.success ? res.data.products : [];
+  };
+
+  const fetchMen = async () => {
+    // Kept limit: 4
+    const res = await productAPI.getMenItems({ limit: 4 });
+    return res.success ? res.data.products : [];
+  };
+
+  const fetchWomen = async () => {
+    // Kept limit: 4
+    const res = await productAPI.getWomenItems({ limit: 4 });
+    return res.success ? res.data.products : [];
+  };
+
+  const fetchWatches = async () => {
+    const res = await productAPI.getWatches({ limit: 4 });
+    return res.success ? res.data.products : [];
+  };
+  
+  const fetchAccessories = async () => {
+     const [lenses, acc] = await Promise.all([
+        productAPI.getLenses({ limit: 2 }), // Reduced to 2 to make a total of 4
+        productAPI.getAccessories({ limit: 2 })
+     ]);
+     let combined = [];
+     if (lenses.success) combined = [...combined, ...lenses.data.products];
+     if (acc.success) combined = [...combined, ...acc.data.products];
+     return combined.slice(0, 4); // Ensure we strictly return only 4 items
+  };
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -298,6 +343,7 @@ const Home = () => {
           </div>
         </div>
       )}
+      <ScrollToTop />
 
       {/* --- FOOTER (Conditional Rendering) --- */}
       {footerVisible && <Footer />}
