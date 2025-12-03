@@ -85,7 +85,7 @@ const Navbar = () => {
               className="flex items-center space-x-2 flex-shrink-0 group"
             >
               <img 
-                src="https://res.cloudinary.com/dbt2bu4tg/image/upload/v1763320126/Astra_Jewerly_Brand_Logo_160_x_90_px_200_x_90_px_250_x_90_px_p62nk4.png"
+                src="https://res.cloudinary.com/de1bg8ivx/image/upload/v1764747760/Urban_Vesra-removebg-preview_xyipwy.png"
                 alt="Astra Logo"
                 className="h-12 w-auto object-contain"
               />

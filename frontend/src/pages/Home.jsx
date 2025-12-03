@@ -19,16 +19,47 @@ const Home = () => {
   const [activeStoryIndex, setActiveStoryIndex] = useState(null);
   const [isStoryViewerOpen, setIsStoryViewerOpen] = useState(false);
 
+
   // Stories data
   const stories = [
-    { type: 'video', video: 'https://www.pexels.com/download/video/3205919/', hashtag: '#xmas', emoji: '🎄' },
-    { type: 'video', video: 'https://www.pexels.com/download/video/8750557/', hashtag: '#indianfashion', emoji: '😎' },
-    { type: 'video', video: 'https://www.pexels.com/download/video/8346468/', hashtag: '#street', emoji: '🤏' },
-    { type: 'video', video: 'https://www.pexels.com/download/video/34733109/', hashtag: '#fitcheck', emoji: '✨' },
-    { type: 'video', video: 'https://www.pexels.com/download/video/34708744/', hashtag: '#tshirt', emoji: '😌' },
-    { type: 'video', video: 'https://www.pexels.com/download/video/31732953/', hashtag: '#jeans', emoji: '😌' },
-    { type: 'video', video: 'https://www.pexels.com/download/video/9346293/', hashtag: '#fashion', emoji: '😌' },
+    {
+      hashtag: '#xmas',
+      emoji: '🎄',
+      image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1764741928/IMG_20251123_161820_skzchs.png', // Replace with actual path
+    },
+    {
+      hashtag: '#indianfashion',
+      emoji: '😎',
+      image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1764741995/image-104_iuyyuw.png',
+    },
+    {
+      hashtag: '#street',
+      emoji: '🤏',
+      image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1764742092/ZfLAMkmNsf2sHkoW_DELHI-FACES-1_fjnvcb.avif',
+    },
+    {
+      hashtag: '#fitcheck',
+      emoji: '✨',
+      image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1764742199/0d37737c8c2c7536422e411fb68eeeb3_ylhf3n.jpg',
+    },
+    {
+      hashtag: '#tshirt',
+      emoji: '😌',
+      image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1764742259/0424-TSHIRT-06_1_7c30d8ed-155d-47a6-a52f-52858221a302_fjdfpo.webp',
+    },
+    {
+      hashtag: '#jeans',
+      emoji: '😌',
+      image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1764742467/GettyImages-2175843730_q21gse.jpg',
+    },
+    {
+      hashtag: '#fashion',
+      emoji: '😌',
+      image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1764742548/NECK_20SCARF_20TREND_20190625_20GettyImages-1490484490_ccdwdy.webp',
+    }
   ];
+
+
 
   // Carousel slides data
   const carouselSlides = [
@@ -39,14 +70,6 @@ const Home = () => {
       image: 'https://res.cloudinary.com/dbt2bu4tg/image/upload/v1763401012/Beige_Modern_Watch_Collection_Sale_LinkedIn_Post_1080_x_300_px_cwyx08.svg',
       link: '/men',
       bgGradient: 'from-green-500 via-yellow-500 to-green-600'
-    },
-    {
-      title: 'Watches & Accessories',
-      price: '₹999',
-      description: 'Premium Watches & Stylish Accessories',
-      image: 'https://res.cloudinary.com/dbt2bu4tg/image/upload/v1763310304/Red_Blue_and_White_Illustrative_Festive_Merry_Christmas_Winter_Season_Holiday_Sale_Banner_1080_x_300_mm_1_gtv3qy.png',
-      link: '/watches',
-      bgGradient: 'from-gray-700 via-gray-800 to-gray-900'
     },
     {
       title: 'Lenses & Spectacles',
@@ -73,7 +96,7 @@ const Home = () => {
   const fetchProducts = async () => {
     try {
       setIsLoading(true);
-      
+
       // Fetch products from all categories
       const [
         watchesRes,
@@ -180,7 +203,7 @@ const Home = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading products...</p>
+          <p className="mt-4 text-gray-600">Loading...</p>
         </div>
       </div>
     );
@@ -188,61 +211,6 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Stories Section - Hashtag Carousel - Above Hero Section */}
-      <div className="bg-[#FAF9F6] py-2 sm:py-6 lg:py-1 border-b border-gray-200 mt-0 mb-4 sm:mt-0 sm:mb-0">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center gap-8 overflow-x-auto scrollbar-hide pb-2 pl-6 pr-4 sm:px-0 sm:gap-2">
-            {stories.map((item, index) => (
-              <div 
-                key={index} 
-                className={`flex-shrink-0 flex flex-col items-center gap-1.5 cursor-pointer ${index === 0 ? 'ml-6 sm:ml-5' :'ml-4 sm:ml-4'}`}
-                onClick={() => {
-                  setActiveStoryIndex(index);
-                  setIsStoryViewerOpen(true);
-                }}
-              >
-                <div className="relative w-20 h-20 sm:w-17 sm:h-17 rounded-full overflow-visible p-0.5" style={{ background: 'linear-gradient(45deg, #fbbf24, #ef4444)' }}>
-                    <div className="w-full h-full rounded-full overflow-hidden bg-white p-0.5">
-                      <div className="w-full h-full rounded-full overflow-hidden">
-                      {item.type === 'video' ? (
-                        <video
-                          src={item.video}
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            console.error('Video load error:', item.hashtag);
-                            e.target.style.display = 'none';
-                            const fallback = document.createElement('div');
-                            fallback.className = 'w-full h-full bg-gray-300 flex items-center justify-center text-xl';
-                            fallback.textContent = '🎬';
-                            e.target.parentElement.appendChild(fallback);
-                          }}
-                        />
-                      ) : (
-                        <img
-                          src={item.image}
-                          alt={item.hashtag}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.target.src = 'https://via.placeholder.com/200';
-                          }}
-                        />
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1 text-xs font-medium text-gray-700">
-                  <span>{item.hashtag}</span>
-                  <span>{item.emoji}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
 
       {/* Hero Section - Carousel */}
       <div className="relative overflow-hidden w-full">
@@ -250,24 +218,23 @@ const Home = () => {
           {carouselSlides.map((slide, index) => (
             <div
               key={index}
-              className={`absolute inset-0 transition-opacity duration-500 ${
-                index === currentSlide ? 'opacity-100' : 'opacity-0'
-              }`}
+              className={`absolute inset-0 transition-opacity duration-500 ${index === currentSlide ? 'opacity-100' : 'opacity-0'
+                }`}
             >
               <div className="absolute inset-0">
                 <img
                   src={slide.image}
                   alt={slide.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cove"
                   onError={(e) => handleImageError(e, 1980, 300)}
                 />
               </div>
 
-              <div className="relative max-w-[1980px] mx-auto px-4 sm:px-6 lg:px-8 h-full z-10">
+              <div className="relative max-w-[1980px] mx-auto px-0 sm:px-6 lg:px-0 h-full z-10">
                 <div className="flex items-center justify-between h-full">
                   <button
                     onClick={prevSlide}
-                    className="hidden md:flex items-center justify-center w-12 h-12 bg-black bg-opacity-30 hover:bg-opacity-50 transition text-white z-20"
+                    className="hidden md:flex items-center justify-center w-12 h-12 transition z-20 bg-white text-black rounded-tr-lg rounded-br-lg"
                   >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -278,7 +245,7 @@ const Home = () => {
 
                   <button
                     onClick={nextSlide}
-                    className="hidden md:flex items-center justify-center w-12 h-12 bg-black bg-opacity-30 hover:bg-opacity-50 transition text-white z-20"
+                    className="hidden md:flex items-center justify-center w-12 h-12 transition z-20 bg-white text-black rounded-tl-lg rounded-bl-lg"
                   >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -296,11 +263,10 @@ const Home = () => {
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all ${
-                index === currentSlide
-                  ? 'bg-white w-8'
-                  : 'bg-white bg-opacity-50 hover:bg-opacity-75'
-              }`}
+              className={`w-2 h-2 rounded-full transition-all ${index === currentSlide
+                  ? 'bg-white opacity-80'
+                  : 'bg-white bg-opacity-30 hover:bg-opacity-50'
+                }`}
               aria-label={`Go to slide ${index + 1}`}
             />
           ))}
@@ -309,7 +275,7 @@ const Home = () => {
 
       {/* Story Viewer Modal - Instagram Style */}
       {isStoryViewerOpen && activeStoryIndex !== null && (
-        <div 
+        <div
           className="fixed inset-0 z-[100] bg-black flex items-center justify-center"
           onClick={() => setIsStoryViewerOpen(false)}
           onKeyDown={(e) => {
@@ -365,57 +331,111 @@ const Home = () => {
             </button>
           )}
 
+
+
           {/* Story Content */}
-          <div 
+          
+          <div
             className="relative w-full h-full max-w-md mx-auto flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
-            {stories[activeStoryIndex].type === 'video' ? (
-              <video
-                key={activeStoryIndex}
-                src={stories[activeStoryIndex].video}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-contain"
-                onError={(e) => {
-                  console.error('Video load error:', stories[activeStoryIndex].hashtag);
-                }}
-              />
-            ) : (
-              <img
-                src={stories[activeStoryIndex].image}
-                alt={stories[activeStoryIndex].hashtag}
-                className="w-full h-full object-contain"
-              />
-            )}
             
+            {/* 2. Simplified Rendering Logic: Removed the video conditional check. */}
+            <img
+              key={activeStoryIndex}
+              src={stories[activeStoryIndex].image}
+              alt={stories[activeStoryIndex].hashtag}
+              className="w-full h-full object-contain"
+              // Optional: Add loading="lazy" if these aren't critical to 'Largest Contentful Paint'
+              loading="eager"
+            />
+
             {/* Hashtag Display */}
             <div className="absolute bottom-20 left-1/2 -translate-x-1/2 text-white text-center">
-              <div className="flex items-center gap-2 text-xl font-semibold">
+              <div className="flex items-center gap-2 text-xl font-semibold drop-shadow-md">
                 <span>{stories[activeStoryIndex].hashtag}</span>
                 <span>{stories[activeStoryIndex].emoji}</span>
               </div>
             </div>
 
             {/* Story Indicators */}
+            
             <div className="absolute top-4 left-1/2 -translate-x-1/2 flex gap-1 z-10">
               {stories.map((_, index) => (
                 <div
                   key={index}
-                  className={`h-1 rounded-full transition-all ${
-                    index === activeStoryIndex ? 'bg-white w-8' : 'bg-white bg-opacity-50 w-1'
-                  }`}
+                  className={`h-1 rounded-full transition-all duration-300 ${index === activeStoryIndex
+                      ? 'bg-white w-8'
+                      : 'bg-white bg-opacity-50 w-1'
+                    }`}
                 />
               ))}
             </div>
+            
           </div>
         </div>
       )}
 
+
       {/* Featured Stories */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Stories Section - Hashtag Carousel - Above Hero Section */}
+        <p className="text-2xl uppercase tracking-[0.2em] text-gray-800">Stories</p>
+        <div className="bg-[#FAF9F6] py-2 sm:py-6 lg:py-1 border-b border-gray-200 mt-0 mb-4 sm:mt-0 sm:mb-0">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-center gap-8 overflow-x-auto scrollbar-hide pb-2 pl-6 pr-4 sm:px-0 sm:gap-2">
+              {stories.map((item, index) => (
+                <div
+                  key={index}
+                  className={`flex-shrink-0 flex flex-col items-center gap-1.5 cursor-pointer ${index === 0 ? 'ml-6 sm:ml-5' : 'ml-4 sm:ml-4'}`}
+                  onClick={() => {
+                    setActiveStoryIndex(index);
+                    setIsStoryViewerOpen(true);
+                  }}
+                >
+                  <div className="relative w-20 h-20 sm:w-17 sm:h-17 rounded-full overflow-visible p-0.5" style={{ background: 'linear-gradient(45deg, #fbbf24, #ef4444)' }}>
+                    <div className="w-full h-full rounded-full overflow-hidden bg-white p-0.5">
+                      <div className="w-full h-full rounded-full overflow-hidden">
+                        {item.type === 'video' ? (
+                          <video
+                            src={item.video}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              console.error('Video load error:', item.hashtag);
+                              e.target.style.display = 'none';
+                              const fallback = document.createElement('div');
+                              fallback.className = 'w-full h-full bg-gray-300 flex items-center justify-center text-xl';
+                              fallback.textContent = '🎬';
+                              e.target.parentElement.appendChild(fallback);
+                            }}
+                          />
+                        ) : (
+                          <img
+                            src={item.image}
+                            alt={item.hashtag}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.src = 'https://via.placeholder.com/200';
+                            }}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 text-xs font-medium text-gray-700 mb-10">
+                    <span>{item.hashtag}</span>
+                    <span>{item.emoji}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
             <p className="text-sm uppercase tracking-[0.2em] text-gray-500">Featured Stories</p>
@@ -451,9 +471,10 @@ const Home = () => {
               className="w-full h-72 object-cover"
             />
           </Link>
-            
+
         </div>
       </div>
+
 
       {/* New Arrivals */}
       {newArrivals.length > 0 && (
@@ -495,11 +516,11 @@ const Home = () => {
 
       {/* Sale Highlights */}
       {saleItems.length > 0 && (
-        <div className="bg-white py-12">
+        <div className="bg-rose-50 py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 text-red-600">Mega Sale</h2>
-              <Link to="/sale" className="text-red-600 hover:text-red-700 font-semibold">
+              <h2 className="text-3xl font-bold text-gray-900 text-rose-600">Mega Sale</h2>
+              <Link to="/sale" className="text-blue-600 hover:text-red-600 font-semibold">
                 View All →
               </Link>
             </div>
@@ -589,20 +610,20 @@ const Home = () => {
       )}
 
       {/* Categories Section */}
-      <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-20 relative overflow-hidden">
+      <div className="bg-white py-20 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500 blur-3xl"></div>
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500 blur-3xl"></div>
         </div>
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
               Shop by Category
             </h2>
-            <p className="text-gray-300 text-lg">Discover our curated collections</p>
+            <p className="text-gray-600 text-lg">Discover our curated collections</p>
           </div>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             <Link
               to="/men"
@@ -616,7 +637,7 @@ const Home = () => {
               </div>
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
             </Link>
-            
+
             <Link
               to="/women"
               className="group relative bg-gradient-to-br from-pink-600 to-pink-800 p-8 text-center hover:shadow-2xl transition-all transform hover:scale-105 overflow-hidden"
@@ -629,7 +650,7 @@ const Home = () => {
               </div>
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
             </Link>
-            
+
             <Link
               to="/watches"
               className="group relative bg-gradient-to-br from-amber-600 to-amber-800 p-8 text-center hover:shadow-2xl transition-all transform hover:scale-105 overflow-hidden"
@@ -642,7 +663,7 @@ const Home = () => {
               </div>
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
             </Link>
-            
+
             <Link
               to="/lenses"
               className="group relative bg-gradient-to-br from-purple-600 to-purple-800 p-8 text-center hover:shadow-2xl transition-all transform hover:scale-105 overflow-hidden"
@@ -659,7 +680,6 @@ const Home = () => {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 };

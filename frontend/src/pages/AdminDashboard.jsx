@@ -347,7 +347,7 @@ const AdminDashboard = () => {
               <h2 className="text-2xl font-bold text-gray-900">Dashboard Overview</h2>
               <button
                 onClick={fetchSummary}
-                className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+                className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
               >
                 Refresh
               </button>
@@ -402,36 +402,36 @@ const AdminDashboard = () => {
               </select>
             </div>
             {loading ? (
-              <p className="text-sm text-gray-500">Loading products...</p>
+              <p className="text-sm text-gray-500">Loading...</p>
             ) : products.length === 0 ? (
               <p className="text-sm text-gray-500">No products in this category yet.</p>
             ) : (
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
                 {products.map((product) => (
-                  <div key={product._id} className="bg-white rounded-xl border p-4">
+                  <div key={product._id} className="bg-white border">
                     {product.images?.[0] && (
                       <img
                         src={product.images[0]}
                         alt={product.name}
-                        className="w-full h-48 object-cover rounded-lg mb-3"
+                        className="w-full h-60 object-cover mb-3"
                       />
                     )}
-                    <h3 className="font-semibold text-gray-900">{product.name}</h3>
-                    <p className="text-sm text-gray-600">{product.brand}</p>
-                    <p className="text-lg font-bold text-gray-900 mt-2">
+                    <h3 className="font-semibold text-gray-900 pl-3 pr-3">{product.name}</h3>
+                    <p className="text-sm text-gray-600 pl-3 pr-3">{product.brand}</p>
+                    <p className="text-lg font-bold text-gray-900 mt-2 pl-3 pr-3">
                       ₹{product.finalPrice || product.price}
                     </p>
-                    <p className="text-xs text-gray-500">Stock: {product.stock}</p>
+                    <p className="text-xs text-gray-500 pl-3">Stock: {product.stock}</p>
                     <div className="flex gap-2 mt-3">
                       <button
                         onClick={() => handleEditProduct(product)}
-                        className="flex-1 px-3 py-1.5 text-xs bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                        className="flex-1 px-3 py-2 text-xs bg-blue-600 text-white hover:bg-blue-700 mb:0 relative"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDeleteProduct(product._id)}
-                        className="flex-1 px-3 py-1.5 text-xs bg-red-600 text-white rounded-lg hover:bg-red-700"
+                        className="flex-1 px-3 py-1.5 text-xs bg-red-600 text-white hover:bg-red-700"
                       >
                         Delete
                       </button>
@@ -608,14 +608,14 @@ const AdminDashboard = () => {
               <div className="flex gap-3">
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700"
+                  className="px-6 py-2 bg-blue-600 text-white font-semibold hover:bg-blue-700"
                 >
                   Add Product
                 </button>
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50"
+                  className="px-6 py-2 border border-gray-300 text-gray-700 font-semibold hover:bg-gray-50"
                 >
                   Reset
                 </button>
@@ -799,7 +799,7 @@ const AdminDashboard = () => {
                 <div className="flex gap-3">
                   <button
                     type="submit"
-                    className="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700"
+                    className="px-6 py-2 bg-blue-600 text-white font-semibold hover:bg-blue-700"
                   >
                     Update Product
                   </button>
@@ -809,7 +809,7 @@ const AdminDashboard = () => {
                       resetForm();
                       setActiveSection('products');
                     }}
-                    className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50"
+                    className="px-6 py-2 border border-gray-300 text-gray-700 font-semibold hover:bg-gray-50"
                   >
                     Cancel
                   </button>
@@ -820,7 +820,7 @@ const AdminDashboard = () => {
                 <p className="text-gray-600">Select a product from "View Products" to edit</p>
                 <button
                   onClick={() => setActiveSection('products')}
-                  className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="mt-4 px-4 py-2 bg-blue-600 text-white hover:bg-blue-700"
                 >
                   View Products
                 </button>
@@ -864,7 +864,7 @@ const AdminDashboard = () => {
                     </div>
                     <button
                       onClick={() => handleDeleteProduct(product._id)}
-                      className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-semibold"
+                      className="px-4 py-2 bg-red-600 text-white hover:bg-red-700 text-sm font-semibold"
                     >
                       Delete
                     </button>
@@ -885,7 +885,7 @@ const AdminDashboard = () => {
               </h2>
               <button
                 onClick={fetchOrders}
-                className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+                className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
               >
                 Refresh
               </button>
@@ -934,7 +934,7 @@ const AdminDashboard = () => {
                       </div>
                       <button
                         onClick={() => handleDeleteOrder(order._id)}
-                        className="text-xs text-red-500 hover:text-red-600 font-semibold px-3 py-1 border border-red-200 rounded-lg hover:bg-red-50"
+                        className="text-xs text-red-500 hover:text-red-600 font-semibold px-3 py-1 border border-red-200 hover:bg-red-50"
                       >
                         Delete
                       </button>
@@ -1020,7 +1020,7 @@ const AdminDashboard = () => {
                 setActiveSection(item.id);
                 setMessage({ type: '', text: '' });
               }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors mb-1 ${
+              className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors mb-1 ${
                 activeSection === item.id
                   ? 'bg-blue-600 text-white'
                   : 'text-gray-700 hover:bg-gray-100'
@@ -1034,7 +1034,7 @@ const AdminDashboard = () => {
         <div className="p-4 border-t border-gray-200 mt-auto">
           <Link
             to="/"
-            className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
