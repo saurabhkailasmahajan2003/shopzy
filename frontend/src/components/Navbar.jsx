@@ -156,7 +156,7 @@ const Navbar = () => {
       <nav 
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 mt-7 border-b py-3
         ${isScrolled 
-          ? 'bg-white border-gray-500 shadow-sm rounded-2xl mx-5 mt-0 transition-all duration-400 py-1' 
+          ? 'bg-white border-gray-500 shadow-sm rounded-2xl mx-4 mt-0 transition-all duration-400 py-1' 
           : 'bg-white border-gray-400 transition-all duration-1000 py-1'}`}
       >
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12">
