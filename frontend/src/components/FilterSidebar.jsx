@@ -3,7 +3,7 @@ import { useState } from 'react';
 // --- Polished Icons ---
 const ChevronIcon = ({ isOpen }) => (
   <svg 
-    className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
+    className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} 
     fill="none" viewBox="0 0 24 24" stroke="currentColor"
   >
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -11,7 +11,7 @@ const ChevronIcon = ({ isOpen }) => (
 );
 
 const FilterIcon = () => (
-  <svg className="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <svg className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
   </svg>
 );
@@ -29,7 +29,7 @@ const FilterSection = ({ title, isOpen, onToggle, activeCount, children }) => (
           {title}
         </h3>
         {activeCount > 0 && (
-          <span className="flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-indigo-600 rounded-full shadow-sm shadow-indigo-200">
+          <span className="flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-gray-700 rounded-full shadow-sm shadow-gray-400">
             {activeCount}
           </span>
         )}
@@ -38,8 +38,8 @@ const FilterSection = ({ title, isOpen, onToggle, activeCount, children }) => (
     </button>
     
     <div 
-      className={`overflow-hidden transition-all duration-300 ease-in-out ${
-        isOpen ? 'max-h-[500px] opacity-100 pb-5' : 'max-h-0 opacity-0'
+      className={`overflow-hidden transition-all duration-200 ease-in-out ${
+        isOpen ? 'max-h-[500px] opacity-100 pb-0' : 'max-h-0 opacity-0'
       }`}
     >
       {children}
@@ -59,8 +59,8 @@ const CustomCheckbox = ({ label, checked, onChange }) => (
       <div className={`
         w-5 h-5 border-2 rounded-md transition-all duration-200 ease-out flex items-center justify-center
         ${checked 
-          ? 'bg-indigo-600 border-indigo-600 shadow-md shadow-indigo-200' 
-          : 'bg-white border-gray-300 group-hover:border-indigo-400'
+          ? 'bg-gray-700 border-gray-700 shadow-md shadow-gray-400' 
+          : 'bg-white border-gray-300 group-hover:border-gray-300'
         }
       `}>
         <svg className={`w-3.5 h-3.5 text-white transform transition-transform duration-200 ${checked ? 'scale-100' : 'scale-0'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -80,9 +80,9 @@ const CustomRadio = ({ label, checked, onChange }) => (
       <input type="radio" className="sr-only" checked={checked} onChange={onChange} />
       <div className={`
         w-5 h-5 rounded-full border-2 transition-all duration-200 flex items-center justify-center
-        ${checked ? 'border-indigo-600' : 'border-gray-300 group-hover:border-indigo-400'}
+        ${checked ? 'border-gray-700' : 'border-gray-300 group-hover:border-gray-400'}
       `}>
-        <div className={`w-2.5 h-2.5 rounded-full bg-indigo-600 transform transition-transform duration-200 ${checked ? 'scale-100' : 'scale-0'}`} />
+        <div className={`w-2.5 h-2.5 rounded-full bg-gray-700 transform transition-transform duration-200 ${checked ? 'scale-100' : 'scale-0'}`} />
       </div>
     </div>
     <span className={`text-sm transition-colors ${checked ? 'text-gray-900 font-medium' : 'text-gray-600 group-hover:text-gray-900'}`}>
@@ -117,12 +117,12 @@ const FilterSidebar = ({ filters, onFilterChange, onClearFilters, brands = [], s
   };
 
   return (
-    <div className="w-full bg-white rounded-2xl shadow-xl shadow-gray-200/60 border border-gray-100 overflow-hidden sticky top-24">
+    <div className="w-full bg-white border border-gray-200 overflow-hidden sticky top-16">
       
       {/* Header */}
-      <div className="px-6 py-5 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between backdrop-blur-sm">
+      <div className="px-6 py-5 border-b border-gray-100 bg-gray-100/50 flex items-center justify-between backdrop-blur-sm">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 bg-indigo-50 rounded-lg">
+          <div className=" bg-indigo-50 rounded-lg">
             <FilterIcon />
           </div>
           <h2 className="text-lg font-bold text-gray-900">Filters</h2>
@@ -131,7 +131,7 @@ const FilterSidebar = ({ filters, onFilterChange, onClearFilters, brands = [], s
         {getActiveCount() > 0 && (
           <button 
             onClick={onClearFilters}
-            className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 px-3 py-1.5 rounded-full transition-all"
+            className="text-xs font-semibold text-gray-700 hover:text-gray-900 hover:bg-indigo-50 px-3 py-1.5 rounded-full transition-all"
           >
             Reset All
           </button>
@@ -176,24 +176,24 @@ const FilterSidebar = ({ filters, onFilterChange, onClearFilters, brands = [], s
           <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
             <div className="flex items-center gap-3">
               <div className="relative flex-1 group">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-medium group-focus-within:text-indigo-500">₹</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-medium group-focus-within:text-gray-500">₹</span>
                 <input
                   type="number"
                   placeholder="0"
                   value={filters.priceRange?.min || ''}
                   onChange={(e) => update('priceRange', { ...filters.priceRange, min: Number(e.target.value) })}
-                  className="w-full pl-6 pr-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-gray-700 font-medium"
+                  className="w-full pl-6 pr-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500/20 focus:border-gray-700 transition-all text-gray-700 font-medium"
                 />
               </div>
               <span className="text-gray-300 font-medium">-</span>
               <div className="relative flex-1 group">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-medium group-focus-within:text-indigo-500">₹</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-medium group-focus-within:text-gray-500">₹</span>
                 <input
                   type="number"
                   placeholder="Any"
                   value={filters.priceRange?.max === Infinity ? '' : filters.priceRange?.max || ''}
                   onChange={(e) => update('priceRange', { ...filters.priceRange, max: Number(e.target.value) })}
-                  className="w-full pl-6 pr-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-gray-700 font-medium"
+                  className="w-full pl-6 pr-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500/20 focus:border-gray-700 transition-all text-gray-700 font-medium"
                 />
               </div>
             </div>
@@ -239,8 +239,8 @@ const FilterSidebar = ({ filters, onFilterChange, onClearFilters, brands = [], s
                     className={`
                       min-w-[40px] h-10 px-3 flex items-center justify-center text-sm font-semibold rounded-lg border transition-all duration-200
                       ${isActive 
-                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-200 transform scale-105' 
-                        : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50'
+                        ? 'bg-gray-700 text-white border-gray-400 shadow-md shadow-gray-300 transform scale-105' 
+                        : 'bg-white text-gray-600 border-gray-200 hover:border-gray-600 hover:text-gray-700 hover:bg-gray-100'
                       }
                     `}
                   >
@@ -263,7 +263,7 @@ const FilterSidebar = ({ filters, onFilterChange, onClearFilters, brands = [], s
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
           background-color: #e5e7eb;
-          border-radius: 10px;
+          border-radius: 0px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
           background-color: #d1d5db;

@@ -1,62 +1,112 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
-import LazyProductSection from './LazyProductSection'; // Import the new component
+import ProductCard from '../components/ProductCard'; // Ensure you have this component
 import { productAPI } from '../utils/api';
 import { handleImageError } from '../utils/imageFallback';
 import ScrollToTop from '../components/ScrollToTop';
 
-// --- API WRAPPERS FOR LAZY LOADING ---
-  // OPTIMIZATION: Reduced 'limit' to 4 to show only 1 row per section.
-  // This makes the page load much faster.
-  
-  const fetchNewArrivals = async () => {
-    // Changed limit: 12 -> limit: 4
-    const res = await productAPI.getAllProducts({ limit: 4, isNewArrival: true, sort: 'createdAt', order: 'desc' });
-    return res.success ? res.data.products : [];
-  };
+// --- API FETCH FUNCTIONS (Defined outside to prevent re-creation) ---
 
-  const fetchSaleItems = async () => {
-    // Changed limit: 12 -> limit: 4
-    const res = await productAPI.getAllProducts({ limit: 4, onSale: true, sort: 'discountPercent', order: 'desc' });
-    return res.success ? res.data.products : [];
-  };
+const fetchNewArrivals = async () => {
+  const res = await productAPI.getAllProducts({ limit: 4, isNewArrival: true, sort: 'createdAt', order: 'desc' });
+  return res.success ? res.data.products : [];
+};
 
-  const fetchMen = async () => {
-    // Kept limit: 4
-    const res = await productAPI.getMenItems({ limit: 4 });
-    return res.success ? res.data.products : [];
-  };
+const fetchSaleItems = async () => {
+  const res = await productAPI.getAllProducts({ limit: 4, onSale: true, sort: 'discountPercent', order: 'desc' });
+  return res.success ? res.data.products : [];
+};
 
-  const fetchWomen = async () => {
-    // Kept limit: 4
-    const res = await productAPI.getWomenItems({ limit: 4 });
-    return res.success ? res.data.products : [];
-  };
+const fetchMen = async () => {
+  const res = await productAPI.getMenItems({ limit: 4 });
+  return res.success ? res.data.products : [];
+};
 
-  const fetchWatches = async () => {
-    const res = await productAPI.getWatches({ limit: 4 });
-    return res.success ? res.data.products : [];
-  };
-  
-  const fetchAccessories = async () => {
-     const [lenses, acc] = await Promise.all([
-        productAPI.getLenses({ limit: 2 }), // Reduced to 2 to make a total of 4
-        productAPI.getAccessories({ limit: 2 })
-     ]);
-     let combined = [];
-     if (lenses.success) combined = [...combined, ...lenses.data.products];
-     if (acc.success) combined = [...combined, ...acc.data.products];
-     return combined.slice(0, 4); // Ensure we strictly return only 4 items
-  };
+const fetchWomen = async () => {
+  const res = await productAPI.getWomenItems({ limit: 4 });
+  return res.success ? res.data.products : [];
+};
+
+const fetchWatches = async () => {
+  const res = await productAPI.getWatches({ limit: 4 });
+  return res.success ? res.data.products : [];
+};
+
+const fetchAccessories = async () => {
+  try {
+    const [lenses, acc] = await Promise.all([
+      productAPI.getLenses({ limit: 2 }),
+      productAPI.getAccessories({ limit: 2 })
+    ]);
+    let combined = [];
+    if (lenses.success) combined = [...combined, ...lenses.data.products];
+    if (acc.success) combined = [...combined, ...acc.data.products];
+    return combined.slice(0, 4);
+  } catch (error) {
+    console.error("Error fetching accessories:", error);
+    return [];
+  }
+};
 
 const Home = () => {
+  // --- UI STATE ---
   const [currentSlide, setCurrentSlide] = useState(0);
   const [activeStoryIndex, setActiveStoryIndex] = useState(null);
   const [isStoryViewerOpen, setIsStoryViewerOpen] = useState(false);
   const [footerVisible, setFooterVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Stories data
+  // --- DATA STATE ---
+  const [newArrivals, setNewArrivals] = useState([]);
+  const [saleItems, setSaleItems] = useState([]);
+  const [menItems, setMenItems] = useState([]);
+  const [womenItems, setWomenItems] = useState([]);
+  const [watches, setWatches] = useState([]);
+  const [accessories, setAccessories] = useState([]);
+
+  // --- INITIAL DATA FETCHING ---
+  useEffect(() => {
+    const loadAllData = async () => {
+      setIsLoading(true);
+      try {
+        // Fetch everything in parallel for speed
+        const [
+          newArrivalsData, 
+          saleData, 
+          menData, 
+          womenData, 
+          watchesData, 
+          accessoriesData
+        ] = await Promise.all([
+          fetchNewArrivals(),
+          fetchSaleItems(),
+          fetchMen(),
+          fetchWomen(),
+          fetchWatches(),
+          fetchAccessories()
+        ]);
+
+        setNewArrivals(newArrivalsData);
+        setSaleItems(saleData);
+        setMenItems(menData);
+        setWomenItems(womenData);
+        setWatches(watchesData);
+        setAccessories(accessoriesData);
+      } catch (error) {
+        console.error("Error loading home page data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadAllData();
+
+    // Show footer after a slight delay
+    setTimeout(() => setFooterVisible(true), 1000);
+  }, []);
+
+  // --- STORIES DATA ---
   const stories = [
     { hashtag: '#xmas', emoji: '🎄', image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1764741928/IMG_20251123_161820_skzchs.png', link: '' },
     { hashtag: '#indianfashion', emoji: '😎', image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1764741995/image-104_iuyyuw.png' },
@@ -67,7 +117,7 @@ const Home = () => {
     { hashtag: '#fashion', emoji: '😌', image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1764742548/NECK_20SCARF_20TREND_20190625_20GettyImages-1490484490_ccdwdy.webp' }
   ];
 
-  // Carousel slides data
+  // --- CAROUSEL DATA ---
   const carouselSlides = [
     {
       image: 'https://res.cloudinary.com/dbt2bu4tg/image/upload/v1763401012/Beige_Modern_Watch_Collection_Sale_LinkedIn_Post_1080_x_300_px_cwyx08.svg',
@@ -88,8 +138,6 @@ const Home = () => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % carouselSlides.length);
     }, 5000);
-    // Show footer after 2 seconds to ensure page structure is ready
-    setTimeout(() => setFooterVisible(true), 2000);
     return () => clearInterval(interval);
   }, [carouselSlides.length]);
 
@@ -97,51 +145,11 @@ const Home = () => {
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + carouselSlides.length) % carouselSlides.length);
   const goToSlide = (index) => setCurrentSlide(index);
 
-  // --- API WRAPPERS FOR LAZY LOADING ---
-  // We wrap api calls to format data specifically for the section
-  const fetchNewArrivals = async () => {
-    const res = await productAPI.getAllProducts({ limit: 12, isNewArrival: true, sort: 'createdAt', order: 'desc' });
-    return res.success ? res.data.products : [];
-  };
-
-  const fetchSaleItems = async () => {
-    const res = await productAPI.getAllProducts({ limit: 12, onSale: true, sort: 'discountPercent', order: 'desc' });
-    return res.success ? res.data.products : [];
-  };
-
-  const fetchMen = async () => {
-    const res = await productAPI.getMenItems({ limit: 4 });
-    return res.success ? res.data.products : [];
-  };
-
-  const fetchWomen = async () => {
-    const res = await productAPI.getWomenItems({ limit: 4 });
-    return res.success ? res.data.products : [];
-  };
-
-  const fetchWatches = async () => {
-    const res = await productAPI.getWatches({ limit: 4 });
-    return res.success ? res.data.products : [];
-  };
-  
-  const fetchAccessories = async () => {
-     // Combined fetch for lenses and accessories if you want them together, or separate
-     const [lenses, acc] = await Promise.all([
-        productAPI.getLenses({ limit: 4 }),
-        productAPI.getAccessories({ limit: 4 })
-     ]);
-     let combined = [];
-     if (lenses.success) combined = [...combined, ...lenses.data.products];
-     if (acc.success) combined = [...combined, ...acc.data.products];
-     return combined.slice(0, 4);
-  };
-
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900">
-
-      {/* --- HERO SECTION (Loads Immediately) --- */}
+      
+      {/* --- HERO SECTION --- */}
       <div className="relative w-full bg-gray-50 overflow-hidden group">
-        {/* DESKTOP CAROUSEL */}
         <div className="hidden lg:block relative w-full">
           <div className="relative w-full max-w-[2000px] mx-auto aspect-[21/9] md:aspect-[3/1]">
             {carouselSlides.map((slide, index) => (
@@ -154,20 +162,20 @@ const Home = () => {
                   src={slide.image}
                   alt="Banner"
                   className="w-full h-full object-contain object-center"
-                  loading={index === 0 ? "eager" : "lazy"} // Only load first image eagerly
+                  loading={index === 0 ? "eager" : "lazy"}
                   onError={(e) => handleImageError(e, 1920, 600)}
                 />
               </Link>
             ))}
           </div>
-
+          {/* Controls */}
           <button onClick={prevSlide} className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/80 text-gray-800 hover:bg-white transition shadow-sm opacity-0 group-hover:opacity-100">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
           </button>
           <button onClick={nextSlide} className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-white/80 text-gray-800 hover:bg-white transition shadow-sm opacity-0 group-hover:opacity-100">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
           </button>
-
+          {/* Indicators */}
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
             {carouselSlides.map((_, index) => (
               <button
@@ -179,20 +187,15 @@ const Home = () => {
           </div>
         </div>
 
-        {/* MOBILE BANNER */}
+        {/* Mobile Banner */}
         <div className="block lg:hidden w-full">
           <Link to="/sale">
-            <img
-              src="https://res.cloudinary.com/de1bg8ivx/image/upload/v1764765679/Gemini_Generated_Image_cspotecspotecspo_mw6a6n.png"
-              alt="Mobile Banner"
-              className="w-full h-auto object-contain block"
-              loading="eager"
-            />
+            <img src="https://res.cloudinary.com/de1bg8ivx/image/upload/v1764765679/Gemini_Generated_Image_cspotecspotecspo_mw6a6n.png" alt="Mobile Banner" className="w-full h-auto object-contain block" loading="eager" />
           </Link>
         </div>
       </div>
 
-      {/* --- STORIES SECTION (Loads Immediately) --- */}
+      {/* --- STORIES SECTION --- */}
       <div className="py-10 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h3 className="text-xl sm:text-xs font-bold uppercase tracking-widest text-gray-900 mb-6">Stories By Urban Vastra</h3>
@@ -201,20 +204,11 @@ const Home = () => {
               <div
                 key={index}
                 className="flex-shrink-0 flex flex-col items-center gap-3 cursor-pointer"
-                onClick={() => { 
-                  if (setActiveStoryIndex) setActiveStoryIndex(index); 
-                  if (setIsStoryViewerOpen) setIsStoryViewerOpen(true); 
-                }}
+                onClick={() => { setActiveStoryIndex(index); setIsStoryViewerOpen(true); }}
               >
                 <div className="relative p-1 rounded-full border-2 border-rose-500">
                   <div className="p-0.5 bg-white rounded-full">
-                    <img
-                      src={item.image}
-                      alt={item.hashtag}
-                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover"
-                      loading="lazy"
-                      onError={(e) => { e.target.src = 'https://via.placeholder.com/150'; }}
-                    />
+                    <img src={item.image} alt={item.hashtag} className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover" loading="lazy" onError={(e) => { e.target.src = 'https://via.placeholder.com/150'; }} />
                   </div>
                 </div>
                 <span className="text-xs font-medium text-gray-600">{item.hashtag}</span>
@@ -224,65 +218,31 @@ const Home = () => {
         </div>
       </div>
 
-      {/* --- FEATURED COLLECTIONS (Static Images) --- */}
+      {/* --- STATIC COLLECTIONS --- */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-7 mb-10">
         <div className="text-center mb-5">
-          <h2 className="text-2xl font-bold text-gray-900 uppercase tracking-tight">The Shirt Edit</h2>
-          <p className="text-gray-500">Essential styles for him and her.</p>
+           <h2 className="text-2xl font-bold text-gray-900 uppercase tracking-tight">The Shirt Edit</h2>
+           <p className="text-gray-500">Essential styles for him and her.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-          <Link to="/women/shirt" className="block w-full">
-            <img src="https://res.cloudinary.com/de1bg8ivx/image/upload/v1763492921/Black_and_White_Modern_New_Arrivals_Blog_Banner_4_x9v1lw.png" alt="Women's Shirts" className="w-full h-auto block" loading="lazy" />
-          </Link>
-          <Link to="/men/shirt" className="block w-full">
-            <img src="https://res.cloudinary.com/de1bg8ivx/image/upload/v1763493394/5ad7474b-2e60-47c5-b993-cdc9c1449c08.png" alt="Men's Shirts" className="w-full h-auto block" loading="lazy" />
-          </Link>
+          <Link to="/women/shirt" className="block w-full"><img src="https://res.cloudinary.com/de1bg8ivx/image/upload/v1763492921/Black_and_White_Modern_New_Arrivals_Blog_Banner_4_x9v1lw.png" alt="Women" className="w-full h-auto block" loading="lazy" /></Link>
+          <Link to="/men/shirt" className="block w-full"><img src="https://res.cloudinary.com/de1bg8ivx/image/upload/v1763493394/5ad7474b-2e60-47c5-b993-cdc9c1449c08.png" alt="Men" className="w-full h-auto block" loading="lazy" /></Link>
         </div>
       </div>
 
-      {/* --- LAZY LOADED SECTIONS --- */}
-      {/* These will only fetch data when you scroll near them */}
+      {/* --- PRODUCT SECTIONS (Standard Loading) --- */}
+      <ProductSection title="New Arrivals" products={newArrivals} viewAllLink="/new-arrival" isLoading={isLoading} />
       
-      <LazyProductSection 
-        title="New Arrivals" 
-        fetchFunction={fetchNewArrivals} 
-        viewAllLink="/new-arrival"
-      />
+      <ProductSection title="Sale Highlights" products={saleItems} viewAllLink="/sale" bgColor="bg-rose-50" isLoading={isLoading} />
+      
+      <ProductSection title="Men's Collection" products={menItems} viewAllLink="/men" isLoading={isLoading} />
+      
+      <ProductSection title="Women's Collection" products={womenItems} viewAllLink="/women" isLoading={isLoading} />
 
-      <LazyProductSection 
-        title="Sale Highlights" 
-        fetchFunction={fetchSaleItems} 
-        bgColor="bg-rose-50"
-        viewAllLink="/sale"
-      />
-
-      <LazyProductSection 
-        title="Men's Collection" 
-        fetchFunction={fetchMen} 
-        viewAllLink="/men"
-      />
-
-      <LazyProductSection 
-        title="Women's Collection" 
-        fetchFunction={fetchWomen} 
-        viewAllLink="/women"
-      />
-
-      {/* Split Section - Handled slightly differently in UI, but simplified here for lazy loading */}
       <div className="bg-gray-50 border-t border-gray-100">
          <div className="max-w-7xl mx-auto grid lg:grid-cols-2">
-            <LazyProductSection 
-               title="Timepieces" 
-               fetchFunction={fetchWatches} 
-               viewAllLink="/watches" 
-               bgColor="bg-gray-50"
-            />
-            <LazyProductSection 
-               title="Essentials" 
-               fetchFunction={fetchAccessories} 
-               viewAllLink="/accessories" 
-               bgColor="bg-gray-50"
-            />
+            <ProductSection title="Timepieces" products={watches} viewAllLink="/watches" bgColor="bg-gray-50" isLoading={isLoading} />
+            <ProductSection title="Essentials" products={accessories} viewAllLink="/accessories" bgColor="bg-gray-50" isLoading={isLoading} />
          </div>
       </div>
 
@@ -295,10 +255,7 @@ const Home = () => {
               <Link key={cat} to={`/${cat}`} className="group relative h-40 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center hover:bg-gray-100 transition-all">
                 <div className="text-center z-10">
                   <span className="block text-2xl mb-2 grayscale group-hover:grayscale-0 transition-all">
-                    {cat === 'men' && '👔'}
-                    {cat === 'women' && '👗'}
-                    {cat === 'watches' && '⌚'}
-                    {cat === 'lenses' && '👓'}
+                    {cat === 'men' && '👔'} {cat === 'women' && '👗'} {cat === 'watches' && '⌚'} {cat === 'lenses' && '👓'}
                   </span>
                   <h3 className="text-lg font-bold uppercase tracking-wider">{cat}</h3>
                 </div>
@@ -310,25 +267,12 @@ const Home = () => {
 
       {/* --- STORY VIEWER MODAL --- */}
       {isStoryViewerOpen && activeStoryIndex !== null && (
-        <div
-          className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center"
-          onClick={() => setIsStoryViewerOpen(false)}
-        >
-          {/* ... (Keep your existing story viewer code exactly as is) ... */}
-           <button onClick={(e) => { e.stopPropagation(); setIsStoryViewerOpen(false); }} className="absolute top-6 right-6 z-20 text-white/70 hover:text-white transition">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
-
-          {activeStoryIndex > 0 && (
-            <button onClick={(e) => { e.stopPropagation(); setActiveStoryIndex(activeStoryIndex - 1); }} className="absolute left-4 top-1/2 -translate-y-1/2 z-20 text-white hover:opacity-70">
-              <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-            </button>
-          )}
-          {activeStoryIndex < stories.length - 1 && (
-            <button onClick={(e) => { e.stopPropagation(); setActiveStoryIndex(activeStoryIndex + 1); }} className="absolute right-4 top-1/2 -translate-y-1/2 z-20 text-white hover:opacity-70">
-              <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-            </button>
-          )}
+        <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center" onClick={() => setIsStoryViewerOpen(false)}>
+          <button onClick={(e) => { e.stopPropagation(); setIsStoryViewerOpen(false); }} className="absolute top-6 right-6 z-20 text-white/70 hover:text-white transition"><svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
+          
+          {activeStoryIndex > 0 && <button onClick={(e) => { e.stopPropagation(); setActiveStoryIndex(activeStoryIndex - 1); }} className="absolute left-4 top-1/2 -translate-y-1/2 z-20 text-white hover:opacity-70"><svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg></button>}
+          
+          {activeStoryIndex < stories.length - 1 && <button onClick={(e) => { e.stopPropagation(); setActiveStoryIndex(activeStoryIndex + 1); }} className="absolute right-4 top-1/2 -translate-y-1/2 z-20 text-white hover:opacity-70"><svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg></button>}
 
           <div className="relative w-full h-full max-w-md mx-auto flex flex-col items-center justify-center" onClick={(e) => e.stopPropagation()}>
             <div className="absolute top-4 left-4 right-4 flex gap-1 z-20">
@@ -343,11 +287,44 @@ const Home = () => {
           </div>
         </div>
       )}
+      
       <ScrollToTop />
-
-      {/* --- FOOTER (Conditional Rendering) --- */}
-      {footerVisible && <Footer />}
     </div>
+  );
+};
+
+// --- REUSABLE PRODUCT SECTION COMPONENT (Replaces LazyProductSection) ---
+const ProductSection = ({ title, products, viewAllLink, bgColor = 'bg-white', isLoading }) => {
+  return (
+    <section className={`py-12 ${bgColor}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-end mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 uppercase tracking-tight">{title}</h2>
+          {viewAllLink && (
+            <Link to={viewAllLink} className="text-sm font-bold border-b border-gray-900 pb-0.5 hover:text-gray-600 hover:border-gray-600 transition-colors">
+              View All
+            </Link>
+          )}
+        </div>
+
+        {isLoading ? (
+          /* Skeleton Loader */
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+             {[1,2,3,4].map(i => <div key={i} className="h-64 bg-gray-200 animate-pulse rounded-md"></div>)}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {products && products.length > 0 ? (
+              products.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))
+            ) : (
+              <p className="col-span-4 text-center text-gray-500 py-10">No products found.</p>
+            )}
+          </div>
+        )}
+      </div>
+    </section>
   );
 };
 

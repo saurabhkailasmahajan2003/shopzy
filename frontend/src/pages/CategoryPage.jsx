@@ -160,23 +160,26 @@ const CategoryPage = () => {
       const normalizedCategory = category || pathSegments[1] || null;
 
       // Determine which API to call based on route
+      // Use a high limit to fetch all products (1000 should be enough for most cases)
+      const fetchLimit = 1000;
+      
       if (pathname === '/watches') {
-        const params = genderParam ? { gender: genderParam } : {};
+        const params = { ...(genderParam ? { gender: genderParam } : {}), limit: fetchLimit };
         response = await productAPI.getWatches(params);
         setPageTitle(genderParam ? `${genderParam.charAt(0).toUpperCase() + genderParam.slice(1)}'s Watches` : 'Watches');
       } else if (pathname === '/lenses') {
-        const params = genderParam ? { gender: genderParam } : {};
+        const params = { ...(genderParam ? { gender: genderParam } : {}), limit: fetchLimit };
         response = await productAPI.getLenses(params);
         setPageTitle(genderParam ? `${genderParam.charAt(0).toUpperCase() + genderParam.slice(1)}'s Lenses` : 'Lenses & Spectacles');
       } else if (pathname === '/accessories') {
-        const params = genderParam ? { gender: genderParam } : {};
+        const params = { ...(genderParam ? { gender: genderParam } : {}), limit: fetchLimit };
         response = await productAPI.getAccessories(params);
         setPageTitle(genderParam ? `${genderParam.charAt(0).toUpperCase() + genderParam.slice(1)}'s Accessories` : 'Accessories');
       } else if (pathname === '/men') {
-        response = await productAPI.getMenItems();
+        response = await productAPI.getMenItems({ limit: fetchLimit });
         setPageTitle("Men's Collection");
       } else if (pathname === '/women') {
-        response = await productAPI.getWomenItems();
+        response = await productAPI.getWomenItems({ limit: fetchLimit });
         setPageTitle("Women's Collection");
       } else if (activeGender && normalizedCategory) {
         const categoryMap = {
@@ -192,7 +195,7 @@ const CategoryPage = () => {
         
         if (categoryInfo) {
           const fetcher = activeGender === 'women' ? productAPI.getWomenItems : productAPI.getMenItems;
-          response = await fetcher({ subCategory: categoryInfo.subCategory });
+          response = await fetcher({ subCategory: categoryInfo.subCategory, limit: fetchLimit });
           
           if (response && response.success && response.data.products) {
             const filteredProducts = response.data.products.filter(product => {
@@ -212,7 +215,7 @@ const CategoryPage = () => {
           return;
         }
       } else {
-        response = await productAPI.getAllProducts();
+        response = await productAPI.getAllProducts({ limit: fetchLimit });
         setPageTitle('All Products');
       }
 

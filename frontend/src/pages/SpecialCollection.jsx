@@ -38,7 +38,7 @@ const SpecialCollection = ({ type }) => {
 
   useEffect(() => {
     const queryParams = {
-      limit: 60,
+      limit: 1000, // Fetch all products to ensure nothing is missed
       ...(config.query || {}),
     };
 
