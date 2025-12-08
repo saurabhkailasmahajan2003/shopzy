@@ -156,11 +156,10 @@ const ProductDetail = () => {
     <>
       <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
       
-      {/* Removed pb-24 since we removed fixed footer */}
       <div className="min-h-screen bg-white pb-10">
         
         {/* Breadcrumbs */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-0">
           <nav className="hidden sm:flex text-sm text-gray-500">
             <Link to="/" className="hover:text-black transition-colors">Home</Link>
             <span className="mx-2">/</span>
@@ -326,7 +325,7 @@ const ProductDetail = () => {
               </div>
 
               {/* Desktop Actions (Hidden on Mobile) */}
-              <div className="hidden lg:flex gap-4 mb-8">
+              <div className="hidden lg:flex gap-4 mb-8 z-50">
                 <button
                   onClick={handleAddToCart}
                   className="flex-1 bg-black text-white text-lg font-semibold py-4 rounded-full hover:bg-gray-800 active:scale-[0.98] transition-all shadow-lg shadow-gray-200"
@@ -387,9 +386,13 @@ const ProductDetail = () => {
                     <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                     <span>30 Days Easy Returns</span>
                   </div>
+                </div>
 
-                  {/* --- NEW MOBILE BUTTONS LOCATION --- */}
-                  <div className="mt-8 flex gap-3 lg:hidden">
+                {/* --- NEW STICKY MOBILE BUTTONS --- */}
+                {/* Positioned inside product-info so 'sticky bottom-0' works relative to this section */}
+                {/* -mx-4 to span full width despite parent padding */}
+                <div className="lg:hidden sticky bottom-0 z-50 bg-white border-t border-gray-100 p-4 -mx-4 mt-auto shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                  <div className="flex gap-3">
                     <button 
                       onClick={handleWishlistToggle}
                       className={`p-3 rounded-lg border border-gray-300 flex items-center justify-center transition-colors ${isWishlisted ? 'bg-red-50 border-red-200' : 'bg-white'}`}
@@ -405,18 +408,14 @@ const ProductDetail = () => {
                       Add to Cart • ₹{finalPrice.toLocaleString()}
                     </button>
                   </div>
-                  {/* --- END NEW MOBILE BUTTONS --- */}
-
                 </div>
+                {/* --- END STICKY MOBILE BUTTONS --- */}
 
               </div>
 
             </div>
           </div>
         </main>
-
-        {/* --- FIXED FOOTER REMOVED HERE --- */}
-
       </div>
     </>
   );
