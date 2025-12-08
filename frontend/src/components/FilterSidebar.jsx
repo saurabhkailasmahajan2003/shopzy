@@ -117,7 +117,7 @@ const FilterSidebar = ({ filters, onFilterChange, onClearFilters, brands = [], s
   };
 
   return (
-    <div className="w-full bg-white border border-gray-200 overflow-hidden sticky top-16">
+    <div className="w-full bg-white border border-gray-200 overflow-hidden sticky top-20">
       
       {/* Header */}
       <div className="px-6 py-5 border-b border-gray-100 bg-gray-100/50 flex items-center justify-between backdrop-blur-sm">
