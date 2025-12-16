@@ -95,27 +95,17 @@ const Login = () => {
         </div>
 
         <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-8">
-            {/* E-commerce Logo */}
+          <div className="flex items-center gap-2.5 mb-8">
+            {/* Professional E-commerce Logo */}
             <div className="relative">
-              <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 14L10 38H32L30 14H12Z" fill="url(#bagGradientLight)" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M14 14V10C14 7.79086 15.7909 6 18 6H24C26.2091 6 28 7.79086 28 10V14" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-                <text x="21" y="28" fontFamily="Arial, sans-serif" fontSize="12" fontWeight="900" fill="white" textAnchor="middle" letterSpacing="-1">ST</text>
-                <defs>
-                  <linearGradient id="bagGradientLight" x1="10" y1="14" x2="30" y2="38" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stopColor="rgba(255,255,255,0.3)"/>
-                    <stop offset="100%" stopColor="rgba(255,255,255,0.15)"/>
-                  </linearGradient>
-                </defs>
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="36" height="36" rx="8" fill="rgba(255,255,255,0.15)"/>
+                <path d="M12 18C12 15.5 13.5 14 16 14C18.5 14 20 15.5 20 17C20 18.5 18.5 19.5 17 20C15.5 20.5 14 21.5 14 23C14 25.5 15.5 27 18 27C20.5 27 22 25.5 22 24" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
               </svg>
             </div>
-            <div className="flex flex-col">
-              <span className="text-2xl font-bold text-white leading-none tracking-tight">
+            <div>
+              <span className="text-xl font-bold text-white tracking-tight leading-none block">
                 StyleTrending
-              </span>
-              <span className="text-[9px] font-medium text-gray-300 uppercase tracking-widest mt-0.5">
-                Fashion & Lifestyle
               </span>
             </div>
           </div>
