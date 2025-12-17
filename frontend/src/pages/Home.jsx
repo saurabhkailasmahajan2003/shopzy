@@ -185,7 +185,7 @@ const Home = () => {
 
   const carouselSlides = [
     { image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1765179209/62987769-6299-4622-965f-168e87ee3572.png', link: '/watches' },
-    { image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1765186313/12de4e83-d480-42c3-ad1d-7078f5d19074.png', link: '/women' },
+    { image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1765186313/12de4e83-d480-42c3-ad1d-7078f5d19074.png', link: '/men' },
     { image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1765179353/3f1d3d63-ed99-45d8-af35-94c5cdab655c.png', link: '/women' }
   ];
 

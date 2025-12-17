@@ -81,7 +81,6 @@ const Navbar = () => {
   // Refs for click outside
   const searchInputRef = useRef(null);
   const lastScrollY = useRef(0);
-  const scrollTimeout = useRef(null);
 
   // --- EFFECTS ---
 
@@ -109,26 +108,20 @@ const Navbar = () => {
       const currentY = window.scrollY;
       const isScrollingDown = currentY > lastScrollY.current;
 
-      // Hide on scroll down, show on scroll up/stop; avoid hiding when menus are open
+      // Hide on scroll down, show only when scrolling up; avoid hiding when menus are open
       if (!isMobileMenuOpen && !isSearchOpen) {
         if (isScrollingDown && currentY > 80) {
           setIsNavHidden(true);
-        } else {
+        } else if (!isScrollingDown) {
           setIsNavHidden(false);
         }
       }
 
       lastScrollY.current = currentY;
-
-      // Show after scrolling stops
-      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-      scrollTimeout.current = setTimeout(() => {
-        setIsNavHidden(false);
-      }, 180);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isMobileMenuOpen, isSearchOpen]);
 
   // Handle Body Lock
   useEffect(() => {
