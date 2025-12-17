@@ -76,9 +76,12 @@ const Navbar = () => {
   const [isDesktopSearchExpanded, setIsDesktopSearchExpanded] = useState(false); // Desktop search animation
   const [expandedMobileCategory, setExpandedMobileCategory] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isNavHidden, setIsNavHidden] = useState(false);
   
   // Refs for click outside
   const searchInputRef = useRef(null);
+  const lastScrollY = useRef(0);
+  const scrollTimeout = useRef(null);
 
   // --- EFFECTS ---
 
@@ -102,6 +105,26 @@ const Navbar = () => {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
+
+      const currentY = window.scrollY;
+      const isScrollingDown = currentY > lastScrollY.current;
+
+      // Hide on scroll down, show on scroll up/stop; avoid hiding when menus are open
+      if (!isMobileMenuOpen && !isSearchOpen) {
+        if (isScrollingDown && currentY > 80) {
+          setIsNavHidden(true);
+        } else {
+          setIsNavHidden(false);
+        }
+      }
+
+      lastScrollY.current = currentY;
+
+      // Show after scrolling stops
+      if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+      scrollTimeout.current = setTimeout(() => {
+        setIsNavHidden(false);
+      }, 180);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -128,7 +151,7 @@ const Navbar = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery('');
       setIsSearchOpen(false);
       setIsDesktopSearchExpanded(false);
@@ -152,13 +175,14 @@ const Navbar = () => {
                MAIN NAVBAR
           ======================= */}
       <nav 
-        className={`sticky top-0 left-0 right-0 z-50 transition-all duration-300 border-b py-3
+        className={`sticky top-0 left-0 right-0 z-50 transition-all duration-300 border-b py-1 transform
+        ${isNavHidden ? '-translate-y-full' : 'translate-y-0'}
         ${isScrolled 
           ? 'bg-white border-gray-500 shadow-sm' 
           : 'bg-white border-gray-400'}`}
       >
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 py-1">
-          <div className="flex items-center justify-between h-12 py-1">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 py-0.5">
+          <div className="flex items-center justify-between h-10">
 
             {/* LEFT: Logo & Mobile Toggle */}
             <div className="flex items-center gap-4">

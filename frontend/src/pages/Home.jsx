@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { productAPI } from '../utils/api';
 import { handleImageError } from '../utils/imageFallback';
-import ScrollToTop from '../components/ScrollToTop';
 
 // --- ICONS (Embedded directly so no install needed) ---
 const IconChevronLeft = () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>;
@@ -51,9 +50,7 @@ const fetchAccessories = async () => {
     console.error("Error fetching accessories:", error);
     return [];
   }
-};
-
-
+};  
 
 const LuxeSection = () => {
   const scrollRef = useRef(null);
@@ -279,132 +276,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* --- NEED HELP CHOOSING SECTION --- */}
-      <section className="py-16 sm:py-20 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-12 sm:mb-16 text-center">
-            <h2 className="text-3xl sm:text-4xl lg:text-2xl font-bold text-gray-500 mb-3 tracking-tight">Need Help Choosing? Start Here!</h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-gray-400 to-gray-600 mx-auto"></div>
-          </div>
-          
-          {/* Category Cards - Horizontal Scroll */}
-          <div className="relative">
-            <div 
-              ref={categoryScrollRef}
-              className="overflow-x-auto scrollbar-hide pb-8 -mx-4 px-4 scroll-smooth"
-            >
-              <div className="flex gap-6 sm:gap-8 min-w-max">
-                {[
-                  {
-                    id: 'men',
-                    label: 'Men',
-                    path: '/men',
-                    bgColor: 'bg-white',
-                    borderColor: 'border-gray-200',
-                    hoverBorder: 'group-hover:border-gray-400',
-                    image: 'https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?q=80&w=400&auto=format&fit=crop',
-                  },
-                  {
-                    id: 'women',
-                    label: 'Women',
-                    path: '/women',
-                    bgColor: 'bg-white',
-                    borderColor: 'border-gray-200',
-                    hoverBorder: 'group-hover:border-gray-400',
-                    image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=400&auto=format&fit=crop',
-                  },
-                  {
-                    id: 'watches',
-                    label: 'Watches',
-                    path: '/watches',
-                    bgColor: 'bg-white',
-                    borderColor: 'border-gray-200',
-                    hoverBorder: 'group-hover:border-gray-400',
-                    image: 'https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?q=80&w=400&auto=format&fit=crop',
-                  },
-                  {
-                    id: 'accessories',
-                    label: 'Accessories',
-                    path: '/accessories',
-                    bgColor: 'bg-white',
-                    borderColor: 'border-gray-200',
-                    hoverBorder: 'group-hover:border-gray-400',
-                    image: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=400&auto=format&fit=crop',
-                  },
-                  {
-                    id: 'sale',
-                    label: 'Sale',
-                    path: '/sale',
-                    bgColor: 'bg-white',
-                    borderColor: 'border-gray-200',
-                    hoverBorder: 'group-hover:border-gray-400',
-                    image: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=400&auto=format&fit=crop',
-                  },
-                  {
-                    id: 'new-arrival',
-                    label: 'New Arrivals',
-                    path: '/new-arrival',
-                    bgColor: 'bg-white',
-                    borderColor: 'border-gray-200',
-                    hoverBorder: 'group-hover:border-gray-400',
-                    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=400&auto=format&fit=crop',
-                  },
-                ].map((category) => (
-                  <Link
-                    key={category.id}
-                    to={category.path}
-                    className="flex-shrink-0 w-56 sm:w-72 group"
-                  >
-                    <div className={`${category.bgColor} border ${category.borderColor} ${category.hoverBorder} rounded-2xl p-0 h-full flex flex-col overflow-hidden transition-all duration-300`}>
-                      <div className="w-full aspect-square overflow-hidden relative bg-gray-50">
-                        <img
-                          src={category.image}
-                          alt={category.label}
-                          className="w-full h-full object-cover"
-                          onError={(e) => handleImageError(e, 400, 400)}
-                        />
-                      </div>
-                      <div className="w-full flex items-center justify-between p-6 bg-white border-t border-gray-100">
-                        <span className="text-lg sm:text-xl font-semibold text-gray-900 tracking-tight">{category.label}</span>
-                        <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center group-hover:bg-gray-800 transition-colors duration-200">
-                          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-            {/* Navigation Buttons */}
-            <button
-              onClick={() => {
-                if (categoryScrollRef.current) {
-                  categoryScrollRef.current.scrollBy({ left: -320, behavior: 'smooth' });
-                }
-              }}
-              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 shadow-lg hover:shadow-xl"
-              aria-label="Previous categories"
-            >
-              <IconChevronLeft />
-            </button>
-            <button
-              onClick={() => {
-                if (categoryScrollRef.current) {
-                  categoryScrollRef.current.scrollBy({ left: 320, behavior: 'smooth' });
-                }
-              }}
-              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300 shadow-lg hover:shadow-xl"
-              aria-label="Next categories"
-            >
-              <IconChevronRight />
-            </button>
-          </div>
-
-          
-        </div>
-      </section>
+      
 
       {/* <section className="py-5 bg-white">
         <div className="max-w-7xl mx-auto px-4">
@@ -668,8 +540,6 @@ const Home = () => {
           </div>
         </div>
       )}
-
-      <ScrollToTop />
     </div>
   );
 };
@@ -724,6 +594,6 @@ const ProductSection = ({ title, subtitle, products, viewAllLink, bgColor = 'bg-
   );
 };
 
+
+
 export default Home;
-
-

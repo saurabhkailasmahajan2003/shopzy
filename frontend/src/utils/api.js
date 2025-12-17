@@ -267,5 +267,44 @@ export const reviewAPI = {
   },
 };
 
+// Wishlist API calls
+export const wishlistAPI = {
+  getWishlist: async () => {
+    return apiRequest('/wishlist');
+  },
+
+  addToWishlist: async (productId) => {
+    return apiRequest('/wishlist/add', {
+      method: 'POST',
+      body: JSON.stringify({ productId }),
+    });
+  },
+
+  removeFromWishlist: async (productId) => {
+    return apiRequest(`/wishlist/remove/${productId}`, {
+      method: 'DELETE',
+    });
+  },
+
+  checkWishlist: async (productId) => {
+    return apiRequest(`/wishlist/check/${productId}`);
+  },
+};
+
+// Search API calls
+export const searchAPI = {
+  searchProducts: async (query, params = {}) => {
+    const queryString = new URLSearchParams({ q: query, ...params }).toString();
+    return apiRequest(`/search?${queryString}`);
+  },
+};
+
+// Order Tracking API calls
+export const trackingAPI = {
+  trackOrder: async (orderId) => {
+    return apiRequest(`/orders/track/${orderId}`);
+  },
+};
+
 export default apiRequest;
 

@@ -14,7 +14,7 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
-  
+
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -27,7 +27,7 @@ const ProductDetail = () => {
   const [loadingRecommendations, setLoadingRecommendations] = useState(false);
   const [loadingTrending, setLoadingTrending] = useState(false);
   const [loadingSale, setLoadingSale] = useState(false);
-  
+
   // Review states
   const [reviews, setReviews] = useState([]);
   const [reviewStats, setReviewStats] = useState(null);
@@ -87,7 +87,7 @@ const ProductDetail = () => {
               const data = await res.json();
               if (data.success) {
                 foundData = data;
-                break; 
+                break;
               }
             }
           } catch (e) {
@@ -110,7 +110,7 @@ const ProductDetail = () => {
       }
     } catch (error) {
       console.error('Error fetching product:', error);
-      setProduct(null); 
+      setProduct(null);
     } finally {
       setLoading(false);
     }
@@ -119,7 +119,7 @@ const ProductDetail = () => {
   // Fetch related products (same category/subcategory/brand) for "You may also like"
   const fetchRecommendedProducts = async (currentProduct) => {
     if (!currentProduct) return;
-    
+
     setLoadingRecommendations(true);
     try {
       const currentProductId = currentProduct._id || currentProduct.id;
@@ -139,15 +139,15 @@ const ProductDetail = () => {
 
       // Fetch products from the SAME category/subcategory for related recommendations
       if (apiCategory === 'men') {
-        const response = await productAPI.getMenItems({ 
-          limit: 30, 
-          subCategory: currentProduct.subCategory 
+        const response = await productAPI.getMenItems({
+          limit: 30,
+          subCategory: currentProduct.subCategory
         });
         if (response.success) relatedProducts = response.data.products || [];
       } else if (apiCategory === 'women') {
-        const response = await productAPI.getWomenItems({ 
-          limit: 30, 
-          subCategory: currentProduct.subCategory 
+        const response = await productAPI.getWomenItems({
+          limit: 30,
+          subCategory: currentProduct.subCategory
         });
         if (response.success) relatedProducts = response.data.products || [];
       } else if (apiCategory === 'watches') {
@@ -163,7 +163,7 @@ const ProductDetail = () => {
 
       // Filter out current product and prioritize by brand if available
       let filtered = relatedProducts.filter(p => (p._id || p.id) !== currentProductId);
-      
+
       // If product has a brand, prioritize same brand products
       if (currentProduct.brand) {
         const sameBrand = filtered.filter(p => p.brand === currentProduct.brand);
@@ -206,7 +206,7 @@ const ProductDetail = () => {
   // Fetch completely random products from ALL categories for "Trending Now"
   const fetchTrendingProducts = async (currentProduct) => {
     if (!currentProduct) return;
-    
+
     setLoadingTrending(true);
     try {
       const currentProductId = currentProduct._id || currentProduct.id;
@@ -225,25 +225,25 @@ const ProductDetail = () => {
             productsByCategory.men = res.data.products;
           }
         }).catch(err => console.warn('Error fetching men items:', err)),
-        
+
         productAPI.getWomenItems({ limit: 40 }).then(res => {
           if (res.success && res.data?.products) {
             productsByCategory.women = res.data.products;
           }
         }).catch(err => console.warn('Error fetching women items:', err)),
-        
+
         productAPI.getWatches({ limit: 30 }).then(res => {
           if (res.success && res.data?.products) {
             productsByCategory.watches = res.data.products;
           }
         }).catch(err => console.warn('Error fetching watches:', err)),
-        
+
         productAPI.getLenses({ limit: 30 }).then(res => {
           if (res.success && res.data?.products) {
             productsByCategory.lenses = res.data.products;
           }
         }).catch(err => console.warn('Error fetching lenses:', err)),
-        
+
         productAPI.getAccessories({ limit: 30 }).then(res => {
           if (res.success && res.data?.products) {
             productsByCategory.accessories = res.data.products;
@@ -298,12 +298,12 @@ const ProductDetail = () => {
   // Fetch reviews for the product
   const fetchReviews = async (currentProduct) => {
     if (!currentProduct) return;
-    
+
     setLoadingReviews(true);
     try {
       const productId = String(currentProduct._id || currentProduct.id);
       const response = await reviewAPI.getReviews(productId, reviewSort, 50);
-      
+
       if (response.success) {
         setReviews(response.data.reviews || []);
         setReviewStats(response.data.statistics || null);
@@ -335,7 +335,7 @@ const ProductDetail = () => {
   // Handle review form submission
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!isAuthenticated) {
       setShowLoginModal(true);
       return;
@@ -350,7 +350,7 @@ const ProductDetail = () => {
     try {
       const productId = String(product._id || product.id);
       const productCategory = product.category || category || 'general';
-      
+
       const response = await reviewAPI.createReview({
         productId,
         productCategory,
@@ -402,7 +402,7 @@ const ProductDetail = () => {
   // Fetch products on sale for "Sale" section
   const fetchSaleProducts = async (currentProduct) => {
     if (!currentProduct) return;
-    
+
     setLoadingSale(true);
     try {
       const currentProductId = currentProduct._id || currentProduct.id;
@@ -421,25 +421,25 @@ const ProductDetail = () => {
             productsByCategory.men = res.data.products;
           }
         }).catch(err => console.warn('Error fetching men items:', err)),
-        
+
         productAPI.getWomenItems({ limit: 50 }).then(res => {
           if (res.success && res.data?.products) {
             productsByCategory.women = res.data.products;
           }
         }).catch(err => console.warn('Error fetching women items:', err)),
-        
+
         productAPI.getWatches({ limit: 40 }).then(res => {
           if (res.success && res.data?.products) {
             productsByCategory.watches = res.data.products;
           }
         }).catch(err => console.warn('Error fetching watches:', err)),
-        
+
         productAPI.getLenses({ limit: 40 }).then(res => {
           if (res.success && res.data?.products) {
             productsByCategory.lenses = res.data.products;
           }
         }).catch(err => console.warn('Error fetching lenses:', err)),
-        
+
         productAPI.getAccessories({ limit: 40 }).then(res => {
           if (res.success && res.data?.products) {
             productsByCategory.accessories = res.data.products;
@@ -462,12 +462,12 @@ const ProductDetail = () => {
       const saleItems = allProducts.filter(p => {
         const productId = p._id || p.id;
         if (productId === currentProductId) return false;
-        
+
         const finalPrice = p.finalPrice || p.price;
         const originalPrice = p.originalPrice || p.mrp || p.price;
         const hasDiscount = originalPrice > finalPrice;
         const discountPercent = p.discountPercent || (hasDiscount ? Math.round(((originalPrice - finalPrice) / originalPrice) * 100) : 0);
-        
+
         return p.onSale === true || hasDiscount || discountPercent > 0;
       });
 
@@ -538,7 +538,7 @@ const ProductDetail = () => {
   const productImages = product.images || [product.image || product.thumbnail];
   const finalPrice = product.finalPrice || product.price;
   const originalPrice = product.originalPrice || product.mrp || product.price;
-  
+
   // Split product name for highlighting
   const nameWords = product.name.split(' ');
   const highlightWords = ['black', 'strap', 'steel', 'pro', 'sport'];
@@ -546,12 +546,12 @@ const ProductDetail = () => {
   return (
     <>
       <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
-      
+
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          
+
           {/* Back Button */}
-          <button 
+          <button
             onClick={() => navigate(-1)}
             className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-6 transition-colors"
           >
@@ -562,10 +562,10 @@ const ProductDetail = () => {
           </button>
 
           <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 xl:gap-16">
-            
+
             {/* LEFT COLUMN: Product Visualization */}
             <div className="relative lg:sticky lg:top-8 h-fit order-first lg:order-first">
-              
+
               {/* Main Product Image */}
               <div className="relative aspect-square bg-gray-100 rounded-xl sm:rounded-2xl overflow-hidden mb-4 sm:mb-6 shadow-lg max-w-md mx-auto lg:max-w-full">
                 {/* Best Seller Badge */}
@@ -576,7 +576,7 @@ const ProductDetail = () => {
                 {/* Navigation Arrows */}
                 {productImages.length > 1 && (
                   <div className="absolute bottom-3 right-3 z-10 flex gap-1.5">
-                    <button 
+                    <button
                       onClick={handlePrevImage}
                       className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all shadow-sm"
                       aria-label="Previous image"
@@ -597,13 +597,13 @@ const ProductDetail = () => {
                   </div>
                 )}
 
-                <img 
-                  src={productImages[selectedImageIndex]} 
-                  alt={product.name} 
+                <img
+                  src={productImages[selectedImageIndex]}
+                  alt={product.name}
                   className="w-full h-full object-cover"
                   onError={(e) => handleImageError(e, 800, 800)}
                 />
-                
+
                 {/* Interactive Labels */}
                 {product.color && (
                   <div className="absolute top-1/4 right-4 sm:right-8">
@@ -611,10 +611,10 @@ const ProductDetail = () => {
                       <div className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-gray-500 rounded-full z-10"></div>
                       <div className="bg-gray-800/90 backdrop-blur-sm text-white text-[10px] font-medium px-2 py-1 rounded-full whitespace-nowrap">
                         {product.color}
-                  </div>
-                  </div>
+                      </div>
                     </div>
-                  )}
+                  </div>
+                )}
                 {product.brand && (
                   <div className="absolute bottom-1/3 left-4 sm:left-8">
                     <div className="relative">
@@ -635,26 +635,25 @@ const ProductDetail = () => {
                     {product.sizes.map((size) => {
                       const isSelected = selectedSize === size;
                       return (
-                  <button
+                        <button
                           key={size}
                           onClick={() => setSelectedSize(size)}
-                          className={`px-3 py-2 rounded-lg border-2 transition-all flex items-center gap-1.5 ${
-                            isSelected
-                              ? 'border-gray-900 bg-gray-50'
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
+                          className={`px-3 py-2 rounded-lg border-2 transition-all flex items-center gap-1.5 ${isSelected
+                            ? 'border-gray-900 bg-gray-50'
+                            : 'border-gray-200 hover:border-gray-300'
+                            }`}
                         >
                           <span className="text-xs font-medium text-gray-900">{size}</span>
                           {isSelected && (
                             <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
+                            </svg>
                           )}
-                  </button>
+                        </button>
                       );
                     })}
-              </div>
-              </div>
+                  </div>
+                </div>
               )}
 
               {/* Color Swatches */}
@@ -665,12 +664,11 @@ const ProductDetail = () => {
                     {(product.colors || [product.color || '#000000']).slice(0, 6).map((color, idx) => {
                       const isSelected = selectedColor === color || (!selectedColor && idx === 0);
                       return (
-                    <button
+                        <button
                           key={idx}
                           onClick={() => setSelectedColor(color)}
-                          className={`relative w-10 h-10 rounded-full border-2 transition-all ${
-                            isSelected ? 'border-gray-900 scale-110 shadow-md' : 'border-gray-300 hover:border-gray-500'
-                          }`}
+                          className={`relative w-10 h-10 rounded-full border-2 transition-all ${isSelected ? 'border-gray-900 scale-110 shadow-md' : 'border-gray-300 hover:border-gray-500'
+                            }`}
                           style={{ backgroundColor: color }}
                           aria-label={`Select color ${color}`}
                         >
@@ -678,20 +676,20 @@ const ProductDetail = () => {
                             <div className="absolute inset-0 flex items-center justify-center">
                               <svg className="w-5 h-5 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                      </div>
+                              </svg>
+                            </div>
                           )}
-                    </button>
+                        </button>
                       );
                     })}
-                 </div>
-                 </div>
-                )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* RIGHT COLUMN: Product Information */}
             <div className="flex flex-col space-y-6 lg:space-y-8 order-last lg:order-last">
-              
+
               {/* Product Title & Brand */}
               <div className="space-y-3">
                 {product.brand && (
@@ -733,7 +731,7 @@ const ProductDetail = () => {
 
               {/* Action Buttons */}
               <div className="flex flex-row gap-3">
-                <button 
+                <button
                   onClick={handleAddToCart}
                   className="flex-1 flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white font-semibold px-6 py-3.5 rounded-lg transition-all shadow-lg hover:shadow-xl active:scale-[0.98] text-base"
                 >
@@ -785,11 +783,10 @@ const ProductDetail = () => {
                         {[1, 2, 3, 4, 5].map((star) => (
                           <svg
                             key={star}
-                            className={`w-4 h-4 ${
-                              star <= Math.round(reviewStats.averageRating)
-                                ? 'text-yellow-400 fill-current'
-                                : 'text-gray-300'
-                            }`}
+                            className={`w-4 h-4 ${star <= Math.round(reviewStats.averageRating)
+                              ? 'text-yellow-400 fill-current'
+                              : 'text-gray-300'
+                              }`}
                             fill="currentColor"
                             viewBox="0 0 20 20"
                           >
@@ -843,11 +840,10 @@ const ProductDetail = () => {
                                   {[1, 2, 3, 4, 5].map((star) => (
                                     <svg
                                       key={star}
-                                      className={`w-3 h-3 ${
-                                        star <= review.rating
-                                          ? 'text-yellow-400 fill-current'
-                                          : 'text-gray-300'
-                                      }`}
+                                      className={`w-3 h-3 ${star <= review.rating
+                                        ? 'text-yellow-400 fill-current'
+                                        : 'text-gray-300'
+                                        }`}
                                       fill="currentColor"
                                       viewBox="0 0 20 20"
                                     >
@@ -951,15 +947,15 @@ const ProductDetail = () => {
                         <div className="aspect-[4/5] bg-gray-200 rounded-lg mb-2"></div>
                         <div className="h-4 bg-gray-200 rounded mb-2"></div>
                         <div className="h-4 bg-gray-200 rounded w-2/3"></div>
-            </div>
+                      </div>
                     ))}
-          </div>
+                  </div>
                 ) : (
                   <div className="relative">
-                    <div 
-                      className="overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide" 
-                      style={{ 
-                        scrollbarWidth: 'none', 
+                    <div
+                      className="overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide"
+                      style={{
+                        scrollbarWidth: 'none',
                         msOverflowStyle: 'none'
                       }}
                     >
@@ -971,9 +967,9 @@ const ProductDetail = () => {
                         ))}
                       </div>
                     </div>
-                        </div>
-                      )}
-                    </div>
+                  </div>
+                )}
+              </div>
             )}
 
             {/* On Sale Section */}
@@ -992,10 +988,10 @@ const ProductDetail = () => {
                   </div>
                 ) : (
                   <div className="relative">
-                    <div 
-                      className="overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide" 
-                      style={{ 
-                        scrollbarWidth: 'none', 
+                    <div
+                      className="overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide"
+                      style={{
+                        scrollbarWidth: 'none',
                         msOverflowStyle: 'none'
                       }}
                     >
@@ -1009,8 +1005,8 @@ const ProductDetail = () => {
                     </div>
                   </div>
                 )}
-                  </div>
-                )}
+              </div>
+            )}
 
             {/* More from [Brand] Section */}
             {product?.brand && (recommendedProducts.length > 0 || loadingRecommendations) && (
@@ -1028,10 +1024,10 @@ const ProductDetail = () => {
                   </div>
                 ) : (
                   <div className="relative">
-                    <div 
-                      className="overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide" 
-                      style={{ 
-                        scrollbarWidth: 'none', 
+                    <div
+                      className="overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide"
+                      style={{
+                        scrollbarWidth: 'none',
                         msOverflowStyle: 'none'
                       }}
                     >
@@ -1053,8 +1049,8 @@ const ProductDetail = () => {
 
             {/* Trending Now - Random Mix from ALL Categories */}
             {(trendingProducts.length > 0 || loadingTrending) && (
-                  <div>
-                
+              <div>
+
                 {loadingTrending ? (
                   <div className="flex gap-4 overflow-x-auto pb-4">
                     {[...Array(4)].map((_, i) => (
@@ -1062,15 +1058,15 @@ const ProductDetail = () => {
                         <div className="aspect-[4/5] bg-gray-200 rounded-lg mb-2"></div>
                         <div className="h-4 bg-gray-200 rounded mb-2"></div>
                         <div className="h-4 bg-gray-200 rounded w-2/3"></div>
-                    </div>
+                      </div>
                     ))}
                   </div>
                 ) : (
                   <div className="relative">
-                    <div 
-                      className="overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide" 
-                      style={{ 
-                        scrollbarWidth: 'none', 
+                    <div
+                      className="overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide"
+                      style={{
+                        scrollbarWidth: 'none',
                         msOverflowStyle: 'none'
                       }}
                     >
@@ -1084,9 +1080,9 @@ const ProductDetail = () => {
                     </div>
                   </div>
                 )}
-                  </div>
-                )}
               </div>
+            )}
+          </div>
 
           {/* Reviews Section */}
           <div className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-gray-200 mb-12 sm:mb-20">
@@ -1097,20 +1093,20 @@ const ProductDetail = () => {
                   Customer Reviews {reviews.length > 0 && `(${reviews.length})`}
                 </h3>
                 {isAuthenticated && !showReviewForm && (
-                <button
+                  <button
                     onClick={() => setShowReviewForm(true)}
                     className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-all shadow-md hover:shadow-lg active:scale-95"
-                >
+                  >
                     Write a Review
-                </button>
+                  </button>
                 )}
                 {!isAuthenticated && (
-                <button
+                  <button
                     onClick={() => setShowLoginModal(true)}
                     className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-all shadow-md hover:shadow-lg active:scale-95"
-                >
+                  >
                     Login to Write a Review
-                </button>
+                  </button>
                 )}
               </div>
               {reviews.length > 0 && (
@@ -1125,8 +1121,8 @@ const ProductDetail = () => {
                   <option value="lowest">Lowest Rating</option>
                   <option value="helpful">Most Helpful</option>
                 </select>
-                  )}
-                </div>
+              )}
+            </div>
 
             {/* Review Form */}
             {showReviewForm && (
@@ -1140,24 +1136,23 @@ const ProductDetail = () => {
                     </label>
                     <div className="flex gap-1">
                       {[1, 2, 3, 4, 5].map((star) => (
-                  <button 
+                        <button
                           key={star}
                           type="button"
                           onClick={() => setReviewForm({ ...reviewForm, rating: star })}
-                          className={`w-8 h-8 ${
-                            star <= reviewForm.rating
-                              ? 'text-yellow-400'
-                              : 'text-gray-300'
-                          } hover:text-yellow-400 transition-colors`}
+                          className={`w-8 h-8 ${star <= reviewForm.rating
+                            ? 'text-yellow-400'
+                            : 'text-gray-300'
+                            } hover:text-yellow-400 transition-colors`}
                         >
                           <svg fill="currentColor" viewBox="0 0 20 20">
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                           </svg>
-                  </button>
+                        </button>
                       ))}
                     </div>
-                </div>
-                
+                  </div>
+
                   {/* Review Title */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1190,12 +1185,12 @@ const ProductDetail = () => {
                     />
                     <div className="text-xs text-gray-500 mt-1 text-right">
                       {reviewForm.comment.length}/2000
+                    </div>
                   </div>
-                </div>
 
                   {/* Form Actions */}
                   <div className="flex flex-col sm:flex-row gap-3">
-                    <button 
+                    <button
                       type="submit"
                       disabled={submittingReview}
                       className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-gray-900 text-white text-sm sm:text-base font-semibold rounded-lg hover:bg-gray-800 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
@@ -1214,7 +1209,7 @@ const ProductDetail = () => {
                     </button>
                   </div>
                 </form>
-                </div>
+              </div>
             )}
 
             {/* Reviews List */}
@@ -1249,11 +1244,10 @@ const ProductDetail = () => {
                             {[1, 2, 3, 4, 5].map((star) => (
                               <svg
                                 key={star}
-                                className={`w-4 h-4 sm:w-5 sm:h-5 ${
-                                  star <= review.rating
-                                    ? 'text-yellow-400 fill-current'
-                                    : 'text-gray-300'
-                                }`}
+                                className={`w-4 h-4 sm:w-5 sm:h-5 ${star <= review.rating
+                                  ? 'text-yellow-400 fill-current'
+                                  : 'text-gray-300'
+                                  }`}
                                 fill="currentColor"
                                 viewBox="0 0 20 20"
                               >
@@ -1270,12 +1264,12 @@ const ProductDetail = () => {
                           </span>
                         </div>
                       </div>
-              </div>
+                    </div>
 
                     <h4 className="font-semibold text-sm sm:text-base text-gray-900 mb-2 sm:mb-3">
                       {review.title}
                     </h4>
-                    
+
                     <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4 sm:mb-5 whitespace-pre-wrap">
                       {review.comment}
                     </p>
@@ -1290,9 +1284,9 @@ const ProductDetail = () => {
                       </svg>
                       <span className="font-medium">Helpful ({review.helpful || 0})</span>
                     </button>
-            </div>
+                  </div>
                 ))}
-          </div>
+              </div>
             ) : !loadingReviews ? (
               <div className="text-center py-8 sm:py-12">
                 <p className="text-sm sm:text-base text-gray-500 mb-4 sm:mb-6">No reviews yet. Be the first to review this product!</p>

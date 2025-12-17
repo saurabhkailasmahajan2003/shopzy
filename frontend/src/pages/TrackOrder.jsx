@@ -1,39 +1,43 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { trackingAPI } from '../utils/api';
+import { useToast } from '../components/ToastContainer';
 
 const TrackOrder = () => {
   const { isAuthenticated } = useAuth();
+  const { error: showError } = useToast();
   const [orderId, setOrderId] = useState('');
   const [trackingData, setTrackingData] = useState(null);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleTrack = (e) => {
+  const handleTrack = async (e) => {
     e.preventDefault();
     setError('');
+    setTrackingData(null);
     
     if (!orderId.trim()) {
       setError('Please enter an order ID');
       return;
     }
 
-    // Simulate tracking lookup
-    // In a real app, this would call an API
-    const mockTrackingData = {
-      orderId: orderId,
-      status: 'shipped',
-      estimatedDelivery: '2024-01-15',
-      trackingNumber: 'SH123456789',
-      timeline: [
-        { date: '2024-01-10', time: '10:30 AM', status: 'Order Placed', description: 'Your order has been confirmed' },
-        { date: '2024-01-10', time: '2:15 PM', status: 'Processing', description: 'Your order is being prepared' },
-        { date: '2024-01-11', time: '9:00 AM', status: 'Shipped', description: 'Your order has been shipped' },
-        { date: '2024-01-12', time: '11:30 AM', status: 'In Transit', description: 'Your order is on the way' },
-        { date: '2024-01-13', time: '3:45 PM', status: 'Out for Delivery', description: 'Your order is out for delivery' }
-      ]
-    };
-
-    setTrackingData(mockTrackingData);
+    setLoading(true);
+    try {
+      const response = await trackingAPI.trackOrder(orderId.trim());
+      if (response.success) {
+        setTrackingData(response.data);
+      } else {
+        setError(response.message || 'Order not found');
+        showError(response.message || 'Order not found');
+      }
+    } catch (err) {
+      const errorMessage = err.message || 'Failed to track order. Please try again.';
+      setError(errorMessage);
+      showError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getStatusColor = (status) => {
@@ -79,9 +83,10 @@ const TrackOrder = () => {
             </div>
             <button
               type="submit"
-              className="px-8 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors"
+              disabled={loading}
+              className="px-8 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Track Order
+              {loading ? 'Tracking...' : 'Track Order'}
             </button>
           </form>
           {error && (

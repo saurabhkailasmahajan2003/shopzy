@@ -1,6 +1,9 @@
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
+import { WishlistProvider } from './context/WishlistContext';
+import { ToastProvider } from './components/ToastContainer';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -23,11 +26,21 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import CookiePolicy from './pages/CookiePolicy';
 import OrderSuccess from './pages/OrderSuccess';
+import SearchResults from './pages/SearchResults';
+import RecentlyViewed from './pages/RecentlyViewed';
+import ProductComparison from './pages/ProductComparison';
 import CookieConsent from './components/CookieConsent';
+import ErrorBoundary from './components/ErrorBoundary';
+import BackToTop from './components/BackToTop';
 
 function AppContent() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [location.pathname, location.search]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -62,23 +75,33 @@ function AppContent() {
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/cookie-policy" element={<CookiePolicy />} />
           <Route path="/order-success" element={<OrderSuccess />} />
+          <Route path="/search" element={<SearchResults />} />
+          <Route path="/recently-viewed" element={<RecentlyViewed />} />
+          <Route path="/compare" element={<ProductComparison />} />
         </Routes>
       </main>
       {!isAdminRoute && <Footer />}
       {!isAdminRoute && <CookieConsent />}
+      {!isAdminRoute && <BackToTop />}
     </div>
   );
 }
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <Router>
-          <AppContent />
-        </Router>
-      </CartProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <CartProvider>
+          <WishlistProvider>
+            <ToastProvider>
+              <Router>
+                <AppContent />
+              </Router>
+            </ToastProvider>
+          </WishlistProvider>
+        </CartProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
