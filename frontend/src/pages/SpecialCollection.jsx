@@ -157,36 +157,23 @@ const SpecialCollection = ({ type }) => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
-          <p className="text-sm uppercase tracking-widest text-gray-500 mb-2">
-            {type === 'sale' ? 'Limited Time Offers' : 'Fresh Picks'}
-          </p>
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-4">
-            <span className={config.highlightClass}>{config.title}</span>
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">{config.description}</p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Simple Header */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="mb-6">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+              {config.title}
+            </h1>
+            <p className="text-gray-600 text-base">
+              {config.description}
+            </p>
+          </div>
         </div>
+      </div>
 
-        <div className="flex items-center justify-center gap-4 mb-8 flex-wrap text-sm text-gray-600">
-          <Link to="/men" className="hover:text-blue-600 transition">
-            Shop Men →
-          </Link>
-          <span className="text-gray-300">|</span>
-          <Link to="/women" className="hover:text-pink-600 transition">
-            Shop Women →
-          </Link>
-          <span className="text-gray-300">|</span>
-          <Link to="/watches" className="hover:text-amber-600 transition">
-            Watches →
-          </Link>
-          <span className="text-gray-300">|</span>
-          <Link to="/lenses" className="hover:text-purple-600 transition">
-            Lenses →
-          </Link>
-        </div>
-
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center justify-between mb-6">
           <p className="text-gray-600 text-sm">
             Showing <span className="font-semibold text-gray-900">{products.length}</span> of{' '}
@@ -194,7 +181,7 @@ const SpecialCollection = ({ type }) => {
           </p>
           <button
             onClick={() => setShowMobileFilters(true)}
-            className="lg:hidden flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="lg:hidden flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 shadow-sm"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h18M4 8h16M5 12h14M6 16h12M7 20h10" />
@@ -207,10 +194,10 @@ const SpecialCollection = ({ type }) => {
           <div
             className={`${
               showMobileFilters ? 'block' : 'hidden'
-            } lg:block w-full lg:w-1/4 flex-shrink-0 ${
+            } lg:block w-full lg:w-64 flex-shrink-0 ${
               showMobileFilters
-                ? 'fixed inset-0 z-50 bg-white p-4 overflow-y-auto lg:relative lg:z-auto lg:bg-transparent lg:p-0 lg:-ml-8'
-                : 'lg:-ml-8'
+                ? 'fixed inset-0 z-50 bg-white p-4 overflow-y-auto lg:relative lg:z-auto lg:bg-transparent lg:p-0'
+                : ''
             }`}
           >
             {showMobileFilters && (
@@ -262,7 +249,7 @@ const SpecialCollection = ({ type }) => {
                 </Link>
               </div>
             ) : (
-              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                 {products.map((product) => (
                   <ProductCard key={product._id || product.id} product={normalizeProduct(product)} />
                 ))}
