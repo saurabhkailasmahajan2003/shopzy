@@ -43,7 +43,7 @@ function AppContent() {
   }, [location.pathname, location.search]);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {!isAdminRoute && <Navbar />}
       <main className="flex-grow">
         <Routes>

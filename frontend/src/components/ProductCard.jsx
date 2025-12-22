@@ -185,7 +185,7 @@ const ProductCard = ({ product }) => {
                     
                     <button
                       onClick={handleAddClick}
-                      className="h-8 sm:h-10 px-3 sm:px-5 bg-black text-white rounded-md text-[10px] sm:text-xs font-bold uppercase tracking-wide transition-transform active:scale-95 flex items-center gap-1.5"
+                      className="h-8 sm:h-10 px-3 sm:px-5 bg-cta hover:bg-cta-dark text-white rounded-md text-[10px] sm:text-xs font-bold uppercase tracking-wide transition-transform active:scale-95 flex items-center gap-1.5"
                     >
                       <span className='hidden lg:block'>Add</span>
                       <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">

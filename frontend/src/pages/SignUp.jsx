@@ -205,7 +205,7 @@ const SignUp = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-lg text-white bg-zinc-900 hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-900 transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed shadow-md"
+              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-lg text-white bg-cta hover:bg-cta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cta transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed shadow-md"
             >
               {isLoading ? 'Creating account...' : 'Sign up'}
             </button>

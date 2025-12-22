@@ -828,7 +828,7 @@ const Checkout = () => {
                 <button
                   onClick={handlePayment}
                   disabled={loading || isProcessingOrder}
-                  className="w-full bg-gray-900 text-white py-2.5 rounded-md hover:bg-gray-800 transition-colors text-sm font-medium disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full bg-cta text-white py-2.5 rounded-md hover:bg-cta-dark transition-colors text-sm font-medium disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {loading || isProcessingOrder ? (
                     <>

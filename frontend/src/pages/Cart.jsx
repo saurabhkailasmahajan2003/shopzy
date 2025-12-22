@@ -59,7 +59,7 @@ const Cart = () => {
         </p>
         <Link
           to="/"
-          className="inline-flex items-center justify-center px-6 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-md hover:bg-gray-800 transition-colors shadow-sm"
+          className="inline-flex items-center justify-center px-6 py-2.5 bg-cta text-white text-sm font-medium rounded-md hover:bg-cta-dark transition-colors shadow-sm"
         >
           Continue Shopping
         </Link>
@@ -279,7 +279,7 @@ const Cart = () => {
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <button
                   onClick={() => navigate('/checkout')}
-                  className="w-full flex items-center justify-center px-6 py-3 bg-gray-900 text-white text-sm font-medium rounded-md hover:bg-gray-800 transition-colors shadow-sm"
+                  className="w-full flex items-center justify-center px-6 py-3 bg-cta text-white text-sm font-medium rounded-md hover:bg-cta-dark transition-colors shadow-sm"
                 >
                   Proceed to Checkout
                 </button>

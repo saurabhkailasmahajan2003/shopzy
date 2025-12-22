@@ -26,19 +26,43 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Connect to MongoDB (non-blocking - routes will still work)
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
-    socketTimeoutMS: 45000,
-  })
-  .then(() => {
-    console.log('✅ Connected to MongoDB Atlas');
-  })
-  .catch((error) => {
-    console.error('⚠️  MongoDB connection error (routes will still work):', error.message);
-    console.log('   Database operations will fail until connection is established');
-    // Don't exit - allow routes to register even without DB connection
+// PRODUCTION-SAFE: Server continues even if MongoDB is unavailable
+if (process.env.MONGODB_URI) {
+  mongoose
+    .connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000, // 10s timeout for Render
+      socketTimeoutMS: 45000,
+      maxPoolSize: 10,
+      retryWrites: true,
+      w: 'majority',
+    })
+    .then(() => {
+      console.log('✅ Connected to MongoDB Atlas');
+      console.log(`   Connection State: ${mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'}`);
+    })
+    .catch((error) => {
+      console.error('⚠️  MongoDB connection error (routes will still work):', error.message);
+      console.log('   Database operations will return empty results until connection is established');
+      console.log('   Server will continue running - APIs will return empty arrays instead of crashing');
+      // Don't exit - allow routes to register even without DB connection
+    });
+
+  // Handle MongoDB connection events
+  mongoose.connection.on('disconnected', () => {
+    console.warn('⚠️  MongoDB disconnected - APIs will return empty results');
   });
+
+  mongoose.connection.on('reconnected', () => {
+    console.log('✅ MongoDB reconnected');
+  });
+
+  mongoose.connection.on('error', (error) => {
+    console.error('❌ MongoDB connection error:', error.message);
+  });
+} else {
+  console.warn('⚠️  MONGODB_URI not set in environment variables');
+  console.log('   Server will run but database operations will fail');
+}
 
 // Routes
 app.use('/api/auth', authRoutes);

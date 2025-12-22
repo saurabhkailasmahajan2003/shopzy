@@ -161,7 +161,7 @@ const Navbar = () => {
       {/* =======================
           TOP ANNOUNCEMENT BAR
       ======================== */}
-      <div className="bg-black text-white text-[10px] md:text-xs font-bold tracking-widest text-center uppercase py-2">
+      <div className="bg-primary text-white text-[10px] md:text-xs font-bold tracking-widest text-center uppercase py-2">
         Free Shipping on Orders Over ₹1,000 - Returns within 30 Days
       </div>
 
@@ -172,8 +172,8 @@ const Navbar = () => {
         className={`sticky top-0 left-0 right-0 z-50 transition-all duration-300 border-b py-1 transform
         ${isNavHidden ? '-translate-y-full' : 'translate-y-0'}
         ${isScrolled 
-          ? 'bg-white border-gray-500 shadow-sm' 
-          : 'bg-white border-gray-400'}`}
+          ? 'bg-background border-primary/30 shadow-sm' 
+          : 'bg-background border-primary/20'}`}
       >
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 py-0.5">
           <div className="flex items-center justify-between h-10">
@@ -193,11 +193,11 @@ const Navbar = () => {
             <div className="hidden md:flex items-center space-x-8">
               <Link 
                 to="/"
-                className={`text-xs font-bold uppercase tracking-[0.15em] hover:text-black transition-all relative group
-                ${activeCategory === 'home' ? 'text-black' : 'text-gray-500'}`}
+                className={`text-xs font-bold uppercase tracking-[0.15em] hover:text-primary transition-all relative group
+                ${activeCategory === 'home' ? 'text-text' : 'text-text-muted'}`}
               >
                 Home
-                <span className={`absolute -bottom-2 left-1/2 w-0 h-0.5 bg-black transition-all duration-300 -translate-x-1/2 group-hover:w-full ${activeCategory === 'home' ? 'w-full' : ''}`}></span>
+                <span className={`absolute -bottom-2 left-1/2 w-0 h-0.5 bg-primary transition-all duration-300 -translate-x-1/2 group-hover:w-full ${activeCategory === 'home' ? 'w-full' : ''}`}></span>
               </Link>
 
               {NAV_LINKS.map((link) => (
@@ -205,20 +205,20 @@ const Navbar = () => {
                     <Link 
                       to={link.path}
                       className={`text-xs font-bold uppercase tracking-[0.15em] transition-colors relative
-                      ${activeCategory === link.id ? 'text-black' : 'text-gray-500 hover:text-black'}`}
+                      ${activeCategory === link.id ? 'text-text' : 'text-text-muted hover:text-primary'}`}
                     >
                       {link.label}
-                      <span className={`absolute -bottom-2 left-1/2 w-0 h-0.5 bg-black transition-all duration-300 -translate-x-1/2 group-hover:w-full ${activeCategory === link.id ? 'w-full' : ''}`}></span>
+                      <span className={`absolute -bottom-2 left-1/2 w-0 h-0.5 bg-primary transition-all duration-300 -translate-x-1/2 group-hover:w-full ${activeCategory === link.id ? 'w-full' : ''}`}></span>
                     </Link>
                     
                     {/* Refined Dropdown */}
                     {link.subItems && (
                       <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:-translate-y-1">
-                        <div className="bg-white rounded-none shadow-xl border border-gray-100 p-6 w-64 grid gap-1">
+                        <div className="bg-background rounded-none shadow-xl border border-primary/20 p-6 w-64 grid gap-1">
                           {/* Triangle Pointer */}
-                          <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-t border-l border-gray-100 transform rotate-45"></div>
+                          <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-background border-t border-l border-primary/20 transform rotate-45"></div>
                           
-                          <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 border-b pb-2">
+                          <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-2 border-b border-primary/20 pb-2">
                             {link.label} Collection
                           </h3>
                           
@@ -226,13 +226,13 @@ const Navbar = () => {
                             <Link 
                               key={idx} 
                               to={sub.path}
-                              className="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-black hover:pl-5 transition-all duration-200"
+                              className="block px-3 py-2 text-sm text-text hover:bg-primary/10 hover:text-primary hover:pl-5 transition-all duration-200"
                             >
                               {sub.name}
                             </Link>
                           ))}
-                          <div className="mt-2 pt-2 border-t border-gray-50">
-                            <Link to={link.path} className="block px-3 text-xs font-bold text-black underline decoration-gray-300 hover:decoration-black underline-offset-4">
+                          <div className="mt-2 pt-2 border-t border-primary/20">
+                            <Link to={link.path} className="block px-3 text-xs font-bold text-text underline decoration-primary/30 hover:decoration-primary underline-offset-4">
                               View All
                             </Link>
                           </div>
@@ -242,9 +242,9 @@ const Navbar = () => {
                  </div>
               ))}
               
-              <Link to="/sale" className="text-xs font-bold text-red-600 uppercase tracking-[0.15em] hover:text-red-700 relative group">
+              <Link to="/sale" className="text-xs font-bold text-cta uppercase tracking-[0.15em] hover:text-cta-dark relative group">
                 Sale
-                <span className="absolute -bottom-2 left-1/2 w-0 h-0.5 bg-red-600 transition-all duration-300 -translate-x-1/2 group-hover:w-full"></span>
+                <span className="absolute -bottom-2 left-1/2 w-0 h-0.5 bg-cta transition-all duration-300 -translate-x-1/2 group-hover:w-full"></span>
               </Link>
             </div>
 
@@ -256,10 +256,10 @@ const Navbar = () => {
                 <form 
                   onSubmit={handleSearch} 
                   className={`flex items-center transition-all duration-500 ease-out border rounded-full
-                  ${isDesktopSearchExpanded ? 'w-64 px-4 py-1.5 border-gray-300 bg-gray-50' : 'w-10 h-10 border-transparent bg-transparent justify-center cursor-pointer hover:bg-gray-100'}`}
+                  ${isDesktopSearchExpanded ? 'w-64 px-4 py-1.5 border-primary/30 bg-primary/5' : 'w-10 h-10 border-transparent bg-transparent justify-center cursor-pointer hover:bg-primary/10'}`}
                   onClick={() => !isDesktopSearchExpanded && setIsDesktopSearchExpanded(true)}
                 >
-                  <button type="submit" className="text-gray-800">
+                  <button type="submit" className="text-text">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                   </button>
                   <input 
@@ -270,7 +270,7 @@ const Navbar = () => {
                     className={`bg-transparent border-none outline-none text-sm ml-2 w-full transition-all duration-300 ${isDesktopSearchExpanded ? 'opacity-100 visible' : 'opacity-0 invisible w-0'}`}
                   />
                   {isDesktopSearchExpanded && (
-                    <button type="button" onClick={(e) => { e.stopPropagation(); setIsDesktopSearchExpanded(false); }} className="text-gray-400 hover:text-gray-600">
+                    <button type="button" onClick={(e) => { e.stopPropagation(); setIsDesktopSearchExpanded(false); }} className="text-text-muted hover:text-text">
                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                   )}
@@ -278,7 +278,7 @@ const Navbar = () => {
               </div>
               
               {/* Mobile Search Icon */}
-              <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="md:hidden p-2 text-gray-800">
+              <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="md:hidden p-2 text-text">
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
               </button>
 
@@ -286,21 +286,21 @@ const Navbar = () => {
               {/* Account */}
               <div className="hidden md:block">
                 {isAuthenticated ? (
-                  <Link to="/profile" className="p-2 text-gray-800 hover:bg-gray-100 rounded-full transition-colors block">
+                  <Link to="/profile" className="p-2 text-text hover:bg-primary/10 rounded-full transition-colors block">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                   </Link>
                 ) : (
-                  <Link to="/login" className="text-xs font-bold text-gray-900 uppercase tracking-wider border border-gray-300 px-4 py-2 rounded-full hover:bg-black hover:text-white transition-all">
+                  <Link to="/login" className="text-xs font-bold text-text uppercase tracking-wider border border-primary/30 px-4 py-2 rounded-full hover:bg-primary hover:text-white transition-all">
                     Login
                   </Link>
                 )}
               </div>
               
               {/* Cart */}
-              <Link to="/cart" className="p-2 text-gray-800 hover:bg-gray-100 rounded-full transition-colors relative">
+              <Link to="/cart" className="p-2 text-text hover:bg-primary/10 rounded-full transition-colors relative">
                  <svg className="w-6 h-6 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
                  {getCartItemsCount() > 0 && (
-                   <span className="absolute top-1 right-0.5 md:top-0 md:right-0 bg-black text-white text-[10px] w-4 h-4 md:w-5 md:h-5 flex items-center justify-center rounded-full font-bold">
+                   <span className="absolute top-1 right-0.5 md:top-0 md:right-0 bg-cta text-white text-[10px] w-4 h-4 md:w-5 md:h-5 flex items-center justify-center rounded-full font-bold">
                      {getCartItemsCount()}
                    </span>
                  )}
@@ -308,7 +308,7 @@ const Navbar = () => {
 
               {/* Mobile Menu Toggle (rightmost) */}
               <button 
-                className="md:hidden p-2 text-gray-800 hover:bg-gray-100 rounded-full transition-colors"
+                className="md:hidden p-2 text-text hover:bg-primary/10 rounded-full transition-colors"
                 onClick={() => setIsMobileMenuOpen(true)}
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h7" /></svg>
@@ -325,7 +325,7 @@ const Navbar = () => {
                  value={searchQuery}
                  onChange={(e) => setSearchQuery(e.target.value)}
                  placeholder="Search products..."
-                 className="w-full bg-gray-100/80 backdrop-blur-sm border-none rounded-full px-5 py-2.5 text-sm focus:ring-1 focus:ring-black outline-none placeholder-gray-500"
+                 className="w-full bg-primary/10 backdrop-blur-sm border-none rounded-full px-5 py-2.5 text-sm focus:ring-1 focus:ring-primary outline-none placeholder-text-muted"
                />
                <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-500">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
@@ -341,17 +341,17 @@ const Navbar = () => {
           (More modern than fixed bottom bar)
       ======================== */}
       <div className="md:hidden fixed bottom-6 left-4 right-4 z-40">
-        <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/20 p-2 flex justify-around items-center">
-           <Link to="/" className={`p-3 rounded-xl transition-all ${activeCategory === 'home' ? 'bg-black text-white shadow-lg' : 'text-gray-500'}`}>
+        <div className="bg-background/90 backdrop-blur-xl rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-primary/20 p-2 flex justify-around items-center">
+           <Link to="/" className={`p-3 rounded-xl transition-all ${activeCategory === 'home' ? 'bg-primary text-white shadow-lg' : 'text-text-muted'}`}>
               <svg className="w-5 h-5" fill={activeCategory === 'home' ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
            </Link>
            
-           <button onClick={() => setIsMobileMenuOpen(true)} className={`p-3 rounded-xl text-gray-500 ${isMobileMenuOpen ? 'bg-gray-100 text-black' : ''}`}>
+           <button onClick={() => setIsMobileMenuOpen(true)} className={`p-3 rounded-xl text-text-muted ${isMobileMenuOpen ? 'bg-primary/10 text-text' : ''}`}>
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" /></svg>
            </button>
 
 
-           <Link to={isAuthenticated ? "/profile" : "/login"} className="p-3 rounded-xl text-gray-500">
+           <Link to={isAuthenticated ? "/profile" : "/login"} className="p-3 rounded-xl text-text-muted">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
            </Link>
         </div>
@@ -363,13 +363,13 @@ const Navbar = () => {
       ======================== */}
       {/* Overlay */}
       <div 
-        className={`fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm transition-opacity duration-500 md:hidden ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
+        className={`fixed inset-0 z-[60] bg-text/60 backdrop-blur-sm transition-opacity duration-500 md:hidden ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
         onClick={() => setIsMobileMenuOpen(false)}
       ></div>
 
       {/* Drawer */}
       <div 
-        className={`fixed inset-y-0 left-0 z-[61] w-[80%] max-w-xs bg-white transform transition-transform duration-500 cubic-bezier(0.19, 1, 0.22, 1) flex flex-col md:hidden ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed inset-y-0 left-0 z-[61] w-[80%] max-w-xs bg-background transform transition-transform duration-500 cubic-bezier(0.19, 1, 0.22, 1) flex flex-col md:hidden ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
             <div className="flex flex-col h-full">
            {/* Header with brand logo (matches navbar) */}
@@ -380,9 +380,9 @@ const Navbar = () => {
                 alt="Shopzy logo"
                 className="h-10 w-auto"
               />
-              {isAuthenticated && <p className="text-xs text-gray-500 mt-1">Hello, {user?.name}</p>}
+              {isAuthenticated && <p className="text-xs text-text-muted mt-1">Hello, {user?.name}</p>}
             </div>
-            <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 -mr-2 text-gray-400 hover:text-black">
+            <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 -mr-2 text-text-muted hover:text-text">
                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           </div>
@@ -394,14 +394,14 @@ const Navbar = () => {
                 <Link
                   to="/profile"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold text-white bg-gray-900 rounded-lg shadow-sm hover:bg-gray-800 transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold text-white bg-primary rounded-lg shadow-sm hover:bg-primary-dark transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                   Profile
                 </Link>
                 <button
                   onClick={() => { logout(); setIsMobileMenuOpen(false); }}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold text-text border border-primary/30 rounded-lg hover:bg-primary/10 transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                   Logout
@@ -412,14 +412,14 @@ const Navbar = () => {
                 <Link
                   to="/login"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex-1 py-3 text-center text-sm font-bold text-gray-900 bg-white border border-gray-200 rounded-lg hover:border-gray-400 transition-colors"
+                  className="flex-1 py-3 text-center text-sm font-bold text-text bg-background border border-primary/30 rounded-lg hover:border-primary transition-colors"
                 >
                   Login
                 </Link>
                 <Link
                   to="/signup"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex-1 py-3 text-center text-sm font-bold text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors"
+                  className="flex-1 py-3 text-center text-sm font-bold text-white bg-primary rounded-lg hover:bg-primary-dark transition-colors"
                 >
                   Sign Up
                 </Link>
@@ -432,21 +432,21 @@ const Navbar = () => {
              
              {/* Main Links */}
              <div className="space-y-4">
-               <Link to="/" className="block text-2xl font-light tracking-tight text-gray-900" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
-               <Link to="/new-arrival" className="block text-2xl font-light tracking-tight text-gray-900" onClick={() => setIsMobileMenuOpen(false)}>New Arrivals</Link>
-               <Link to="/sale" className="block text-2xl font-bold tracking-tight text-red-600" onClick={() => setIsMobileMenuOpen(false)}>Sale</Link>
+               <Link to="/" className="block text-2xl font-light tracking-tight text-text" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+               <Link to="/new-arrival" className="block text-2xl font-light tracking-tight text-text" onClick={() => setIsMobileMenuOpen(false)}>New Arrivals</Link>
+               <Link to="/sale" className="block text-2xl font-bold tracking-tight text-cta" onClick={() => setIsMobileMenuOpen(false)}>Sale</Link>
              </div>
 
-             <div className="w-12 h-px bg-gray-200"></div>
+             <div className="w-12 h-px bg-primary/20"></div>
 
              {/* Categories */}
              <div className="space-y-1">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Shop Categories</p>
+                <p className="text-xs font-bold text-text-muted uppercase tracking-widest mb-4">Shop Categories</p>
                 {NAV_LINKS.map((link) => (
-                  <div key={link.id} className="border-b border-gray-100 last:border-0">
+                  <div key={link.id} className="border-b border-primary/20 last:border-0">
                     <button 
                       onClick={() => toggleMobileAccordion(link.id)}
-                      className="w-full flex items-center justify-between py-4 text-base font-medium text-gray-800"
+                      className="w-full flex items-center justify-between py-4 text-base font-medium text-text"
                     >
                       <span>{link.label}</span>
                       <svg className={`w-4 h-4 transition-transform duration-300 ${expandedMobileCategory === link.id ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" /></svg>
@@ -459,12 +459,12 @@ const Navbar = () => {
                               key={idx} 
                               to={sub.path} 
                               onClick={() => setIsMobileMenuOpen(false)}
-                              className="block text-sm text-gray-500 hover:text-black"
+                              className="block text-sm text-text-muted hover:text-primary"
                             >
                               {sub.name}
                             </Link>
                          ))}
-                         <Link to={link.path} onClick={() => setIsMobileMenuOpen(false)} className="block text-sm font-bold text-black pt-2">Shop All</Link>
+                         <Link to={link.path} onClick={() => setIsMobileMenuOpen(false)} className="block text-sm font-bold text-text pt-2">Shop All</Link>
                        </div>
                     </div>
                   </div>
@@ -473,15 +473,15 @@ const Navbar = () => {
            </div>
 
            {/* Footer Actions */}
-           <div className="p-6 border-t border-gray-100 bg-gray-50">
+           <div className="p-6 border-t border-primary/20 bg-primary/5">
              {isAuthenticated ? (
-               <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="w-full py-3 text-sm font-bold text-red-600 border border-red-200 bg-white rounded-lg">
+               <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="w-full py-3 text-sm font-bold text-cta border border-cta/30 bg-background rounded-lg hover:bg-cta/10 transition-colors">
                  Sign Out
                </button>
              ) : (
                <div className="grid grid-cols-2 gap-3">
-                 <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="py-3 text-center text-sm font-bold text-gray-900 bg-white border border-gray-200 rounded-lg">Login</Link>
-                 <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)} className="py-3 text-center text-sm font-bold text-white bg-black rounded-lg">Sign Up</Link>
+                 <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="py-3 text-center text-sm font-bold text-text bg-background border border-primary/30 rounded-lg hover:bg-primary/10 transition-colors">Login</Link>
+                 <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)} className="py-3 text-center text-sm font-bold text-white bg-primary rounded-lg hover:bg-primary-dark transition-colors">Sign Up</Link>
                </div>
              )}
            </div>
