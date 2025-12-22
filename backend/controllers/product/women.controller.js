@@ -1,195 +1,123 @@
-import mongoose from 'mongoose';
 import Women from '../../models/product/womenModel.js';
 import Saree from '../../models/product/saree.model.js';
 
-// Helper to check MongoDB connection
-const isMongoConnected = () => {
-  return mongoose.connection.readyState === 1;
-};
+// Helper function to normalize old women schema
+const normalizeOldWomen = (product) => ({
+  ...product,
+  _id: product._id,
+  id: product._id,
+  name: product.name || product.title,
+  title: product.name || product.title,
+  price: product.finalPrice || product.price,
+  mrp: product.originalPrice || product.price,
+  images: Array.isArray(product.images) ? product.images : (product.thumbnail ? [product.thumbnail] : []),
+  category: 'women',
+});
 
-// Helper to safely parse integers with defaults
-const safeParseInt = (value, defaultValue, min = 1, max = 1000) => {
-  const parsed = parseInt(value);
-  if (isNaN(parsed) || parsed < min) return defaultValue;
-  if (parsed > max) return max;
-  return parsed;
-};
-
-// Helper to safely validate sort field
-const safeSortField = (sort) => {
-  const allowed = ['createdAt', 'price', 'mrp', 'discountPercent', 'title', 'name'];
-  return allowed.includes(sort) ? sort : 'createdAt';
-};
-
-// Helper to safely validate sort order
-const safeSortOrder = (order) => {
-  return order === 'asc' ? 'asc' : 'desc';
-};
-
-// Helper function to normalize old women schema (PRODUCTION-SAFE)
-const normalizeOldWomen = (product) => {
-  try {
-    const normalized = product?.toObject ? product.toObject() : (product || {});
-    
-    // Safely extract images
-    let imagesArray = [];
-    if (normalized.images && Array.isArray(normalized.images)) {
-      imagesArray = normalized.images.filter(img => img && typeof img === 'string' && img.trim() !== '');
-    } else if (normalized.thumbnail && typeof normalized.thumbnail === 'string') {
-      imagesArray = [normalized.thumbnail];
-    }
-
-    // Safely calculate prices
-    const finalPrice = Number(normalized.finalPrice) || Number(normalized.price) || 0;
-    const originalPrice = Number(normalized.originalPrice) || Number(normalized.price) || 0;
-    const mrp = originalPrice;
-
-    return {
-      ...normalized,
-      _id: normalized._id || null,
-      id: normalized._id || normalized.id || null,
-      name: normalized.name || normalized.title || 'Untitled Product',
-      title: normalized.name || normalized.title || 'Untitled Product',
-      price: Math.max(0, finalPrice),
-      mrp: Math.max(0, mrp),
-      originalPrice: Math.max(0, originalPrice),
-      finalPrice: Math.max(0, finalPrice),
-      discountPercent: normalized.discountPercent || 0,
-      images: Array.isArray(imagesArray) && imagesArray.length > 0 ? imagesArray : [],
-      category: 'women',
-    };
-  } catch (error) {
-    console.error('Error normalizing old women product:', error);
-    return {
-      _id: product?._id || null,
-      id: product?._id || null,
-      name: 'Product',
-      title: 'Product',
-      price: 0,
-      mrp: 0,
-      originalPrice: 0,
-      finalPrice: 0,
-      discountPercent: 0,
-      images: [],
-      category: 'women',
-    };
-  }
-};
-
-// Helper function to normalize saree schema (PRODUCTION-SAFE)
+// Helper function to normalize saree schema
 const normalizeSaree = (product) => {
-  try {
-    const normalized = product?.toObject ? product.toObject() : (product || {});
-    
-    // Safely convert images object to array
-    let imagesArray = [];
-    if (normalized.images && typeof normalized.images === 'object' && !Array.isArray(normalized.images)) {
-      imagesArray = [
-        normalized.images.image1,
-        normalized.images.image2,
-        normalized.images.image3,
-        normalized.images.image4,
-      ].filter(img => img && typeof img === 'string' && img.trim() !== '');
-    } else if (Array.isArray(normalized.images)) {
-      imagesArray = normalized.images.filter(img => img && typeof img === 'string' && img.trim() !== '');
-    }
-
-    // Safely calculate prices
-    const mrp = Number(normalized.mrp) || 0;
-    const discountPercent = Number(normalized.discountPercent) || 0;
-    const finalPrice = Number(normalized.finalPrice) || (discountPercent > 0 ? Math.max(0, mrp - (mrp * discountPercent / 100)) : mrp);
-    const originalPrice = mrp;
-
-    // Safely extract brand
-    const brand = normalized.product_info?.brand || normalized.brand || '';
-
-    return {
-      ...normalized,
-      _id: normalized._id || null,
-      id: normalized._id || null,
-      name: normalized.title || normalized.name || 'Untitled Product',
-      title: normalized.title || normalized.name || 'Untitled Product',
-      price: Math.max(0, finalPrice),
-      mrp: Math.max(0, mrp),
-      originalPrice: Math.max(0, originalPrice),
-      finalPrice: Math.max(0, finalPrice),
-      discountPercent: Math.max(0, Math.min(100, discountPercent)),
-      images: Array.isArray(imagesArray) && imagesArray.length > 0 ? imagesArray : [],
-      brand: brand,
-      category: 'women',
-      subCategory: 'saree',
-      product_info: normalized.product_info || {},
-    };
-  } catch (error) {
-    console.error('Error normalizing saree product:', error);
-    return {
-      _id: product?._id || null,
-      id: product?._id || null,
-      name: 'Product',
-      price: 0,
-      mrp: 0,
-      originalPrice: 0,
-      finalPrice: 0,
-      discountPercent: 0,
-      images: [],
-      brand: '',
-      category: 'women',
-      subCategory: 'saree',
-      product_info: {},
-    };
+  const normalized = product.toObject ? product.toObject() : product;
+  
+  // Convert images object to array format (frontend expects array)
+  let imagesArray = [];
+  if (normalized.images && typeof normalized.images === 'object' && !Array.isArray(normalized.images)) {
+    imagesArray = [
+      normalized.images.image1,
+      normalized.images.image2,
+      normalized.images.image3,
+      normalized.images.image4,
+    ].filter(Boolean);
+  } else if (Array.isArray(normalized.images)) {
+    imagesArray = normalized.images.filter(img => img && typeof img === 'string' && img.trim() !== '');
   }
+
+  // Calculate prices
+  const mrp = normalized.mrp || 0;
+  const discountPercent = normalized.discountPercent || 0;
+  const finalPrice = normalized.finalPrice || (discountPercent > 0 ? mrp - (mrp * discountPercent / 100) : mrp);
+  const originalPrice = mrp;
+
+  // Extract brand from product_info
+  const brand = normalized.product_info?.brand || normalized.brand || '';
+
+  return {
+    ...normalized,
+    _id: normalized._id,
+    id: normalized._id,
+    name: normalized.title || normalized.name,
+    title: normalized.title || normalized.name,
+    price: finalPrice,
+    mrp: mrp,
+    originalPrice: originalPrice,
+    finalPrice: finalPrice,
+    discountPercent: discountPercent,
+    images: imagesArray,
+    brand: brand, // Extract brand to top level for filtering
+    category: 'women',
+    subCategory: 'saree',
+    product_info: normalized.product_info || {},
+  };
 };
 
-// Helper function to build query for old women schema (PRODUCTION-SAFE)
+// Helper function to build query for old women schema
 const buildOldWomenQuery = (reqQuery) => {
   const query = {};
 
-  if (reqQuery.subCategory && typeof reqQuery.subCategory === 'string') {
+  if (reqQuery.subCategory) {
     const normalizedSubCategory = reqQuery.subCategory.toLowerCase().trim().replace(/-/g, '');
     // Exclude saree from old schema
-    if (normalizedSubCategory === 'saree' || normalizedSubCategory === 'sari') {
-      query._id = { $in: [] }; // Safely return no results
+    if (normalizedSubCategory === 'saree') {
+      query._id = null; // Return no results
       return query;
     }
-    if (normalizedSubCategory.length > 0) {
-      query.subCategory = { 
-        $regex: new RegExp(`^${normalizedSubCategory.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') 
-      };
-    }
+    query.subCategory = { $regex: new RegExp(`^${normalizedSubCategory}$`, 'i') };
   }
 
   if (reqQuery.isNewArrival === 'true') query.isNewArrival = true;
   if (reqQuery.onSale === 'true') query.onSale = true;
   if (reqQuery.isFeatured === 'true') query.isFeatured = true;
 
-  if (reqQuery.search && typeof reqQuery.search === 'string' && reqQuery.search.trim().length > 0) {
-    query.$text = { $search: reqQuery.search.trim() };
+  if (reqQuery.search) {
+    query.$text = { $search: reqQuery.search };
   }
 
   return query;
 };
 
-// Helper function to build query for saree schema (PRODUCTION-SAFE)
+// Helper function to build query for saree schema
 const buildSareeQuery = (reqQuery) => {
   const query = {};
 
-  if (reqQuery.subCategory && typeof reqQuery.subCategory === 'string') {
+  // Since we're querying the Saree collection directly, all documents are sarees
+  // No need to filter by category since the collection itself contains only sarees
+  // But we can optionally match category if it contains "saree" or "sari"
+  // This handles cases like "Banarasi Sarees", "Silk Saree", etc.
+  
+  if (reqQuery.subCategory) {
     const normalizedSubCategory = reqQuery.subCategory.toLowerCase().trim().replace(/-/g, '');
     if (normalizedSubCategory !== 'saree' && normalizedSubCategory !== 'sari') {
-      query._id = { $in: [] }; // Safely return no results
+      // For non-saree subcategories, return empty
+      query._id = null; // This will return no results
       return query;
     }
+    // If subCategory is saree, query all sarees (no category filter needed)
+  }
+  // If no subCategory filter, return all sarees from the collection
+
+  if (reqQuery.categoryId) {
+    query.categoryId = reqQuery.categoryId;
   }
 
-  if (reqQuery.categoryId && typeof reqQuery.categoryId === 'string') {
-    query.categoryId = reqQuery.categoryId.trim();
+  if (reqQuery.isNewArrival === 'true') {
+    query.isNewArrival = true;
   }
 
-  if (reqQuery.isNewArrival === 'true') query.isNewArrival = true;
-  if (reqQuery.onSale === 'true') query.onSale = true;
+  if (reqQuery.onSale === 'true') {
+    query.onSale = true;
+  }
 
-  if (reqQuery.search && typeof reqQuery.search === 'string' && reqQuery.search.trim().length > 0) {
-    query.$text = { $search: reqQuery.search.trim() };
+  if (reqQuery.search) {
+    query.$text = { $search: reqQuery.search };
   }
 
   return query;
@@ -200,24 +128,6 @@ const buildSareeQuery = (reqQuery) => {
 // @access  Public
 export const getWomenItems = async (req, res) => {
   try {
-    // Check MongoDB connection first
-    if (!isMongoConnected()) {
-      console.warn('[Women Controller] MongoDB not connected, returning empty results');
-      return res.status(200).json({
-        success: true,
-        data: {
-          products: [],
-          pagination: {
-            page: 1,
-            limit: 20,
-            total: 0,
-            pages: 0,
-          },
-        },
-      });
-    }
-
-    // Safely extract and validate query parameters
     const {
       subCategory,
       category,
@@ -226,90 +136,74 @@ export const getWomenItems = async (req, res) => {
       onSale,
       isFeatured,
       search,
-      page,
-      limit,
-      sort,
-      order,
+      page = 1,
+      limit = 20,
+      sort = 'createdAt',
+      order = 'desc',
     } = req.query;
 
-    const pageNum = safeParseInt(page, 1, 1, 1000);
-    const limitNum = safeParseInt(limit, 20, 1, 100);
-    const sortField = safeSortField(sort);
-    const sortOrder = safeSortOrder(order);
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
 
     // Build queries for all schemas
     const oldQuery = buildOldWomenQuery({ subCategory, isNewArrival, onSale, isFeatured, search });
     const sareeQuery = buildSareeQuery({ subCategory, category, categoryId, isNewArrival, onSale, search });
 
-    // Safely fetch from both collections
-    let oldProducts = [];
-    let sareeProducts = [];
+    // Fetch from both collections in parallel
+    const [oldProducts, sareeProducts] = await Promise.all([
+      Women.find(oldQuery).lean(),
+      Saree.find(sareeQuery).lean()
+    ]);
 
-    try {
-      if (Women && typeof Women.find === 'function') {
-        oldProducts = await Women.find(oldQuery).lean().catch(err => {
-          console.error('[Women Controller] Error fetching old products:', err.message);
-          return [];
-        });
-      }
-    } catch (error) {
-      console.error('[Women Controller] Error with Women model:', error.message);
+    // Debug logging
+    console.log(`[Women Controller] Found ${oldProducts.length} old products, ${sareeProducts.length} saree products`);
+    if (sareeProducts.length > 0) {
+      console.log(`[Women Controller] Sample saree product:`, {
+        title: sareeProducts[0].title,
+        category: sareeProducts[0].category,
+        hasProductInfo: !!sareeProducts[0].product_info,
+        brand: sareeProducts[0].product_info?.brand
+      });
     }
 
-    try {
-      if (Saree && typeof Saree.find === 'function') {
-        sareeProducts = await Saree.find(sareeQuery).lean().catch(err => {
-          console.error('[Women Controller] Error fetching saree products:', err.message);
-          return [];
-        });
-      }
-    } catch (error) {
-      console.error('[Women Controller] Error with Saree model:', error.message);
-    }
-
-    // Safely normalize all schemas to common format
-    const normalizedOld = Array.isArray(oldProducts) ? oldProducts.map(normalizeOldWomen).filter(p => p) : [];
-    const normalizedSarees = Array.isArray(sareeProducts) ? sareeProducts.map(normalizeSaree).filter(p => p) : [];
+    // Normalize all schemas to common format
+    const normalizedOld = oldProducts.map(normalizeOldWomen);
+    const normalizedSarees = sareeProducts.map(normalizeSaree);
 
     // Combine and sort all products
     let allProducts = [...normalizedOld, ...normalizedSarees];
 
-    // Safely sort combined results
-    const sortOrderNum = sortOrder === 'asc' ? 1 : -1;
+    // Sort combined results
+    const sortOrder = order === 'asc' ? 1 : -1;
     allProducts.sort((a, b) => {
-      try {
-        let aVal, bVal;
+      let aVal, bVal;
 
-        switch (sortField) {
-          case 'price':
-          case 'mrp':
-            aVal = Number(a.mrp) || Number(a.price) || 0;
-            bVal = Number(b.mrp) || Number(b.price) || 0;
-            break;
-          case 'discountPercent':
-            aVal = Number(a.discountPercent) || 0;
-            bVal = Number(b.discountPercent) || 0;
-            break;
-          case 'title':
-          case 'name':
-            aVal = (a.title || a.name || '').toLowerCase();
-            bVal = (b.title || b.name || '').toLowerCase();
-            break;
-          case 'createdAt':
-          default:
-            aVal = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-            bVal = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-            break;
-        }
-
-        if (typeof aVal === 'string') {
-          return aVal.localeCompare(bVal) * sortOrderNum;
-        }
-        return (aVal - bVal) * sortOrderNum;
-      } catch (error) {
-        console.error('[Women Controller] Error sorting products:', error.message);
-        return 0;
+      switch (sort) {
+        case 'price':
+        case 'mrp':
+          aVal = a.mrp || a.price || 0;
+          bVal = b.mrp || b.price || 0;
+          break;
+        case 'discountPercent':
+          aVal = a.discountPercent || 0;
+          bVal = b.discountPercent || 0;
+          break;
+        case 'title':
+        case 'name':
+          aVal = (a.title || a.name || '').toLowerCase();
+          bVal = (b.title || b.name || '').toLowerCase();
+          break;
+        case 'createdAt':
+        default:
+          aVal = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          bVal = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          break;
       }
+
+      if (typeof aVal === 'string') {
+        return aVal.localeCompare(bVal) * sortOrder;
+      }
+      return (aVal - bVal) * sortOrder;
     });
 
     // Apply pagination after sorting
@@ -331,19 +225,11 @@ export const getWomenItems = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('[Women Controller] Get women items error:', error);
-    // Return empty results instead of 500 error
-    res.status(200).json({
-      success: true,
-      data: {
-        products: [],
-        pagination: {
-          page: 1,
-          limit: 20,
-          total: 0,
-          pages: 0,
-        },
-      },
+    console.error('Get women items error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching women products',
+      error: error?.message || "Unknown error",
     });
   }
 };
@@ -353,42 +239,11 @@ export const getWomenItems = async (req, res) => {
 // @access  Public
 export const getWomenItemById = async (req, res) => {
   try {
-    // Check MongoDB connection first
-    if (!isMongoConnected()) {
-      return res.status(404).json({
-        success: false,
-        message: 'Women product not found',
-      });
-    }
-
-    // Safely validate ID
-    const productId = req.params?.id;
-    if (!productId || typeof productId !== 'string' || productId.trim().length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid product ID',
-      });
-    }
-
-    // Safely try to find in all collections
-    let oldProduct = null;
-    let sareeProduct = null;
-
-    try {
-      if (Women && typeof Women.findById === 'function') {
-        oldProduct = await Women.findById(productId).lean().catch(() => null);
-      }
-    } catch (error) {
-      console.error('[Women Controller] Error finding old product:', error.message);
-    }
-
-    try {
-      if (Saree && typeof Saree.findById === 'function') {
-        sareeProduct = await Saree.findById(productId).lean().catch(() => null);
-      }
-    } catch (error) {
-      console.error('[Women Controller] Error finding saree product:', error.message);
-    }
+    // Try to find in all collections
+    const [oldProduct, sareeProduct] = await Promise.all([
+      Women.findById(req.params.id).lean(),
+      Saree.findById(req.params.id).lean()
+    ]);
 
     let product = null;
     if (oldProduct) {
@@ -410,10 +265,13 @@ export const getWomenItemById = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('[Women Controller] Get women item error:', error);
-    res.status(404).json({
+    console.error('Get women item error:', error);
+    res.status(500).json({
       success: false,
-      message: 'Women product not found',
+      message: 'Error fetching women product',
+      error: error?.message || "Unknown error",
     });
   }
 };
+
+

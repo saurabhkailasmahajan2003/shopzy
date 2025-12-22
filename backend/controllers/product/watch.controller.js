@@ -1,199 +1,175 @@
-import mongoose from 'mongoose';
 import Watch from '../../models/product/watch.model.js';
 import WatchNew from '../../models/product/watchNew.model.js';
 
-// Helper to check MongoDB connection
-const isMongoConnected = () => {
-  return mongoose.connection.readyState === 1;
-};
-
-// Helper to safely parse integers with defaults
-const safeParseInt = (value, defaultValue, min = 1, max = 1000) => {
-  const parsed = parseInt(value);
-  if (isNaN(parsed) || parsed < min) return defaultValue;
-  if (parsed > max) return max;
-  return parsed;
-};
-
-// Helper to safely validate sort field
-const safeSortField = (sort) => {
-  const allowed = ['createdAt', 'price', 'mrp', 'discountPercent', 'title', 'name'];
-  return allowed.includes(sort) ? sort : 'createdAt';
-};
-
-// Helper to safely validate sort order
-const safeSortOrder = (order) => {
-  return order === 'asc' ? 'asc' : 'desc';
-};
-
-// Helper function to normalize old schema to common format (PRODUCTION-SAFE)
+// Helper function to normalize old schema to common format
 const normalizeOldWatch = (watch) => {
-  try {
-    const normalized = watch?.toObject ? watch.toObject() : (watch || {});
-    
-    // Safely extract images array
-    let imagesArray = [];
-    if (normalized.images && Array.isArray(normalized.images)) {
-      imagesArray = normalized.images.filter(img => img && typeof img === 'string' && img.trim() !== '');
-    } else if (normalized.thumbnail && typeof normalized.thumbnail === 'string') {
-      imagesArray = [normalized.thumbnail];
-    } else if (normalized.image && typeof normalized.image === 'string') {
-      imagesArray = [normalized.image];
-    }
-
-    // Safely calculate prices
-    const mrp = Number(normalized.price) || Number(normalized.mrp) || Number(normalized.originalPrice) || 0;
-    const discountPercent = Number(normalized.discountPercent) || 0;
-    const finalPrice = Number(normalized.finalPrice) || (discountPercent > 0 ? Math.max(0, mrp - (mrp * discountPercent / 100)) : mrp);
-    const originalPrice = Number(normalized.originalPrice) || mrp;
-
-    return {
-      ...normalized,
-      _id: normalized._id || null,
-      id: normalized._id || null,
-      title: normalized.name || normalized.title || 'Untitled Product',
-      name: normalized.name || normalized.title || 'Untitled Product',
-      mrp: Math.max(0, mrp),
-      price: Math.max(0, mrp),
-      originalPrice: Math.max(0, originalPrice),
-      finalPrice: Math.max(0, finalPrice),
-      discountPercent: Math.max(0, Math.min(100, discountPercent)),
-      images: Array.isArray(imagesArray) && imagesArray.length > 0 ? imagesArray : [],
-      product_info: normalized.product_info || {
-        brand: normalized.brand || '',
-        manufacturer: normalized.productDetails?.manufacturer || '',
-        IncludedComponents: normalized.productDetails?.IncludedComponents || ''
-      },
-      category: normalized.category || 'WATCHES',
-      _schemaType: 'old'
-    };
-  } catch (error) {
-    console.error('Error normalizing old watch:', error);
-    return {
-      _id: watch?._id || null,
-      id: watch?._id || null,
-      name: 'Product',
-      title: 'Product',
-      price: 0,
-      mrp: 0,
-      originalPrice: 0,
-      finalPrice: 0,
-      discountPercent: 0,
-      images: [],
-      category: 'WATCHES',
-      _schemaType: 'old'
-    };
+  const normalized = watch.toObject ? watch.toObject() : watch;
+  
+  // Keep images as array (frontend expects array format)
+  let imagesArray = [];
+  if (normalized.images && Array.isArray(normalized.images)) {
+    imagesArray = normalized.images.filter(img => img); // Remove empty/null values
+  } else if (normalized.thumbnail) {
+    imagesArray = [normalized.thumbnail];
+  } else if (normalized.image) {
+    imagesArray = [normalized.image];
   }
+
+  // Calculate prices
+  const mrp = normalized.price || normalized.mrp || normalized.originalPrice || 0;
+  const discountPercent = normalized.discountPercent || 0;
+  const finalPrice = normalized.finalPrice || (discountPercent > 0 ? mrp - (mrp * discountPercent / 100) : mrp);
+  const originalPrice = normalized.originalPrice || mrp;
+
+  return {
+    ...normalized,
+    // Map old schema fields to common format
+    title: normalized.name || normalized.title,
+    name: normalized.name || normalized.title, // Keep name for frontend compatibility
+    mrp: mrp,
+    price: mrp, // Keep price for frontend (use mrp as base)
+    originalPrice: originalPrice,
+    finalPrice: finalPrice, // Ensure finalPrice is always set
+    discountPercent: discountPercent,
+    // Keep images as array for frontend compatibility
+    images: imagesArray.length > 0 ? imagesArray : [],
+    // Map product_info if not present
+    product_info: normalized.product_info || {
+      brand: normalized.brand || '',
+      manufacturer: normalized.productDetails?.manufacturer || '',
+      IncludedComponents: normalized.productDetails?.IncludedComponents || ''
+    },
+    // Ensure category is set
+    category: normalized.category || 'WATCHES',
+    // Keep original schema indicator
+    _schemaType: 'old'
+  };
 };
 
-// Helper function to normalize new schema to common format (PRODUCTION-SAFE)
+// Helper function to normalize new schema to common format
 const normalizeNewWatch = (watch) => {
-  try {
-    const normalized = watch?.toObject ? watch.toObject() : (watch || {});
-    
-    // Safely convert images object to array
-    let imagesArray = [];
-    if (normalized.images && typeof normalized.images === 'object' && !Array.isArray(normalized.images)) {
-      const imageKeys = Object.keys(normalized.images).sort((a, b) => {
-        const numA = parseInt(a.replace('image', '')) || 0;
-        const numB = parseInt(b.replace('image', '')) || 0;
-        return numA - numB;
-      });
-      imagesArray = imageKeys
-        .map(key => normalized.images[key])
-        .filter(img => img && typeof img === 'string' && img.trim() !== '');
-    } else if (Array.isArray(normalized.images)) {
-      imagesArray = normalized.images.filter(img => img && typeof img === 'string' && img.trim() !== '');
-    }
+  const normalized = watch.toObject ? watch.toObject() : watch;
+  
+  // Convert images object to array format (frontend expects array)
+  let imagesArray = [];
+  if (normalized.images && typeof normalized.images === 'object' && !Array.isArray(normalized.images)) {
+    // Convert object with image1, image2, etc. to array
+    const imageKeys = Object.keys(normalized.images).sort((a, b) => {
+      // Sort by image1, image2, image3, image4
+      const numA = parseInt(a.replace('image', '')) || 0;
+      const numB = parseInt(b.replace('image', '')) || 0;
+      return numA - numB;
+    });
+    imagesArray = imageKeys
+      .map(key => normalized.images[key])
+      .filter(img => img && typeof img === 'string' && img.trim() !== ''); // Remove empty values
+  } else if (Array.isArray(normalized.images)) {
+    // If it's already an array, use it
+    imagesArray = normalized.images.filter(img => img && typeof img === 'string' && img.trim() !== '');
+  }
 
-    if (imagesArray.length === 0) {
-      if (normalized.thumbnail && typeof normalized.thumbnail === 'string') {
-        imagesArray = [normalized.thumbnail];
-      } else if (normalized.image && typeof normalized.image === 'string') {
-        imagesArray = [normalized.image];
+  // Fallback to thumbnail or image if images array is empty
+  if (imagesArray.length === 0) {
+    if (normalized.thumbnail) {
+      imagesArray = [normalized.thumbnail];
+    } else if (normalized.image) {
+      imagesArray = [normalized.image];
+    } else if (normalized.images && typeof normalized.images === 'object') {
+      // Try to get any image from the object
+      const firstImage = Object.values(normalized.images).find(img => img && typeof img === 'string' && img.trim() !== '');
+      if (firstImage) {
+        imagesArray = [firstImage];
       }
     }
-
-    const firstImage = imagesArray.length > 0 ? imagesArray[0] : null;
-
-    // Safely calculate prices
-    const mrp = Number(normalized.mrp) || Number(normalized.price) || 0;
-    const discountPercent = Number(normalized.discountPercent) || 0;
-    const finalPrice = discountPercent > 0 ? Math.max(0, mrp - (mrp * discountPercent / 100)) : mrp;
-    const originalPrice = mrp;
-
-    return {
-      ...normalized,
-      _id: normalized._id || null,
-      id: normalized._id || null,
-      name: normalized.title || normalized.name || 'Untitled Product',
-      price: Math.max(0, mrp),
-      originalPrice: Math.max(0, originalPrice),
-      finalPrice: Math.max(0, finalPrice),
-      discountPercent: Math.max(0, Math.min(100, discountPercent)),
-      images: Array.isArray(imagesArray) && imagesArray.length > 0 ? imagesArray : [],
-      image: firstImage,
-      thumbnail: firstImage,
-      imagesObject: normalized.images,
-      _schemaType: 'new'
-    };
-  } catch (error) {
-    console.error('Error normalizing new watch:', error);
-    return {
-      _id: watch?._id || null,
-      id: watch?._id || null,
-      name: 'Product',
-      price: 0,
-      originalPrice: 0,
-      finalPrice: 0,
-      discountPercent: 0,
-      images: [],
-      _schemaType: 'new'
-    };
   }
+
+  // Also set image and thumbnail fields for frontend fallback compatibility
+  const firstImage = imagesArray.length > 0 ? imagesArray[0] : null;
+
+  // Calculate prices
+  const mrp = normalized.mrp || normalized.price || 0;
+  const discountPercent = normalized.discountPercent || 0;
+  const finalPrice = discountPercent > 0 ? mrp - (mrp * discountPercent / 100) : mrp;
+  const originalPrice = mrp; // For new schema, mrp is the original price
+
+  return {
+    ...normalized,
+    // Add name field for frontend compatibility (use title)
+    name: normalized.title || normalized.name,
+    // Add price field for frontend compatibility (use mrp)
+    price: mrp,
+    originalPrice: originalPrice,
+    finalPrice: finalPrice, // Ensure finalPrice is always calculated
+    discountPercent: discountPercent,
+    // Convert images object to array for frontend
+    images: imagesArray,
+    // Add image and thumbnail fields for frontend fallback
+    image: firstImage,
+    thumbnail: firstImage,
+    // Keep original images object for reference
+    imagesObject: normalized.images,
+    // New schema already has the right format, just add indicator
+    _schemaType: 'new'
+  };
 };
 
-// Helper function to build query for old schema (PRODUCTION-SAFE)
+// Helper function to build query for old schema
 const buildOldWatchQuery = (reqQuery) => {
   const query = {};
 
-  if (reqQuery.gender && typeof reqQuery.gender === 'string') {
-    query.gender = reqQuery.gender.toLowerCase().trim();
+  if (reqQuery.gender) {
+    query.gender = reqQuery.gender.toLowerCase();
   }
 
-  if (reqQuery.subCategory && typeof reqQuery.subCategory === 'string') {
-    query.subCategory = reqQuery.subCategory.trim();
+  if (reqQuery.subCategory) {
+    query.subCategory = reqQuery.subCategory;
   }
 
-  if (reqQuery.isNewArrival === 'true') query.isNewArrival = true;
-  if (reqQuery.onSale === 'true') query.onSale = true;
-  if (reqQuery.isFeatured === 'true') query.isFeatured = true;
+  if (reqQuery.isNewArrival === 'true') {
+    query.isNewArrival = true;
+  }
 
-  if (reqQuery.search && typeof reqQuery.search === 'string' && reqQuery.search.trim().length > 0) {
-    query.$text = { $search: reqQuery.search.trim() };
+  if (reqQuery.onSale === 'true') {
+    query.onSale = true;
+  }
+
+  if (reqQuery.isFeatured === 'true') {
+    query.isFeatured = true;
+  }
+
+  if (reqQuery.search) {
+    query.$text = { $search: reqQuery.search };
   }
 
   return query;
 };
 
-// Helper function to build query for new schema (PRODUCTION-SAFE)
+// Helper function to build query for new schema
 const buildNewWatchQuery = (reqQuery) => {
   const query = {};
 
-  if (reqQuery.category && typeof reqQuery.category === 'string') {
-    query.category = reqQuery.category.toUpperCase().trim();
+  if (reqQuery.category) {
+    query.category = reqQuery.category.toUpperCase();
   }
 
-  if (reqQuery.categoryId && typeof reqQuery.categoryId === 'string') {
-    query.categoryId = reqQuery.categoryId.trim();
+  if (reqQuery.categoryId) {
+    query.categoryId = reqQuery.categoryId;
   }
 
-  if (reqQuery.isNewArrival === 'true') query.isNewArrival = true;
-  if (reqQuery.onSale === 'true') query.onSale = true;
-  if (reqQuery.isFeatured === 'true') query.isFeatured = true;
+  if (reqQuery.isNewArrival === 'true') {
+    query.isNewArrival = true;
+  }
 
-  if (reqQuery.search && typeof reqQuery.search === 'string' && reqQuery.search.trim().length > 0) {
-    query.$text = { $search: reqQuery.search.trim() };
+  if (reqQuery.onSale === 'true') {
+    query.onSale = true;
+  }
+
+  if (reqQuery.isFeatured === 'true') {
+    query.isFeatured = true;
+  }
+
+  if (reqQuery.search) {
+    query.$text = { $search: reqQuery.search };
   }
 
   return query;
@@ -204,24 +180,6 @@ const buildNewWatchQuery = (reqQuery) => {
 // @access  Public
 export const getWatches = async (req, res) => {
   try {
-    // Check MongoDB connection first
-    if (!isMongoConnected()) {
-      console.warn('[Watch Controller] MongoDB not connected, returning empty results');
-      return res.status(200).json({
-        success: true,
-        data: {
-          products: [],
-          pagination: {
-            page: 1,
-            limit: 20,
-            total: 0,
-            pages: 0,
-          },
-        },
-      });
-    }
-
-    // Safely extract and validate query parameters
     const {
       gender,
       subCategory,
@@ -231,90 +189,63 @@ export const getWatches = async (req, res) => {
       onSale,
       isFeatured,
       search,
-      page,
-      limit,
-      sort,
-      order,
+      page = 1,
+      limit = 20,
+      sort = 'createdAt',
+      order = 'desc',
     } = req.query;
 
-    const pageNum = safeParseInt(page, 1, 1, 1000);
-    const limitNum = safeParseInt(limit, 20, 1, 100);
-    const sortField = safeSortField(sort);
-    const sortOrder = safeSortOrder(order);
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
 
     // Build queries for both schemas
     const oldQuery = buildOldWatchQuery({ gender, subCategory, isNewArrival, onSale, isFeatured, search });
     const newQuery = buildNewWatchQuery({ category, categoryId, isNewArrival, onSale, isFeatured, search });
 
-    // Safely fetch from both collections
-    let oldWatches = [];
-    let newWatches = [];
+    // Fetch from both collections in parallel
+    const [oldWatches, newWatches] = await Promise.all([
+      Watch.find(oldQuery).lean(),
+      WatchNew.find(newQuery).lean()
+    ]);
 
-    try {
-      if (Watch && typeof Watch.find === 'function') {
-        oldWatches = await Watch.find(oldQuery).lean().catch(err => {
-          console.error('[Watch Controller] Error fetching old watches:', err.message);
-          return [];
-        });
-      }
-    } catch (error) {
-      console.error('[Watch Controller] Error with Watch model:', error.message);
-    }
-
-    try {
-      if (WatchNew && typeof WatchNew.find === 'function') {
-        newWatches = await WatchNew.find(newQuery).lean().catch(err => {
-          console.error('[Watch Controller] Error fetching new watches:', err.message);
-          return [];
-        });
-      }
-    } catch (error) {
-      console.error('[Watch Controller] Error with WatchNew model:', error.message);
-    }
-
-    // Safely normalize both schemas to common format
-    const normalizedOld = Array.isArray(oldWatches) ? oldWatches.map(normalizeOldWatch).filter(p => p) : [];
-    const normalizedNew = Array.isArray(newWatches) ? newWatches.map(normalizeNewWatch).filter(p => p) : [];
+    // Normalize both schemas to common format
+    const normalizedOld = oldWatches.map(normalizeOldWatch);
+    const normalizedNew = newWatches.map(normalizeNewWatch);
 
     // Combine and sort all watches
     let allWatches = [...normalizedOld, ...normalizedNew];
 
-    // Safely sort combined results
-    const sortOrderNum = sortOrder === 'asc' ? 1 : -1;
+    // Sort combined results
+    const sortOrder = order === 'asc' ? 1 : -1;
     allWatches.sort((a, b) => {
-      try {
-        let aVal, bVal;
+      let aVal, bVal;
 
-        switch (sortField) {
-          case 'price':
-          case 'mrp':
-            aVal = Number(a.mrp) || Number(a.price) || 0;
-            bVal = Number(b.mrp) || Number(b.price) || 0;
-            break;
-          case 'discountPercent':
-            aVal = Number(a.discountPercent) || 0;
-            bVal = Number(b.discountPercent) || 0;
-            break;
-          case 'title':
-          case 'name':
-            aVal = (a.title || a.name || '').toLowerCase();
-            bVal = (b.title || b.name || '').toLowerCase();
-            break;
-          case 'createdAt':
-          default:
-            aVal = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-            bVal = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-            break;
-        }
-
-        if (typeof aVal === 'string') {
-          return aVal.localeCompare(bVal) * sortOrderNum;
-        }
-        return (aVal - bVal) * sortOrderNum;
-      } catch (error) {
-        console.error('[Watch Controller] Error sorting watches:', error.message);
-        return 0;
+      switch (sort) {
+        case 'price':
+        case 'mrp':
+          aVal = a.mrp || a.price || 0;
+          bVal = b.mrp || b.price || 0;
+          break;
+        case 'discountPercent':
+          aVal = a.discountPercent || 0;
+          bVal = b.discountPercent || 0;
+          break;
+        case 'title':
+        case 'name':
+          aVal = (a.title || a.name || '').toLowerCase();
+          bVal = (b.title || b.name || '').toLowerCase();
+          break;
+        case 'createdAt':
+        default:
+          aVal = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          bVal = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          break;
       }
+
+      if (typeof aVal === 'string') {
+        return aVal.localeCompare(bVal) * sortOrder;
+      }
+      return (aVal - bVal) * sortOrder;
     });
 
     // Apply pagination after sorting
@@ -335,19 +266,11 @@ export const getWatches = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('[Watch Controller] Get watches error:', error);
-    // Return empty results instead of 500 error
-    res.status(200).json({
-      success: true,
-      data: {
-        products: [],
-        pagination: {
-          page: 1,
-          limit: 20,
-          total: 0,
-          pages: 0,
-        },
-      },
+    console.error('Get watches error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching watches',
+      error: error.message,
     });
   }
 };
@@ -357,42 +280,11 @@ export const getWatches = async (req, res) => {
 // @access  Public
 export const getWatchById = async (req, res) => {
   try {
-    // Check MongoDB connection first
-    if (!isMongoConnected()) {
-      return res.status(404).json({
-        success: false,
-        message: 'Watch not found',
-      });
-    }
-
-    // Safely validate ID
-    const watchId = req.params?.id;
-    if (!watchId || typeof watchId !== 'string' || watchId.trim().length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid watch ID',
-      });
-    }
-
-    // Safely try to find in both collections
-    let oldWatch = null;
-    let newWatch = null;
-
-    try {
-      if (Watch && typeof Watch.findById === 'function') {
-        oldWatch = await Watch.findById(watchId).lean().catch(() => null);
-      }
-    } catch (error) {
-      console.error('[Watch Controller] Error finding old watch:', error.message);
-    }
-
-    try {
-      if (WatchNew && typeof WatchNew.findById === 'function') {
-        newWatch = await WatchNew.findById(watchId).lean().catch(() => null);
-      }
-    } catch (error) {
-      console.error('[Watch Controller] Error finding new watch:', error.message);
-    }
+    // Try to find in both collections
+    const [oldWatch, newWatch] = await Promise.all([
+      Watch.findById(req.params.id).lean(),
+      WatchNew.findById(req.params.id).lean()
+    ]);
 
     let watch = null;
     if (oldWatch) {
@@ -413,10 +305,11 @@ export const getWatchById = async (req, res) => {
       data: { product: watch },
     });
   } catch (error) {
-    console.error('[Watch Controller] Get watch error:', error);
-    res.status(404).json({
+    console.error('Get watch error:', error);
+    res.status(500).json({
       success: false,
-      message: 'Watch not found',
+      message: 'Error fetching watch',
+      error: error.message,
     });
   }
 };
@@ -426,20 +319,6 @@ export const getWatchById = async (req, res) => {
 // @access  Private/Admin
 export const createWatch = async (req, res) => {
   try {
-    if (!isMongoConnected()) {
-      return res.status(503).json({
-        success: false,
-        message: 'Database connection unavailable',
-      });
-    }
-
-    if (!Watch || typeof Watch.create !== 'function') {
-      return res.status(500).json({
-        success: false,
-        message: 'Watch model not available',
-      });
-    }
-
     const watch = await Watch.create(req.body);
 
     res.status(201).json({
@@ -448,7 +327,7 @@ export const createWatch = async (req, res) => {
       data: { product: watch },
     });
   } catch (error) {
-    console.error('[Watch Controller] Create watch error:', error);
+    console.error('Create watch error:', error);
     res.status(500).json({
       success: false,
       message: 'Error creating watch',
@@ -462,36 +341,14 @@ export const createWatch = async (req, res) => {
 // @access  Private/Admin
 export const updateWatch = async (req, res) => {
   try {
-    if (!isMongoConnected()) {
-      return res.status(503).json({
-        success: false,
-        message: 'Database connection unavailable',
-      });
-    }
-
-    const watchId = req.params?.id;
-    if (!watchId || typeof watchId !== 'string') {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid watch ID',
-      });
-    }
-
-    if (!Watch || typeof Watch.findByIdAndUpdate !== 'function') {
-      return res.status(500).json({
-        success: false,
-        message: 'Watch model not available',
-      });
-    }
-
     const watch = await Watch.findByIdAndUpdate(
-      watchId,
+      req.params.id,
       req.body,
       {
         new: true,
         runValidators: true,
       }
-    ).catch(() => null);
+    );
 
     if (!watch) {
       return res.status(404).json({
@@ -506,7 +363,7 @@ export const updateWatch = async (req, res) => {
       data: { product: watch },
     });
   } catch (error) {
-    console.error('[Watch Controller] Update watch error:', error);
+    console.error('Update watch error:', error);
     res.status(500).json({
       success: false,
       message: 'Error updating watch',
@@ -520,29 +377,7 @@ export const updateWatch = async (req, res) => {
 // @access  Private/Admin
 export const deleteWatch = async (req, res) => {
   try {
-    if (!isMongoConnected()) {
-      return res.status(503).json({
-        success: false,
-        message: 'Database connection unavailable',
-      });
-    }
-
-    const watchId = req.params?.id;
-    if (!watchId || typeof watchId !== 'string') {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid watch ID',
-      });
-    }
-
-    if (!Watch || typeof Watch.findByIdAndDelete !== 'function') {
-      return res.status(500).json({
-        success: false,
-        message: 'Watch model not available',
-      });
-    }
-
-    const watch = await Watch.findByIdAndDelete(watchId).catch(() => null);
+    const watch = await Watch.findByIdAndDelete(req.params.id);
 
     if (!watch) {
       return res.status(404).json({
@@ -556,7 +391,7 @@ export const deleteWatch = async (req, res) => {
       message: 'Watch deleted successfully',
     });
   } catch (error) {
-    console.error('[Watch Controller] Delete watch error:', error);
+    console.error('Delete watch error:', error);
     res.status(500).json({
       success: false,
       message: 'Error deleting watch',
@@ -564,3 +399,4 @@ export const deleteWatch = async (req, res) => {
     });
   }
 };
+
