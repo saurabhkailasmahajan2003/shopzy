@@ -63,7 +63,7 @@ const Invoice = ({ order, user, onPrint, onDownload }) => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold mb-2">INVOICE</h1>
-            <p className="text-gray-300 text-sm">StyleTrending - Fashion & Lifestyle</p>
+            <p className="text-gray-300 text-sm">Shopzy - Fashion & Lifestyle</p>
           </div>
           <div className="text-right">
             <p className="text-sm text-gray-300 mb-1">Invoice #</p>
@@ -81,9 +81,9 @@ const Invoice = ({ order, user, onPrint, onDownload }) => {
           <div>
             <h3 className="text-sm font-semibold text-gray-500 uppercase mb-3">From</h3>
             <div className="space-y-1 text-sm">
-              <p className="font-bold text-gray-900">StyleTrending</p>
+              <p className="font-bold text-gray-900">Shopzy</p>
               <p className="text-gray-600">Fashion & Lifestyle Store</p>
-              <p className="text-gray-600">Email: support@styletrending.com</p>
+              <p className="text-gray-600">Email: support@shopzy.com</p>
               <p className="text-gray-600">Phone: +91 1800-XXX-XXXX</p>
             </div>
           </div>
@@ -230,7 +230,7 @@ const Invoice = ({ order, user, onPrint, onDownload }) => {
         <div className="mt-8 pt-6 border-t border-gray-200">
           <div className="text-center text-xs text-gray-500 space-y-1">
             <p>Thank you for your business!</p>
-            <p>For any queries, contact us at support@styletrending.com</p>
+            <p>For any queries, contact us at support@shopzy.com</p>
             <p className="mt-4">This is a computer-generated invoice and does not require a signature.</p>
           </div>
         </div>

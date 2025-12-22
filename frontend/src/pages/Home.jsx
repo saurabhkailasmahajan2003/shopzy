@@ -301,7 +301,7 @@ const Home = () => {
       {/* --- STORIES SECTION (Attractive Gradient Rings) --- */}
       <div className="py-8 bg-white border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <h3 className="text-xl font-bold uppercase tracking-widest text-gray-500 mb-5">Stories By StyleTrending</h3>
+          <h3 className="text-xl font-bold uppercase tracking-widest text-gray-500 mb-5">Stories By Shopzy</h3>
           <div className="flex justify-start md:justify-center gap-6 overflow-x-auto scrollbar-hide pb-2 px-2">
             {stories.map((item, index) => (
               <div

@@ -7,7 +7,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About Section */}
           <div>
-            <h3 className="text-white text-lg font-semibold mb-4">About StyleTrending</h3>
+            <h3 className="text-white text-lg font-semibold mb-4">About Shopzy</h3>
             <p className="text-sm mb-4">
               Your one-stop destination for fashion, watches, and accessories. Shop the latest trends with the best prices.
             </p>
@@ -85,7 +85,7 @@ const Footer = () => {
                 <svg className="w-5 h-5 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
-                <span>support@styletrending.com</span>
+                <span>support@shopzy.com</span>
               </li>
               <li className="flex items-start">
                 <svg className="w-5 h-5 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,7 +108,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-gray-400 mb-4 md:mb-0">
-              © 2024 StyleTrending. All rights reserved.
+              © 2024 Shopzy. All rights reserved.
             </p>
             <div className="flex space-x-6 text-sm">
               <Link to="/privacy-policy" className="text-gray-400 hover:text-white transition">Privacy Policy</Link>

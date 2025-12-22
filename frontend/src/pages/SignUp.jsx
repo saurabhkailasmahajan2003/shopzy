@@ -105,14 +105,14 @@ const SignUp = () => {
             </div>
             <div>
               <span className="text-xl font-bold text-white tracking-tight leading-none block">
-                StyleTrending
+                Shopzy
               </span>
             </div>
           </div>
         </div>
         <div className="relative z-10 text-sm text-gray-200 drop-shadow-sm">
           <div className="relative z-10 text-sm text-gray-200 drop-shadow-sm -ml-3">
-             <span className='text-white'>© 2024 StyleTrending.</span> All rights reserved.
+             <span className='text-white'>© 2024 Shopzy.</span> All rights reserved.
           </div>
         </div>
       </div>

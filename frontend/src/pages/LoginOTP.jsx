@@ -107,7 +107,7 @@ const LoginOTP = () => {
             </div>
             <div>
               <span className="text-xl font-bold text-white tracking-tight leading-none block">
-                StyleTrending
+                Shopzy
               </span>
             </div>
           </div>
@@ -116,7 +116,7 @@ const LoginOTP = () => {
           </h1>
         </div>
         <div className="relative z-10 text-sm text-gray-300 drop-shadow-sm">
-          © 2024 StyleTrending. All rights reserved.
+          © 2024 Shopzy. All rights reserved.
         </div>
       </div>
 

@@ -183,7 +183,7 @@ const Navbar = () => {
               <Link to="/" className="flex-shrink-0 group relative z-10">
                  <img
                    src="https://res.cloudinary.com/de1bg8ivx/image/upload/v1765969744/ef93f9f5-0469-413a-a0d3-24df2b70f27b.png"
-                   alt="StyleTrending logo"
+                   alt="Shopzy logo"
                    className="h-8 w-auto"
                  />
               </Link>
@@ -377,7 +377,7 @@ const Navbar = () => {
             <div className="flex items-center gap-3">
               <img
                 src="https://res.cloudinary.com/de1bg8ivx/image/upload/v1765969744/ef93f9f5-0469-413a-a0d3-24df2b70f27b.png"
-                alt="StyleTrending logo"
+                alt="Shopzy logo"
                 className="h-10 w-auto"
               />
               {isAuthenticated && <p className="text-xs text-gray-500 mt-1">Hello, {user?.name}</p>}
