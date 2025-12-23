@@ -163,15 +163,6 @@ export const productAPI = {
     return apiRequest(`/products/accessories/${id}`);
   },
 
-  getMenItems: async (params = {}) => {
-    const queryString = new URLSearchParams(params).toString();
-    return apiRequest(`/products/men${queryString ? `?${queryString}` : ''}`);
-  },
-
-  getMenItemById: async (id) => {
-    return apiRequest(`/products/men/${id}`);
-  },
-
   getWomenItems: async (params = {}) => {
     const queryString = new URLSearchParams(params).toString();
     return apiRequest(`/products/women${queryString ? `?${queryString}` : ''}`);
@@ -181,23 +172,32 @@ export const productAPI = {
     return apiRequest(`/products/women/${id}`);
   },
 
+  getSkincareProducts: async (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    return apiRequest(`/products/skincare${queryString ? `?${queryString}` : ''}`);
+  },
+
+  getSkincareProductById: async (id) => {
+    return apiRequest(`/products/skincare/${id}`);
+  },
+
   // Helper to get all products from all categories
   getAllProducts: async (params = {}) => {
     try {
-      const [watches, lenses, accessories, men, women] = await Promise.all([
+      const [watches, lenses, accessories, women, skincare] = await Promise.all([
         productAPI.getWatches(params),
         productAPI.getLenses(params),
         productAPI.getAccessories(params),
-        productAPI.getMenItems(params),
         productAPI.getWomenItems(params),
+        productAPI.getSkincareProducts(params),
       ]);
 
       const allProducts = [
         ...(watches.success ? watches.data.products : []),
         ...(lenses.success ? lenses.data.products : []),
         ...(accessories.success ? accessories.data.products : []),
-        ...(men.success ? men.data.products : []),
         ...(women.success ? women.data.products : []),
+        ...(skincare.success ? skincare.data.products : []),
       ];
 
       return {

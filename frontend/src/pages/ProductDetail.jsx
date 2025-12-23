@@ -68,14 +68,13 @@ const ProductDetail = () => {
   const fetchProduct = async () => {
     setLoading(true);
     try {
-      const validCategories = ['men', 'women', 'watches', 'lens', 'accessories'];
+      const validCategories = ['women', 'watches', 'lens', 'accessories', 'skincare'];
       const categoryMap = {
         'watches': 'watches', 'watch': 'watches',
         'lens': 'lens', 'lenses': 'lens',
         'accessories': 'accessories',
-        'men': 'men', 'mens': 'men',
         'women': 'women', 'womens': 'women',
-        'fashion': 'men',
+        'skincare': 'skincare', 'skin-care': 'skincare',
       };
 
       let foundData = null;
@@ -142,8 +141,8 @@ const ProductDetail = () => {
         'lens': 'lens',
         'lenses': 'lens',
         'accessories': 'accessories',
-        'men': 'men',
         'women': 'women',
+        'skincare': 'skincare',
       };
 
       const productCategory = currentProduct.category?.toLowerCase() || category?.toLowerCase();
@@ -152,13 +151,7 @@ const ProductDetail = () => {
       let relatedProducts = [];
 
       // Fetch products from the SAME category/subcategory for related recommendations
-      if (apiCategory === 'men') {
-        const response = await productAPI.getMenItems({
-          limit: 30,
-          subCategory: currentProduct.subCategory
-        });
-        if (response.success) relatedProducts = response.data.products || [];
-      } else if (apiCategory === 'women') {
+      if (apiCategory === 'women') {
         const response = await productAPI.getWomenItems({
           limit: 30,
           subCategory: currentProduct.subCategory
@@ -172,6 +165,12 @@ const ProductDetail = () => {
         if (response.success) relatedProducts = response.data.products || [];
       } else if (apiCategory === 'accessories') {
         const response = await productAPI.getAccessories({ limit: 30 });
+        if (response.success) relatedProducts = response.data.products || [];
+      } else if (apiCategory === 'skincare') {
+        const response = await productAPI.getSkincareProducts({
+          limit: 30,
+          subCategory: currentProduct.subCategory || currentProduct.category
+        });
         if (response.success) relatedProducts = response.data.products || [];
       }
 
@@ -225,21 +224,15 @@ const ProductDetail = () => {
     try {
       const currentProductId = currentProduct._id || currentProduct.id;
       const productsByCategory = {
-        men: [],
         women: [],
         watches: [],
         lenses: [],
-        accessories: []
+        accessories: [],
+        skincare: []
       };
 
       // Fetch products from ALL categories
       const fetchPromises = [
-        productAPI.getMenItems({ limit: 40 }).then(res => {
-          if (res.success && res.data?.products) {
-            productsByCategory.men = res.data.products;
-          }
-        }).catch(err => console.warn('Error fetching men items:', err)),
-
         productAPI.getWomenItems({ limit: 40 }).then(res => {
           if (res.success && res.data?.products) {
             productsByCategory.women = res.data.products;
@@ -263,17 +256,23 @@ const ProductDetail = () => {
             productsByCategory.accessories = res.data.products;
           }
         }).catch(err => console.warn('Error fetching accessories:', err)),
+
+        productAPI.getSkincareProducts({ limit: 30 }).then(res => {
+          if (res.success && res.data?.products) {
+            productsByCategory.skincare = res.data.products;
+          }
+        }).catch(err => console.warn('Error fetching skincare products:', err)),
       ];
 
       await Promise.allSettled(fetchPromises);
 
       // Combine all products from all categories
       const allProducts = [
-        ...productsByCategory.men,
         ...productsByCategory.women,
         ...productsByCategory.watches,
         ...productsByCategory.lenses,
-        ...productsByCategory.accessories
+        ...productsByCategory.accessories,
+        ...productsByCategory.skincare
       ].filter(p => (p._id || p.id) !== currentProductId);
 
       // Shuffle array to randomize (Fisher-Yates shuffle)
@@ -421,21 +420,15 @@ const ProductDetail = () => {
     try {
       const currentProductId = currentProduct._id || currentProduct.id;
       const productsByCategory = {
-        men: [],
         women: [],
         watches: [],
         lenses: [],
-        accessories: []
+        accessories: [],
+        skincare: []
       };
 
       // Fetch products from ALL categories
       const fetchPromises = [
-        productAPI.getMenItems({ limit: 50 }).then(res => {
-          if (res.success && res.data?.products) {
-            productsByCategory.men = res.data.products;
-          }
-        }).catch(err => console.warn('Error fetching men items:', err)),
-
         productAPI.getWomenItems({ limit: 50 }).then(res => {
           if (res.success && res.data?.products) {
             productsByCategory.women = res.data.products;
@@ -459,17 +452,23 @@ const ProductDetail = () => {
             productsByCategory.accessories = res.data.products;
           }
         }).catch(err => console.warn('Error fetching accessories:', err)),
+
+        productAPI.getSkincareProducts({ limit: 40 }).then(res => {
+          if (res.success && res.data?.products) {
+            productsByCategory.skincare = res.data.products;
+          }
+        }).catch(err => console.warn('Error fetching skincare products:', err)),
       ];
 
       await Promise.allSettled(fetchPromises);
 
       // Combine all products and filter for sale items
       const allProducts = [
-        ...productsByCategory.men,
         ...productsByCategory.women,
         ...productsByCategory.watches,
         ...productsByCategory.lenses,
-        ...productsByCategory.accessories
+        ...productsByCategory.accessories,
+        ...productsByCategory.skincare
       ];
 
       // Filter products that are on sale (have discount or onSale flag)

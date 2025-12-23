@@ -48,12 +48,12 @@ function AppContent() {
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/men" element={<CategoryPage />} />
           <Route path="/women" element={<CategoryPage />} />
           <Route path="/watches" element={<CategoryPage />} />
           <Route path="/lenses" element={<CategoryPage />} />
           <Route path="/accessories" element={<CategoryPage />} />
-          <Route path="/men/:category" element={<CategoryPage />} />
+          <Route path="/skincare" element={<CategoryPage />} />
+          <Route path="/skincare/:id" element={<ProductDetail />} />
           <Route path="/women/:category" element={<CategoryPage />} />
           <Route path="/new-arrival" element={<SpecialCollection type="new-arrival" />} />
           <Route path="/sale" element={<SpecialCollection type="sale" />} />

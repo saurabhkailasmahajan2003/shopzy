@@ -8,22 +8,22 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#FFB7A5', // Coral/Peach
-          light: '#FFC9BB',
-          dark: '#FF9D85',
+          DEFAULT: '#bb3435', // Red/Burgundy
+          light: '#d44a4b',
+          dark: '#9a2a2b',
         },
         background: {
-          DEFAULT: '#FFF3E8', // Warm Off-White/Cream
+          DEFAULT: '#fefcfb', // Off-White/Cream
         },
         text: {
-          DEFAULT: '#333333', // Dark Gray
-          light: '#555555',
-          muted: '#777777',
+          DEFAULT: '#120e0f', // Very Dark/Black
+          light: '#2a2526',
+          muted: '#4a4546',
         },
         cta: {
-          DEFAULT: '#FF6F61', // Coral/Red-Orange
-          light: '#FF8A7F',
-          dark: '#E85A4D',
+          DEFAULT: '#bb3435', // Red/Burgundy
+          light: '#d44a4b',
+          dark: '#9a2a2b',
         },
       },
       // Animation definitions go here inside 'extend'

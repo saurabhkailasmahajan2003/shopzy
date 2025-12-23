@@ -1,7 +1,5 @@
 import User from '../models/User.js';
 import Order from '../models/Order.js';
-import Men from '../models/product/menModel.js';
-import MenTshirt from '../models/product/menTshirt.model.js';
 import Women from '../models/product/womenModel.js';
 import Watch from '../models/product/watch.model.js';
 import WatchNew from '../models/product/watchNew.model.js';
@@ -9,13 +7,9 @@ import Lens from '../models/product/lens.model.js';
 import Accessory from '../models/product/accessory.model.js';
 import Shoes from '../models/product/shoes.model.js';
 import Saree from '../models/product/saree.model.js';
+import SkincareProduct from '../models/product/skincare.model.js';
 
 const productModelMap = {
-  men: Men,
-  'men-tshirt': MenTshirt,
-  'MenTshirt': MenTshirt,
-  'Tshirts': MenTshirt,
-  'Tshirt': MenTshirt,
   women: Women,
   watch: Watch,
   watches: Watch,
@@ -33,6 +27,9 @@ const productModelMap = {
   'Saree': Saree,
   'SARI': Saree,
   'sari': Saree,
+  skincare: SkincareProduct,
+  'skincare': SkincareProduct,
+  'Skincare': SkincareProduct,
 };
 
 const resolveProductModel = (category) => {
@@ -62,56 +59,53 @@ export const getDashboardSummary = async (req, res) => {
       totalOrders,
       pendingOrders,
       totalRevenue,
-      menCount,
       womenCount,
       watchCount,
       watchNewCount,
       lensCount,
       accessoryCount,
-      menTshirtCount,
       shoesCount,
       sareeCount,
+      skincareCount,
     ] = await Promise.all([
       User.countDocuments(), // Count all user documents
       Order.countDocuments(), // Count all order documents
       Order.countDocuments({ status: 'pending' }),
       Order.aggregate([{ $group: { _id: null, total: { $sum: '$totalAmount' } } }]),
-      Men.countDocuments(), // Count ALL men products (including duplicates)
       Women.countDocuments(), // Count ALL women products (including duplicates)
       Watch.countDocuments(), // Count ALL watch products (including duplicates)
       WatchNew.countDocuments().catch(() => 0), // Count ALL new watch products (including duplicates)
       Lens.countDocuments(), // Count ALL lens products (including duplicates)
       Accessory.countDocuments(), // Count ALL accessory products (including duplicates)
-      MenTshirt.countDocuments().catch(() => 0), // Count ALL men t-shirt products (including duplicates)
       Shoes.countDocuments().catch(() => 0), // Count ALL shoes products (including duplicates)
       Saree.countDocuments().catch(() => 0), // Count ALL saree products (including duplicates)
+      SkincareProduct.countDocuments().catch(() => 0), // Count ALL skincare products (including duplicates)
     ]);
 
     // Calculate total products from all collections
     // This includes: duplicates, products in multiple collections, all variations
     // Each document is counted separately, so if a product appears 2x or 3x, it's counted 2x or 3x
-    const totalProducts = menCount + womenCount + watchCount + watchNewCount + lensCount + accessoryCount + menTshirtCount + shoesCount + sareeCount;
+    const totalProducts = womenCount + watchCount + watchNewCount + lensCount + accessoryCount + shoesCount + sareeCount + skincareCount;
 
     // Calculate inventory totals (avoid double counting)
     const inventory = {
-      men: menCount + menTshirtCount, // Men includes men t-shirts
       women: womenCount + sareeCount, // Women includes sarees
       watches: watchCount + watchNewCount, // Combined watch count (old + new schema)
       lens: lensCount,
       accessories: accessoryCount + shoesCount, // Accessories includes shoes
+      skincare: skincareCount,
       saree: sareeCount, // Saree count separately for reference
     };
 
     // Category-wise product counts (individual collections)
     // Note: Sarees are included in women count, not shown separately
-    // Note: Men T-Shirts are included in men count, not shown separately
     // Note: Shoes are included in accessories count, not shown separately
     const categoryCounts = {
-      men: menCount + menTshirtCount, // Men includes men t-shirts
       women: womenCount + sareeCount, // Women includes sarees
       watches: watchCount + watchNewCount,
       lens: lensCount,
       accessories: accessoryCount + shoesCount, // Accessories includes shoes
+      skincare: skincareCount,
     };
 
     res.status(200).json({
@@ -321,29 +315,27 @@ export const getAdminProducts = async (req, res) => {
       });
     }
 
-    const [men, menTshirts, women, watches, lens, accessories, shoes, sarees] = await Promise.all([
-      Men.find().limit(50),
-      MenTshirt.find().limit(50).catch(() => []),
+    const [women, watches, lens, accessories, shoes, sarees, skincare] = await Promise.all([
       Women.find().limit(50),
       Watch.find().limit(50),
       Lens.find().limit(50),
       Accessory.find().limit(50),
       Shoes.find().limit(50).catch(() => []),
       Saree.find().limit(50),
+      SkincareProduct.find().limit(50).catch(() => []),
     ]);
 
     res.status(200).json({
       success: true,
       data: {
         products: [
-          ...men.map((item) => ({ ...item.toObject(), category: 'men' })),
-          ...menTshirts.map((item) => ({ ...item.toObject(), category: 'men' })),
           ...women.map((item) => ({ ...item.toObject(), category: 'women' })),
           ...watches.map((item) => ({ ...item.toObject(), category: 'watches' })),
           ...lens.map((item) => ({ ...item.toObject(), category: 'lens' })),
           ...accessories.map((item) => ({ ...item.toObject(), category: 'accessories' })),
           ...shoes.map((item) => ({ ...item.toObject(), category: 'shoes' })),
           ...sarees.map((item) => ({ ...item.toObject(), category: 'saree' })),
+          ...skincare.map((item) => ({ ...item.toObject(), category: 'skincare' })),
         ],
       },
     });

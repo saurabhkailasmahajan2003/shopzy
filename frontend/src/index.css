@@ -9,8 +9,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #FFF3E8;
-  color: #333333;
+  background-color: #fefcfb;
+  color: #120e0f;
+}
+
+.font-serif {
+  font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
 html {

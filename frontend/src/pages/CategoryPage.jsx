@@ -30,7 +30,7 @@ const CategoryPage = () => {
   const [showFilters, setShowFilters] = useState(true); // Desktop filter visibility
 
   const pathSegments = pathname.split('/').filter(Boolean);
-  const genderFromPath = pathSegments[0] === 'men' ? 'men' : pathSegments[0] === 'women' ? 'women' : null;
+  const genderFromPath = pathSegments[0] === 'women' ? 'women' : null;
   const derivedGender = (gender ? gender.toLowerCase() : null) || genderFromPath;
   const derivedCategory = category || pathSegments[1] || null;
 
@@ -50,7 +50,21 @@ const CategoryPage = () => {
   useEffect(() => {
     let filtered = [...allProducts];
 
-    // Subcategory Filtering
+    // Skincare category filtering (from query parameter)
+    if (pathname === '/skincare') {
+      const urlParams = new URLSearchParams(location.search);
+      const categoryParam = urlParams.get('category');
+      if (categoryParam) {
+        filtered = filtered.filter(product => {
+          // For skincare, the category field in the database maps to subCategory in normalized product
+          const productCategory = (product.subCategory || product.category || '').toLowerCase().trim();
+          const expectedCategory = categoryParam.toLowerCase().trim();
+          return productCategory === expectedCategory;
+        });
+      }
+    }
+
+    // Subcategory Filtering (for women's products)
     if (derivedGender && derivedCategory) {
       const categoryMap = {
         'shirt': { subCategory: 'shirt', displayName: 'Shirt' },
@@ -116,7 +130,7 @@ const CategoryPage = () => {
 
     setFilteredList(filtered);
     setPage(1); // Reset to page 1 when filters change
-  }, [allProducts, filters, derivedGender, derivedCategory]);
+  }, [allProducts, filters, derivedGender, derivedCategory, pathname, location.search]);
 
   // Reset to page 1 when filter visibility changes (items per page changes)
   useEffect(() => {
@@ -218,9 +232,17 @@ const CategoryPage = () => {
         const params = { ...(genderParam ? { gender: genderParam } : {}), limit: fetchLimit };
         response = await productAPI.getAccessories(params);
         setPageTitle(genderParam ? `${genderParam.charAt(0).toUpperCase() + genderParam.slice(1)}'s Accessories` : 'Accessories');
-      } else if (pathname === '/men') {
-        response = await productAPI.getMenItems({ limit: fetchLimit });
-        setPageTitle("Men's Collection");
+      } else if (pathname === '/skincare') {
+        const urlParams = new URLSearchParams(location.search);
+        const categoryParam = urlParams.get('category');
+        const params = { ...(categoryParam ? { category: categoryParam } : {}), limit: fetchLimit };
+        response = await productAPI.getSkincareProducts(params);
+        if (categoryParam) {
+          const categoryName = categoryParam.charAt(0).toUpperCase() + categoryParam.slice(1);
+          setPageTitle(`${categoryName} - Skincare`);
+        } else {
+          setPageTitle('Skincare');
+        }
       } else if (pathname === '/women') {
         response = await productAPI.getWomenItems({ limit: fetchLimit });
         setPageTitle("Women's Collection");
@@ -240,9 +262,8 @@ const CategoryPage = () => {
 
         const categoryInfo = categoryMap[normalizedCategory.toLowerCase()];
         
-        if (categoryInfo) {
-          const fetcher = activeGender === 'women' ? productAPI.getWomenItems : productAPI.getMenItems;
-          response = await fetcher({ subCategory: categoryInfo.subCategory, limit: fetchLimit });
+        if (categoryInfo && activeGender === 'women') {
+          response = await productAPI.getWomenItems({ subCategory: categoryInfo.subCategory, limit: fetchLimit });
           
           if (response && response.success && response.data.products) {
             const filteredProducts = response.data.products.filter(product => {
@@ -332,7 +353,7 @@ const CategoryPage = () => {
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex items-center gap-4 flex-wrap">
             {/* Breadcrumb Navigation */}
-            {(derivedGender || pathname === '/men' || pathname === '/women') && (
+            {(derivedGender || pathname === '/women') && (
               <nav>
                 <ol className="flex items-center space-x-2 text-sm text-gray-500">
                   <li>
@@ -358,7 +379,7 @@ const CategoryPage = () => {
                       )}
                     </>
                   )}
-                  {!derivedGender && (pathname === '/men' || pathname === '/women') && (
+                  {!derivedGender && pathname === '/women' && (
                     <li className="text-gray-900 capitalize">
                       {pathname.replace('/', '')}
                     </li>

@@ -4,23 +4,23 @@ import { adminAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 
 const categoryOptions = [
-  { label: 'Men', value: 'men' },
   { label: 'Women', value: 'women' },
   { label: 'Saree', value: 'saree' },
   { label: 'Watches', value: 'watches' },
   { label: 'Lens', value: 'lens' },
   { label: 'Accessories', value: 'accessories' },
+  { label: 'Skincare', value: 'skincare' },
 ];
 
 const statusOptions = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
 
 // Subcategory options based on category
 const subCategoryOptions = {
-  men: ['shirt', 'tshirt', 'jeans', 'trousers', 'shoes'],
   women: ['shirt', 'tshirt', 'jeans', 'trousers', 'saree', 'shoes'],
   watches: ['analog', 'digital', 'smartwatch', 'sports', 'luxury'],
   lens: ['reading', 'sunglasses', 'computer', 'blue-light', 'progressive'],
   accessories: ['belt', 'wallet', 'bag', 'cap', 'watch-strap'],
+  skincare: ['serum', 'facewash', 'sunscreen', 'moisturizer', 'cleanser'],
 };
 
 // SVG Icons
@@ -91,7 +91,7 @@ const AdminDashboard = () => {
   const [products, setProducts] = useState([]);
   const [users, setUsers] = useState([]);
   const [activeSection, setActiveSection] = useState('dashboard');
-  const [productCategory, setProductCategory] = useState('men');
+  const [productCategory, setProductCategory] = useState('women');
   const [selectedSubCategory, setSelectedSubCategory] = useState('');
   const [sortBy, setSortBy] = useState('default');
   const [currentPage, setCurrentPage] = useState(1);
@@ -99,7 +99,7 @@ const AdminDashboard = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [productForm, setProductForm] = useState({
-    category: 'men',
+    category: 'women',
     name: '',
     brand: '',
     price: '',

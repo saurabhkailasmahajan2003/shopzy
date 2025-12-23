@@ -35,9 +35,6 @@ const Footer = () => {
             <h3 className="text-white text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/men" className="hover:text-white transition">Men's Fashion</Link>
-              </li>
-              <li>
                 <Link to="/women" className="hover:text-white transition">Women's Fashion</Link>
               </li>
               <li>
@@ -45,6 +42,9 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/lenses" className="hover:text-white transition">Lenses & Spectacles</Link>
+              </li>
+              <li>
+                <Link to="/skincare" className="hover:text-white transition">Skincare</Link>
               </li>
               <li>
                 <Link to="/cart" className="hover:text-white transition">Shopping Cart</Link>

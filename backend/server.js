@@ -10,11 +10,18 @@ import watchRoutes from './routes/product/watch.routes.js';
 import watchNewRoutes from './routes/product/watchNew.routes.js';
 import lensRoutes from './routes/product/lens.routes.js';
 import accessoryRoutes from './routes/product/accessory.routes.js';
-import menRoutes from './routes/product/men.routes.js';
 import womenRoutes from './routes/product/women.routes.js';
+import skincareRoutes from './routes/product/skincare.routes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
+
+// Verify skincare routes import
+try {
+  console.log('✅ Skincare routes imported successfully');
+} catch (error) {
+  console.error('❌ Error importing skincare routes:', error);
+}
 
 dotenv.config();
 
@@ -46,8 +53,14 @@ app.use('/api/products/watches', watchRoutes);
 app.use('/api/products/watch-new', watchNewRoutes);
 app.use('/api/products/lens', lensRoutes);
 app.use('/api/products/accessories', accessoryRoutes);
-app.use('/api/products/men', menRoutes);
 app.use('/api/products/women', womenRoutes);
+try {
+  app.use('/api/products/skincare', skincareRoutes);
+  console.log('✅ Skincare routes registered at /api/products/skincare');
+} catch (error) {
+  console.error('❌ CRITICAL: Failed to register skincare routes:', error);
+  console.error('   This will cause 404 errors for /api/products/skincare');
+}
 app.use('/api/admin', adminRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
