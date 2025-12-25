@@ -144,10 +144,12 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const [currentPromoBannerIndex, setCurrentPromoBannerIndex] = useState(0);
+  const [currentMobilePromoBannerIndex, setCurrentMobilePromoBannerIndex] = useState(0);
   const categoryScrollRef = useRef(null);
   const lifestyleScrollRef = useRef(null);
   const bannerCarouselRef = useRef(null);
   const promoBannerCarouselRef = useRef(null);
+  const mobilePromoBannerCarouselRef = useRef(null);
 
   // --- DATA STATE & FETCHING (Unchanged) ---
   const [freshDrops, setFreshDrops] = useState([]);
@@ -215,6 +217,15 @@ const Home = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Auto-rotate mobile promo banner carousel
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentMobilePromoBannerIndex((prev) => (prev + 1) % 4);
+    }, 5000); // Change banner every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   // Scroll to current mobile banner
   useEffect(() => {
     if (bannerCarouselRef.current) {
@@ -237,6 +248,17 @@ const Home = () => {
     }
   }, [currentPromoBannerIndex]);
 
+  // Scroll to current mobile promo banner
+  useEffect(() => {
+    if (mobilePromoBannerCarouselRef.current) {
+      const bannerWidth = mobilePromoBannerCarouselRef.current.offsetWidth;
+      mobilePromoBannerCarouselRef.current.scrollTo({
+        left: currentMobilePromoBannerIndex * bannerWidth,
+        behavior: 'smooth'
+      });
+    }
+  }, [currentMobilePromoBannerIndex]);
+
   return (
     <div className="min-h-screen font-sans text-gray-800">
       
@@ -244,12 +266,12 @@ const Home = () => {
       <div className="relative w-full bg-[#fefcfb]">
         
         {/* Desktop Hero Layout */}
-        <div className="hidden md:block relative w-full pb-10 lg:pb-14 xl:pb-18">
+        <div className="hidden md:block relative w-full pb-8 lg:pb-12 xl:pb-16">
           <div className="w-full">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch min-h-[500px] lg:min-h-[600px]">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch min-h-[450px] md:min-h-[500px] lg:min-h-[550px] xl:min-h-[600px]">
               
               {/* Left Side: Text Content - Takes 6 columns */}
-              <div className="lg:col-span-6 text-left space-y-6 lg:space-y-8 px-4 sm:px-6 lg:px-8 xl:px-12 flex flex-col justify-center pt-4 lg:pt-6 pb-10 lg:pb-14">
+              <div className="lg:col-span-6 text-left space-y-4 md:space-y-5 lg:space-y-6 xl:space-y-8 px-4 sm:px-6 lg:px-8 xl:px-12 flex flex-col justify-center pt-3 lg:pt-4 pb-8 lg:pb-12">
                 {/* NEW COLLECTION Label */}
                 <div>
                   <span className="inline-block px-5 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-[0.15em] border-2 border-[#120e0f]" style={{ backgroundColor: '#bb3435', color: '#fefcfb' }}>
@@ -258,27 +280,27 @@ const Home = () => {
                 </div>
                 
                 {/* Main Headline */}
-                <div className="space-y-2">
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif font-bold leading-[1.05] tracking-tight" style={{ color: '#120e0f' }}>
+                <div className="space-y-1 md:space-y-2">
+                  <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-serif font-bold leading-[1.05] tracking-tight" style={{ color: '#120e0f' }}>
                     Discover
                   </h1>
-                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif font-bold leading-[1.05] tracking-tight" style={{ color: '#bb3435' }}>
+                  <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-serif font-bold leading-[1.05] tracking-tight" style={{ color: '#bb3435' }}>
                     Your Style
                   </h1>
                 </div>
                 
                 {/* Subtitle */}
                 <div>
-                  <p className="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed max-w-lg" style={{ color: '#120e0f', opacity: 0.85 }}>
+                  <p className="text-sm md:text-base lg:text-lg xl:text-xl 2xl:text-2xl leading-relaxed max-w-lg" style={{ color: '#120e0f', opacity: 0.85 }}>
                     Curated fashion, beauty essentials, and lifestyle products that reflect your unique personality
                   </p>
                 </div>
                 
                 {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row gap-4 pt-2">
+                <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-1 md:pt-2">
                   <Link
                     to="/women"
-                    className="inline-flex items-center justify-center px-8 sm:px-10 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-center border-2 border-[#120e0f] transition-all hover:scale-105 active:scale-95"
+                    className="inline-flex items-center justify-center px-6 md:px-8 lg:px-10 py-2.5 md:py-3 lg:py-3.5 text-xs md:text-sm lg:text-base font-semibold text-center border-2 border-[#120e0f] transition-colors"
                     style={{ backgroundColor: '#bb3435', color: '#fefcfb' }}
                     onMouseEnter={(e) => {
                       e.target.style.backgroundColor = '#120e0f';
@@ -291,7 +313,7 @@ const Home = () => {
                   </Link>
                   <Link
                     to="/sale"
-                    className="inline-flex items-center justify-center px-8 sm:px-10 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-center border-2 border-[#120e0f] transition-all hover:scale-105 active:scale-95"
+                    className="inline-flex items-center justify-center px-6 md:px-8 lg:px-10 py-2.5 md:py-3 lg:py-3.5 text-xs md:text-sm lg:text-base font-semibold text-center border-2 border-[#120e0f] transition-colors"
                     style={{ backgroundColor: '#fefcfb', color: '#120e0f' }}
                     onMouseEnter={(e) => {
                       e.target.style.backgroundColor = '#120e0f';
@@ -308,8 +330,8 @@ const Home = () => {
               </div>
 
               {/* Right Side: Banner Carousel - Takes 6 columns, smaller size, no borders */}
-              <div className="lg:col-span-6 relative w-full flex items-center justify-center">
-                <div className="relative overflow-hidden w-full max-w-md">
+              <div className="lg:col-span-6 relative w-full flex items-center justify-center py-4 lg:py-6">
+                <div className="relative overflow-hidden w-full max-w-sm md:max-w-md lg:max-w-lg">
                   <div 
                     ref={promoBannerCarouselRef}
                     className="flex overflow-x-hidden scroll-smooth scrollbar-hide"
@@ -338,15 +360,15 @@ const Home = () => {
                 </div>
 
                 {/* Carousel Indicators */}
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10 bg-[#fefcfb]/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-[#120e0f]/20">
+                <div className="absolute bottom-2 md:bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10 bg-[#fefcfb]/80 backdrop-blur-sm px-2 md:px-3 py-1 md:py-1.5 rounded-full border border-[#120e0f]/20">
                   {[0, 1, 2, 3].map((index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentPromoBannerIndex(index)}
-                      className={`h-2 transition-all rounded-full ${
+                      className={`h-1.5 md:h-2 transition-all rounded-full ${
                         index === currentPromoBannerIndex 
-                          ? 'w-8 bg-[#120e0f]' 
-                          : 'w-2 bg-[#120e0f]/30 hover:bg-[#120e0f]/50'
+                          ? 'w-6 md:w-8 bg-[#120e0f]' 
+                          : 'w-1.5 md:w-2 bg-[#120e0f]/30 hover:bg-[#120e0f]/50'
                       }`}
                       aria-label={`Go to banner ${index + 1}`}
                     />
@@ -356,14 +378,14 @@ const Home = () => {
                 {/* Navigation Arrows */}
                 <button
                   onClick={() => setCurrentPromoBannerIndex((prev) => (prev - 1 + 4) % 4)}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-2 z-10 transition-colors shadow-md"
+                  className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-1.5 md:p-2 z-10 transition-colors"
                   aria-label="Previous banner"
                 >
                   <IconChevronLeft />
                 </button>
                 <button
                   onClick={() => setCurrentPromoBannerIndex((prev) => (prev + 1) % 4)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-2 z-10 transition-colors shadow-md"
+                  className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-1.5 md:p-2 z-10 transition-colors"
                   aria-label="Next banner"
                 >
                   <IconChevronRight />
@@ -373,67 +395,15 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Mobile Hero Layout: Banners Only */}
-        <div className="md:hidden relative w-full">
-          {/* Original Mobile Banner Carousel */}
+        {/* Mobile Hero Layout: Banners First, Then Text */}
+        <div className="md:hidden relative w-full bg-[#fefcfb]">
+          {/* Mobile Promotional Banners Carousel - Above Text */}
           <div className="relative w-full overflow-hidden bg-[#fefcfb] border-b-2 border-[#120e0f]">
             <div 
-              ref={bannerCarouselRef}
+              ref={mobilePromoBannerCarouselRef}
               className="flex overflow-x-hidden scroll-smooth scrollbar-hide"
               style={{ scrollSnapType: 'x mandatory' }}
             >
-              {banners.map((banner, index) => (
-                <div
-                  key={index}
-                  className="flex-shrink-0 w-full"
-                  style={{ scrollSnapAlign: 'start' }}
-                >
-                  <img
-                    src={banner}
-                    alt={`Banner ${index + 1}`}
-                    className="w-full h-auto object-contain"
-                    loading={index === 0 ? 'eager' : 'lazy'}
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* Carousel Indicators */}
-            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
-              {banners.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentBannerIndex(index)}
-                  className={`h-2 transition-all ${
-                    index === currentBannerIndex 
-                      ? 'w-8 bg-[#120e0f]' 
-                      : 'w-2 bg-[#120e0f]/30'
-                  }`}
-                  aria-label={`Go to banner ${index + 1}`}
-                />
-              ))}
-            </div>
-
-            {/* Navigation Arrows */}
-            <button
-              onClick={() => setCurrentBannerIndex((prev) => (prev - 1 + banners.length) % banners.length)}
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-1.5 z-10 transition-colors shadow-md"
-              aria-label="Previous banner"
-            >
-              <IconChevronLeft />
-            </button>
-            <button
-              onClick={() => setCurrentBannerIndex((prev) => (prev + 1) % banners.length)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-1.5 z-10 transition-colors shadow-md"
-              aria-label="Next banner"
-            >
-              <IconChevronRight />
-            </button>
-          </div>
-
-          {/* New Promotional Banners Carousel */}
-          <div className="relative w-full overflow-hidden bg-[#fefcfb] border-b-2 border-[#120e0f]">
-            <div className="flex overflow-x-auto scroll-smooth scrollbar-hide" style={{ scrollSnapType: 'x mandatory' }}>
               {[
                 'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656833/Purple_Women_Clothing_Promo_Instagram_Post_d2cxg9.png',
                 'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656659/Pink_and_Gold_Simple_Diwali_Skincare_Cosmetic_Beauty_Offers_Instagram_Post_1_xzglzv.png',
@@ -454,14 +424,91 @@ const Home = () => {
                 </div>
               ))}
             </div>
+
+            {/* Carousel Indicators */}
+            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-2 z-10 bg-[#fefcfb]/80 backdrop-blur-sm px-2 py-1 rounded-full border border-[#120e0f]/20">
+              {[0, 1, 2, 3].map((index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentMobilePromoBannerIndex(index)}
+                  className={`h-1.5 transition-all rounded-full ${
+                    index === currentMobilePromoBannerIndex 
+                      ? 'w-6 bg-[#120e0f]' 
+                      : 'w-1.5 bg-[#120e0f]/30'
+                  }`}
+                  aria-label={`Go to banner ${index + 1}`}
+                />
+              ))}
+            </div>
+
+            {/* Navigation Arrows - Positioned slightly above for mobile */}
+            <button
+              onClick={() => setCurrentMobilePromoBannerIndex((prev) => (prev - 1 + 4) % 4)}
+              className="absolute left-2 top-[40%] -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-1.5 z-10 transition-colors"
+              aria-label="Previous banner"
+            >
+              <IconChevronLeft />
+            </button>
+            <button
+              onClick={() => setCurrentMobilePromoBannerIndex((prev) => (prev + 1) % 4)}
+              className="absolute right-2 top-[40%] -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-1.5 z-10 transition-colors"
+              aria-label="Next banner"
+            >
+              <IconChevronRight />
+            </button>
+          </div>
+
+          {/* Mobile Text Content - Below Banners */}
+          <div className="px-4 py-6 space-y-4">
+            {/* NEW COLLECTION Label */}
+            <div>
+              <span className="inline-block px-4 py-2 text-xs font-bold uppercase tracking-[0.15em] border-2 border-[#120e0f]" style={{ backgroundColor: '#bb3435', color: '#fefcfb' }}>
+                NEW COLLECTION
+              </span>
+            </div>
+            
+            {/* Main Headline */}
+            <div className="space-y-1">
+              <h1 className="text-2xl sm:text-3xl font-serif font-bold leading-tight tracking-tight" style={{ color: '#120e0f' }}>
+                Discover
+              </h1>
+              <h1 className="text-2xl sm:text-3xl font-serif font-bold leading-tight tracking-tight" style={{ color: '#bb3435' }}>
+                Your Style
+              </h1>
+            </div>
+            
+            {/* Subtitle */}
+            <div>
+              <p className="text-sm leading-relaxed" style={{ color: '#120e0f', opacity: 0.85 }}>
+                Curated fashion, beauty essentials, and lifestyle products that reflect your unique personality
+              </p>
+            </div>
+            
+            {/* CTA Buttons - In Same Row */}
+            <div className="flex flex-row gap-3 pt-2">
+              <Link
+                to="/women"
+                className="flex-1 inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-center border-2 border-[#120e0f]"
+                style={{ backgroundColor: '#bb3435', color: '#fefcfb' }}
+              >
+                Shop Now
+              </Link>
+              <Link
+                to="/sale"
+                className="flex-1 inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-center border-2 border-[#120e0f]"
+                style={{ backgroundColor: '#fefcfb', color: '#120e0f' }}
+              >
+                View Sale
+              </Link>
+            </div>
           </div>
         </div>
       </div>
 
       {/* --- NEW FASHION SALE PROMOTIONAL BANNER --- */}
       <div className="relative w-full bg-[#fefcfb] border-t-2 border-[#120e0f] overflow-hidden">
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 items-center">
+        <div className="relative max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-6 sm:py-8 lg:py-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 items-center">
             
             {/* Left Model Section */}
             <div className="relative hidden md:block">
@@ -476,55 +523,55 @@ const Home = () => {
 
             {/* Central Promotional Section */}
             <div className="relative col-span-1 md:col-span-1">
-              <div className="relative bg-[#fefcfb] p-6 sm:p-8 md:p-10 border-2 border-[#120e0f] min-h-[300px] sm:min-h-[400px] flex flex-col items-center justify-center">
+              <div className="relative bg-[#fefcfb] p-4 sm:p-6 md:p-8 lg:p-10 border-2 border-[#120e0f] min-h-[250px] sm:min-h-[300px] md:min-h-[400px] flex flex-col items-center justify-center">
                 
                 {/* Abstract Brown Blob Shapes */}
-                <div className="absolute top-4 left-4 w-16 h-16 bg-[#a06a4e]/20 rounded-full blur-xl"></div>
-                <div className="absolute bottom-8 right-6 w-20 h-20 bg-[#a06a4e]/15 rounded-full blur-2xl"></div>
-                <div className="absolute top-1/2 left-1/4 w-12 h-12 bg-[#a06a4e]/10 rounded-full blur-lg"></div>
+                <div className="absolute top-4 left-4 w-12 h-12 sm:w-16 sm:h-16 bg-[#a06a4e]/20 rounded-full blur-xl"></div>
+                <div className="absolute bottom-8 right-6 w-16 h-16 sm:w-20 sm:h-20 bg-[#a06a4e]/15 rounded-full blur-2xl"></div>
+                <div className="absolute top-1/2 left-1/4 w-10 h-10 sm:w-12 sm:h-12 bg-[#a06a4e]/10 rounded-full blur-lg"></div>
                 
                 {/* Black Dotted Patterns */}
-                <div className="absolute top-6 left-6 flex gap-1">
+                <div className="absolute top-4 left-4 sm:top-6 sm:left-6 flex gap-1">
                   <div className="w-1 h-1 bg-[#120e0f] rounded-full"></div>
                   <div className="w-1 h-1 bg-[#120e0f] rounded-full"></div>
                   <div className="w-1 h-1 bg-[#120e0f] rounded-full"></div>
                 </div>
-                <div className="absolute bottom-10 right-8 flex gap-1">
+                <div className="absolute bottom-8 right-6 sm:bottom-10 sm:right-8 flex gap-1">
                   <div className="w-1 h-1 bg-[#120e0f] rounded-full"></div>
                   <div className="w-1 h-1 bg-[#120e0f] rounded-full"></div>
                   <div className="w-1 h-1 bg-[#120e0f] rounded-full"></div>
                 </div>
                 
                 {/* Black Starburst Icons */}
-                <div className="absolute top-8 right-8">
-                  <svg className="w-6 h-6 text-[#120e0f]" fill="currentColor" viewBox="0 0 24 24">
+                <div className="absolute top-6 right-6 sm:top-8 sm:right-8">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-[#120e0f]" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2L14.5 8.5L21 11L14.5 13.5L12 20L9.5 13.5L3 11L9.5 8.5L12 2Z"/>
                   </svg>
                 </div>
-                <div className="absolute bottom-12 left-10">
-                  <svg className="w-4 h-4 text-[#120e0f]" fill="currentColor" viewBox="0 0 24 24">
+                <div className="absolute bottom-10 left-8 sm:bottom-12 sm:left-10">
+                  <svg className="w-3 h-3 sm:w-4 sm:h-4 text-[#120e0f]" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2L14.5 8.5L21 11L14.5 13.5L12 20L9.5 13.5L3 11L9.5 8.5L12 2Z"/>
                   </svg>
                 </div>
                 
                 {/* Main Content */}
-                <div className="relative z-10 text-center">
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase tracking-tight mb-3 sm:mb-4" style={{ color: '#a06a4e' }}>
+                <div className="relative z-10 text-center px-2">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-tight mb-2 sm:mb-3 md:mb-4" style={{ color: '#a06a4e' }}>
                     NEW FASHION SALE
                   </h2>
-                  <p className="text-lg sm:text-xl md:text-2xl font-medium uppercase tracking-wide mb-6 sm:mb-8" style={{ color: '#a06a4e', opacity: 0.8 }}>
+                  <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-medium uppercase tracking-wide mb-4 sm:mb-6 md:mb-8" style={{ color: '#a06a4e', opacity: 0.8 }}>
                     SAVE UP TO 50% OFF
                   </p>
                   <Link
                     to="/sale"
-                    className="inline-block px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-semibold border-2 border-[#120e0f] bg-[#120e0f] text-[#fefcfb] hover:bg-[#fefcfb] hover:text-[#120e0f] transition-colors"
+                    className="inline-block px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 text-xs sm:text-sm md:text-base font-semibold border-2 border-[#120e0f] bg-[#120e0f] text-[#fefcfb] hover:bg-[#fefcfb] hover:text-[#120e0f] transition-colors"
                   >
                     Shop Now
                   </Link>
                 </div>
                 
                 {/* Pagination Dots */}
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
+                <div className="absolute bottom-3 sm:bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
                   <div className="w-2 h-2 bg-[#120e0f]"></div>
                   <div className="w-2 h-2 bg-[#120e0f]/30"></div>
                 </div>
@@ -543,6 +590,64 @@ const Home = () => {
             </div>
 
           </div>
+        </div>
+      </div>
+
+      {/* --- THREE BANNERS CAROUSEL (Moved from above hero) --- */}
+      <div className="relative w-full bg-[#fefcfb] border-t-2 border-[#120e0f] overflow-hidden">
+        <div className="relative w-full">
+          <div 
+            ref={bannerCarouselRef}
+            className="flex overflow-x-hidden scroll-smooth scrollbar-hide"
+            style={{ scrollSnapType: 'x mandatory' }}
+          >
+            {banners.map((banner, index) => (
+              <div
+                key={index}
+                className="flex-shrink-0 w-full"
+                style={{ scrollSnapAlign: 'start' }}
+              >
+                <img
+                  src={banner}
+                  alt={`Banner ${index + 1}`}
+                  className="w-full h-auto object-contain"
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Carousel Indicators */}
+          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
+            {banners.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentBannerIndex(index)}
+                className={`h-2 transition-all ${
+                  index === currentBannerIndex 
+                    ? 'w-8 bg-[#120e0f]' 
+                    : 'w-2 bg-[#120e0f]/30'
+                }`}
+                aria-label={`Go to banner ${index + 1}`}
+              />
+            ))}
+          </div>
+
+          {/* Navigation Arrows */}
+          <button
+            onClick={() => setCurrentBannerIndex((prev) => (prev - 1 + banners.length) % banners.length)}
+            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-1.5 sm:p-2 z-10 transition-colors"
+            aria-label="Previous banner"
+          >
+            <IconChevronLeft />
+          </button>
+          <button
+            onClick={() => setCurrentBannerIndex((prev) => (prev + 1) % banners.length)}
+            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-1.5 sm:p-2 z-10 transition-colors"
+            aria-label="Next banner"
+          >
+            <IconChevronRight />
+          </button>
         </div>
       </div>
 

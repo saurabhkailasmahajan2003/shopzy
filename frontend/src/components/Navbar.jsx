@@ -165,8 +165,8 @@ const Navbar = () => {
         className={`sticky top-0 left-0 right-0 z-50 transition-all duration-300 transform bg-[#fefcfb] border-b-2 border-[#120e0f]
         ${isNavHidden ? '-translate-y-full' : 'translate-y-0'}`}
       >
-        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
-          <div className="flex items-center justify-between h-14 sm:h-16 gap-2 sm:gap-4 lg:gap-6">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
+          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-18 gap-3 sm:gap-4 lg:gap-6">
 
             {/* LEFT: Logo - Reddish color */}
             <div className="flex-shrink-0">
@@ -178,52 +178,52 @@ const Navbar = () => {
             </div>
 
             {/* CENTER: Search Bar (Rounded with black border) */}
-            <div className="hidden sm:flex flex-1 max-w-md mx-2 lg:mx-4">
+            <div className="hidden sm:flex flex-1 max-w-lg mx-2 lg:mx-6">
                 <form 
                   onSubmit={handleSearch} 
                 ref={searchInputRef}
                 className="flex items-center w-full bg-[#fefcfb] border-2 border-[#120e0f] rounded-full overflow-hidden focus-within:border-[#bb3435] transition-colors"
                 >
+                  <button 
+                    type="submit" 
+                    className="p-2 sm:p-2.5 text-[#120e0f] hover:opacity-70 transition-opacity flex-shrink-0"
+                  >
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </button>
                   <input 
                     type="text" 
-                  className="flex-1 bg-transparent border-none outline-none px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-[#120e0f] placeholder-gray-400"
-                  placeholder="Search"
+                  className="flex-1 bg-transparent border-none outline-none px-2 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm text-[#120e0f] placeholder-[#120e0f]/40"
+                  placeholder="Search products..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setIsDesktopSearchExpanded(true)}
                   />
-                <button 
-                  type="submit" 
-                  className="p-2 sm:p-2.5 text-[#120e0f] hover:opacity-70 transition-opacity flex-shrink-0"
-                >
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                    </button>
                 </form>
               </div>
 
-            {/* Mobile Search Button */}
-            <button
-              onClick={() => setIsSearchOpen(true)}
-              className="sm:hidden p-1.5 text-[#120e0f] hover:opacity-70 transition-opacity"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </button>
-              
             {/* RIGHT: Icons */}
             <div className="flex items-center gap-2 sm:gap-4 lg:gap-6">
-              {/* User Icon */}
+              {/* Mobile Search Button - Before Cart */}
+              <button
+                onClick={() => setIsSearchOpen(true)}
+                className="sm:hidden p-1.5 text-[#120e0f] hover:opacity-70 transition-opacity"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+
+              {/* User Icon - Hidden on mobile, shown on desktop */}
                 {isAuthenticated ? (
-                <Link to="/profile" className="relative p-1 sm:p-1.5 text-[#120e0f] hover:opacity-70 transition-opacity">
+                <Link to="/profile" className="hidden sm:block relative p-1 sm:p-1.5 text-[#120e0f] hover:opacity-70 transition-opacity">
                   <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                   </Link>
                 ) : (
-                <Link to="/login" className="relative p-1 sm:p-1.5 text-[#120e0f] hover:opacity-70 transition-opacity">
+                <Link to="/login" className="hidden sm:block relative p-1 sm:p-1.5 text-[#120e0f] hover:opacity-70 transition-opacity">
                   <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
