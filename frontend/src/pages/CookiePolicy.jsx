@@ -12,13 +12,13 @@ const CookiePolicy = () => {
             </svg>
             Back to Home
           </Link>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Cookie Policy</h1>
-          <p className="text-gray-600">Last updated: January 2024</p>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Cookie Policy</h1>
+          <p className="text-sm sm:text-base text-gray-600">Last updated: January 2024</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-8 space-y-8">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
           <section>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">1. What Are Cookies</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">1. What Are Cookies</h2>
             <p className="text-gray-700 leading-relaxed">
               Cookies are small text files that are placed on your computer or mobile device when you visit a website. 
               They are widely used to make websites work more efficiently and provide information to the website owners. 
@@ -43,7 +43,7 @@ const CookiePolicy = () => {
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">3. Types of Cookies We Use</h2>
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Essential Cookies</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Essential Cookies</h3>
                 <p className="text-gray-700 leading-relaxed mb-2">
                   These cookies are necessary for the website to function and cannot be switched off. They are usually 
                   set in response to actions made by you, such as setting your privacy preferences, logging in, or filling 

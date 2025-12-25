@@ -70,28 +70,28 @@ const OrderRow = ({ order, user }) => {
 
   return (
     <>
-      <tr className="hover:bg-gray-50/50 transition-colors">
-        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900">
+      <tr className="hover:bg-[#120e0f]/5 transition-colors">
+        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-[#120e0f]">
           #{order._id?.slice(-6).toUpperCase()}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-[#120e0f]/60">
           {new Date(order.orderDate || order.createdAt).toLocaleDateString()}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap">
-          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border
-            ${order.status === 'delivered' ? 'bg-green-50 text-green-700 border-green-200' : 
-              order.status === 'shipped' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-              'bg-yellow-50 text-yellow-700 border-yellow-200'}`}>
+        <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+          <span className={`inline-flex items-center px-2.5 py-0.5 text-xs font-medium border-2
+            ${order.status === 'delivered' ? 'bg-green-50 text-green-700 border-green-300' : 
+              order.status === 'shipped' ? 'bg-blue-50 text-blue-700 border-blue-300' :
+              'bg-yellow-50 text-yellow-700 border-yellow-300'}`}>
             {order.status?.charAt(0).toUpperCase() + order.status?.slice(1)}
           </span>
         </td>
-        <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-900 text-right font-medium">
+        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-[#120e0f] text-right font-medium">
           ₹{order.totalAmount?.toLocaleString()}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap text-center">
+        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-center">
           <button
             onClick={() => setShowInvoice(true)}
-            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-[#120e0f] hover:text-[#120e0f]/70 border-2 border-[#120e0f] hover:bg-[#120e0f]/5 transition-colors"
           >
             <FileText className="w-3.5 h-3.5" />
             View
@@ -241,14 +241,13 @@ const Profile = () => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  // Reusable Input Style (Matches Login/Signup)
-  const inputClass = "block w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:border-transparent transition duration-150 ease-in-out placeholder-gray-400";
-  const labelClass = "block text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-2";
+  // Reusable Input Style (Cart Style)
+  const labelClass = "block text-xs font-semibold text-[#120e0f]/60 uppercase tracking-wide mb-2";
 
   if (authLoading || isLoading) {
     return (
-      <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-zinc-900"></div>
+      <div className="min-h-screen bg-[#fefcfb] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#120e0f]"></div>
       </div>
     );
   }
@@ -261,37 +260,41 @@ const Profile = () => {
   const isAdmin = authUser?.isAdmin || user?.isAdmin;
 
   return (
-    <div className="min-h-screen bg-zinc-50 font-sans text-zinc-900">
+    <div className="min-h-screen bg-[#fefcfb] font-sans text-[#120e0f]">
       
       {/* HEADER STRIP */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-                 <Link to="/" className="text-zinc-500 hover:text-zinc-900 transition-colors">
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+      <div className="bg-[#fefcfb] border-b-2 border-[#120e0f] sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 h-12 sm:h-14 flex items-center justify-between">
+            <div className="flex items-center gap-2 sm:gap-3">
+                 <Link to="/" className="flex items-center text-xs sm:text-sm font-medium text-[#120e0f] hover:opacity-70 transition-opacity">
+                    <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                    <span className="hidden sm:inline">Continue Shopping</span>
+                    <span className="sm:hidden">Back</span>
                  </Link>
-                 <span className="h-6 w-px bg-gray-200"></span>
-                <h1 className="text-lg font-semibold tracking-tight">Account Settings</h1>
+                 <span className="h-4 sm:h-6 w-px bg-[#120e0f]"></span>
+                <h1 className="text-sm sm:text-base font-semibold tracking-tight text-[#120e0f]">Account Settings</h1>
             </div>
-          <button onClick={logout} className="text-sm font-medium text-zinc-500 hover:text-red-600 transition-colors">
+          <button onClick={logout} className="text-xs sm:text-sm font-medium text-[#120e0f] hover:text-[#120e0f]/70 transition-colors">
             Sign out
           </button>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
           
           {/* LEFT SIDEBAR NAVIGATION */}
-          <div className="lg:col-span-3 space-y-8">
+          <div className="lg:col-span-3 space-y-4 sm:space-y-6">
             {/* User Mini Card */}
-            <div className="flex items-center gap-4 px-2">
-                <div className="h-10 w-10 rounded-full bg-zinc-900 text-white flex items-center justify-center font-bold text-sm">
-                    {userInitial}
-                </div>
-                <div className="overflow-hidden">
-                    <p className="text-sm font-bold truncate">{displayName}</p>
-                    <p className="text-xs text-zinc-500 truncate">{user?.email}</p>
+            <div className="bg-[#fefcfb] border-2 border-[#120e0f] p-3 sm:p-4">
+                <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-[#120e0f] text-[#fefcfb] flex items-center justify-center font-bold text-sm sm:text-base border-2 border-[#120e0f]">
+                        {userInitial}
+                    </div>
+                    <div className="overflow-hidden flex-1">
+                        <p className="text-sm sm:text-base font-bold truncate text-[#120e0f]">{displayName}</p>
+                        <p className="text-xs text-[#120e0f]/60 truncate">{user?.email}</p>
+                    </div>
                 </div>
             </div>
 
@@ -301,45 +304,45 @@ const Profile = () => {
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  className={`w-full flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 text-sm font-medium transition-all duration-200 border-2 ${
                     activeTab === item.id
-                      ? 'bg-white text-zinc-900 shadow-sm ring-1 ring-gray-200'
-                      : 'text-zinc-500 hover:text-zinc-900 hover:bg-gray-100/50'
+                      ? 'bg-[#fefcfb] text-[#120e0f] border-[#120e0f]'
+                      : 'bg-[#fefcfb] text-[#120e0f]/60 border-[#120e0f] hover:text-[#120e0f] hover:bg-[#120e0f]/5'
                   }`}
                 >
-                  <item.icon className={`w-4 h-4 ${activeTab === item.id ? 'text-zinc-900' : 'text-zinc-400'}`} />
+                  <item.icon className={`w-4 h-4 ${activeTab === item.id ? 'text-[#120e0f]' : 'text-[#120e0f]/60'}`} />
                   {item.label}
-                  {activeTab === item.id && <IconChevronRight className="w-4 h-4 ml-auto text-zinc-400" />}
+                  {activeTab === item.id && <IconChevronRight className="w-4 h-4 ml-auto text-[#120e0f]" />}
                 </button>
               ))}
                {isAdmin && (
-                <Link to="/admin" className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-500 hover:text-zinc-900 hover:bg-gray-100/50">
-                    <IconAdmin className="w-4 h-4 text-zinc-400" />
+                <Link to="/admin" className="w-full flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 bg-[#fefcfb] border-2 border-[#120e0f] text-sm font-medium text-[#120e0f]/60 hover:text-[#120e0f] hover:bg-[#120e0f]/5 transition-all">
+                    <IconAdmin className="w-4 h-4 text-[#120e0f]/60" />
                     Admin Dashboard
                 </Link>
                )}
             </nav>
 
             {/* Quick Stats (Mini) */}
-            <div className="grid grid-cols-2 gap-2 pt-4 border-t border-gray-100">
-                 <Link to="/orders" className="bg-white p-3 rounded-lg border border-gray-100 text-center hover:border-gray-300 transition-colors">
-                    <span className="block text-xl font-bold">{profileData?.orders?.length || 0}</span>
-                    <span className="text-[10px] uppercase tracking-wide text-zinc-500">Orders</span>
+            <div className="bg-[#fefcfb] border-2 border-[#120e0f] p-3 sm:p-4">
+                 <Link to="/orders" className="block text-center">
+                    <span className="block text-xl sm:text-2xl font-bold text-[#120e0f]">{profileData?.orders?.length || 0}</span>
+                    <span className="text-[10px] uppercase tracking-wide text-[#120e0f]/60">Orders</span>
                  </Link>
             </div>
           </div>
 
           {/* RIGHT CONTENT AREA */}
           <div className="lg:col-span-9">
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm min-h-[500px]">
+            <div className="bg-[#fefcfb] border-2 border-[#120e0f] min-h-[500px]">
                 
                 {/* Content Header */}
-                <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
+                <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-5 border-b-2 border-[#120e0f] flex justify-between items-center">
                     <div>
-                        <h2 className="text-lg font-bold text-zinc-900">
+                        <h2 className="text-lg sm:text-xl font-semibold text-[#120e0f]">
                             {menuItems.find(i => i.id === activeTab)?.label}
                         </h2>
-                        <p className="text-sm text-zinc-500">
+                        <p className="text-xs sm:text-sm text-[#120e0f]/60 mt-1">
                             {menuItems.find(i => i.id === activeTab)?.description}
                         </p>
                     </div>
@@ -347,17 +350,17 @@ const Profile = () => {
 
                 {/* Notifications & Messages */}
                 {(error || success) && (
-                    <div className={`mx-6 mt-6 px-4 py-3 rounded-lg text-sm flex items-center gap-2 ${error ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700'}`}>
+                    <div className={`mx-4 sm:mx-6 lg:mx-8 mt-4 sm:mt-6 px-4 py-3 border-2 ${error ? 'bg-red-50 text-red-700 border-red-300' : 'bg-green-50 text-green-700 border-green-300'} text-sm flex items-center gap-2`}>
                         <span className={`w-2 h-2 rounded-full ${error ? 'bg-red-500' : 'bg-green-500'}`}></span>
                         {error || success}
                     </div>
                 )}
 
-                <div className="p-6">
+                <div className="p-4 sm:p-6 lg:p-8">
                     {/* --- TAB: PROFILE --- */}
                     {activeTab === 'profile' && (
                         <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                                 <div>
                                     <label className={labelClass}>Full Name</label>
                                     <input
@@ -365,7 +368,7 @@ const Profile = () => {
                                         name="name"
                                         value={formData.name}
                                         onChange={handleChange}
-                                        className={inputClass}
+                                        className="block w-full px-4 py-2.5 border-2 border-[#120e0f] text-sm bg-[#fefcfb] text-[#120e0f] focus:outline-none focus:ring-2 focus:ring-[#120e0f] focus:border-transparent transition duration-150 ease-in-out placeholder-[#120e0f]/40"
                                     />
                                 </div>
                                 <div>
@@ -375,7 +378,7 @@ const Profile = () => {
                                         name="phone"
                                         value={formData.phone}
                                         onChange={handleChange}
-                                        className={inputClass}
+                                        className="block w-full px-4 py-2.5 border-2 border-[#120e0f] text-sm bg-[#fefcfb] text-[#120e0f] focus:outline-none focus:ring-2 focus:ring-[#120e0f] focus:border-transparent transition duration-150 ease-in-out placeholder-[#120e0f]/40"
                                     />
                                 </div>
                                 <div className="md:col-span-2">
@@ -385,9 +388,9 @@ const Profile = () => {
                                             type="email"
                                             value={formData.email}
                                             disabled
-                                            className={`${inputClass} bg-gray-50 text-gray-500 cursor-not-allowed`}
+                                            className="block w-full px-4 py-2.5 border-2 border-[#120e0f]/30 text-sm bg-[#120e0f]/5 text-[#120e0f]/60 cursor-not-allowed"
                                         />
-                                        <span className="absolute right-3 top-2.5 text-xs font-medium text-zinc-400 bg-gray-100 px-2 py-0.5 rounded">
+                                        <span className="absolute right-3 top-2.5 text-xs font-medium text-[#120e0f]/60 bg-[#120e0f]/10 px-2 py-0.5 border border-[#120e0f]/20">
                                             Verified
                                         </span>
                                     </div>
@@ -399,16 +402,16 @@ const Profile = () => {
                                         rows="3"
                                         value={formData.address}
                                         onChange={handleChange}
-                                        className={inputClass}
+                                        className="block w-full px-4 py-2.5 border-2 border-[#120e0f] text-sm bg-[#fefcfb] text-[#120e0f] focus:outline-none focus:ring-2 focus:ring-[#120e0f] focus:border-transparent transition duration-150 ease-in-out placeholder-[#120e0f]/40"
                                         placeholder="Street, City, State, Zip, Country"
                                     />
                                 </div>
                             </div>
-                            <div className="pt-4 border-t border-gray-100 flex gap-3">
-                                <button type="submit" className="px-5 py-2.5 bg-zinc-900 text-white text-sm font-semibold rounded-lg hover:bg-zinc-800 transition-colors shadow-sm">
+                            <div className="pt-4 border-t-2 border-[#120e0f] flex gap-3">
+                                <button type="submit" className="px-5 py-2.5 bg-[#120e0f] text-[#fefcfb] text-sm font-semibold hover:bg-[#120e0f]/90 transition-colors border-2 border-[#120e0f]">
                                     Save Changes
                                 </button>
-                                <button type="button" onClick={loadProfile} className="px-5 py-2.5 bg-white text-zinc-700 text-sm font-semibold rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors">
+                                <button type="button" onClick={loadProfile} className="px-5 py-2.5 bg-[#fefcfb] text-[#120e0f] text-sm font-semibold border-2 border-[#120e0f] hover:bg-[#120e0f]/5 transition-colors">
                                     Reset
                                 </button>
                             </div>
@@ -419,18 +422,18 @@ const Profile = () => {
                     {activeTab === 'orders' && (
                         <div>
                            {profileData?.orders && profileData.orders.length > 0 ? (
-                            <div className="overflow-x-auto rounded-lg border border-gray-200">
-                                <table className="min-w-full divide-y divide-gray-200">
-                                    <thead className="bg-gray-50">
+                            <div className="overflow-x-auto border-2 border-[#120e0f]">
+                                <table className="min-w-full divide-y-2 divide-[#120e0f]">
+                                    <thead className="bg-[#fefcfb]">
                                         <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Order ID</th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
-                                            <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
-                                            <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Total</th>
-                                            <th className="px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Invoice</th>
+                                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-[#120e0f] uppercase tracking-wider border-b-2 border-[#120e0f]">Order ID</th>
+                                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-[#120e0f] uppercase tracking-wider border-b-2 border-[#120e0f]">Date</th>
+                                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-[#120e0f] uppercase tracking-wider border-b-2 border-[#120e0f]">Status</th>
+                                            <th className="px-4 sm:px-6 py-3 text-right text-xs font-semibold text-[#120e0f] uppercase tracking-wider border-b-2 border-[#120e0f]">Total</th>
+                                            <th className="px-4 sm:px-6 py-3 text-center text-xs font-semibold text-[#120e0f] uppercase tracking-wider border-b-2 border-[#120e0f]">Invoice</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
+                                    <tbody className="bg-[#fefcfb] divide-y-2 divide-[#120e0f]">
                                         {profileData.orders.map((order) => (
                                             <OrderRow key={order._id} order={order} user={profileData.user} />
                                         ))}
@@ -439,11 +442,11 @@ const Profile = () => {
                             </div>
                            ) : (
                             <div className="text-center py-12">
-                                <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <IconShoppingBag className="w-8 h-8 text-gray-400" />
+                                <div className="w-16 h-16 bg-[#fefcfb] border-2 border-[#120e0f] rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <IconShoppingBag className="w-8 h-8 text-[#120e0f]/60" />
                                 </div>
-                                <h3 className="text-lg font-medium text-gray-900">No orders placed yet</h3>
-                                <Link to="/" className="mt-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-zinc-900 hover:bg-zinc-800">
+                                <h3 className="text-lg font-medium text-[#120e0f]">No orders placed yet</h3>
+                                <Link to="/" className="mt-4 inline-flex items-center px-4 py-2.5 border-2 border-[#120e0f] text-sm font-medium text-[#120e0f] bg-[#fefcfb] hover:bg-[#120e0f]/5 transition-colors">
                                     Browse Products
                                 </Link>
                             </div>
@@ -454,22 +457,22 @@ const Profile = () => {
                      {/* --- TAB: PAYMENTS (Credit Card UI) --- */}
                      {activeTab === 'payments' && (
                         <div className="max-w-2xl">
-                            <h3 className="text-sm font-semibold text-zinc-900 mb-4">Saved Cards</h3>
+                            <h3 className="text-sm font-semibold text-[#120e0f] mb-4">Saved Cards</h3>
                             
                             {/* Realistic CSS Credit Card */}
-                            <div className="relative w-80 h-48 bg-gradient-to-br from-zinc-800 to-black rounded-xl shadow-xl overflow-hidden text-white p-6 mb-8 transition-transform transform hover:-translate-y-1">
+                            <div className="relative w-full max-w-sm h-48 bg-gradient-to-br from-[#120e0f] to-black overflow-hidden text-[#fefcfb] p-6 mb-6 border-2 border-[#120e0f] transition-transform transform hover:-translate-y-1">
                                 <div className="absolute top-0 right-0 -mr-10 -mt-10 w-40 h-40 rounded-full bg-white opacity-5"></div>
                                 <div className="absolute bottom-0 left-0 -ml-10 -mb-10 w-40 h-40 rounded-full bg-white opacity-5"></div>
                                 
                                 <div className="flex justify-between items-start mb-8">
-                                    <div className="w-10 h-6 bg-zinc-500/50 rounded flex items-center justify-center">
-                                        <div className="w-6 h-4 border border-white/30 rounded-sm"></div>
+                                    <div className="w-10 h-6 bg-[#fefcfb]/20 rounded flex items-center justify-center border border-[#fefcfb]/30">
+                                        <div className="w-6 h-4 border border-[#fefcfb]/30 rounded-sm"></div>
                                     </div>
                                     <span className="text-xs font-mono opacity-70">DEBIT</span>
                                 </div>
                                 
                                 <div className="mb-6">
-                                    <p className="font-mono text-xl tracking-widest text-shadow">•••• •••• •••• 4242</p>
+                                    <p className="font-mono text-xl tracking-widest">•••• •••• •••• 4242</p>
                                 </div>
                                 
                                 <div className="flex justify-between items-end">
@@ -484,7 +487,7 @@ const Profile = () => {
                                 </div>
                             </div>
 
-                            <button className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 border border-gray-300 rounded-lg text-sm font-medium text-zinc-700 hover:bg-gray-50 transition-all">
+                            <button className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 border-2 border-[#120e0f] text-sm font-medium text-[#120e0f] bg-[#fefcfb] hover:bg-[#120e0f]/5 transition-all">
                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
                                 Add Payment Method
                             </button>
@@ -493,22 +496,22 @@ const Profile = () => {
 
                     {/* --- TAB: SECURITY --- */}
                     {activeTab === 'security' && (
-                         <div className="max-w-2xl space-y-6">
-                            <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg bg-white">
+                         <div className="max-w-2xl space-y-4">
+                            <div className="flex items-center justify-between p-4 border-2 border-[#120e0f] bg-[#fefcfb]">
                                 <div>
-                                    <h4 className="text-sm font-semibold text-zinc-900">Password</h4>
-                                    <p className="text-xs text-zinc-500 mt-1">Last changed 30 days ago</p>
+                                    <h4 className="text-sm font-semibold text-[#120e0f]">Password</h4>
+                                    <p className="text-xs text-[#120e0f]/60 mt-1">Last changed 30 days ago</p>
                                 </div>
-                                <button className="text-sm font-medium text-zinc-900 hover:underline">Update</button>
+                                <button className="text-sm font-medium text-[#120e0f] hover:text-[#120e0f]/70 border-2 border-[#120e0f] px-3 py-1.5 hover:bg-[#120e0f]/5 transition-colors">Update</button>
                             </div>
-                            <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg bg-white">
+                            <div className="flex items-center justify-between p-4 border-2 border-[#120e0f] bg-[#fefcfb]">
                                 <div>
-                                    <h4 className="text-sm font-semibold text-zinc-900">Two-Factor Authentication</h4>
-                                    <p className="text-xs text-zinc-500 mt-1">Add an extra layer of security</p>
+                                    <h4 className="text-sm font-semibold text-[#120e0f]">Two-Factor Authentication</h4>
+                                    <p className="text-xs text-[#120e0f]/60 mt-1">Add an extra layer of security</p>
                                 </div>
                                 <div className="relative inline-block w-10 mr-2 align-middle select-none">
-                                    <input type="checkbox" className="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300"/>
-                                    <label className="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer"></label>
+                                    <input type="checkbox" className="toggle-checkbox absolute block w-5 h-5 rounded-full bg-[#fefcfb] border-2 appearance-none cursor-pointer border-[#120e0f]"/>
+                                    <label className="toggle-label block overflow-hidden h-5 rounded-full bg-[#120e0f]/20 cursor-pointer"></label>
                                 </div>
                             </div>
                         </div>
@@ -521,13 +524,13 @@ const Profile = () => {
                               { id: 'email', title: 'Order Updates', description: 'Get notified when your order status changes.' },
                               { id: 'promo', title: 'Promotional Emails', description: 'Receive emails about new products and sales.' },
                             ].map((item) => (
-                                <label key={item.id} className="flex items-start gap-4 p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                                <label key={item.id} className="flex items-start gap-4 p-4 border-2 border-[#120e0f] bg-[#fefcfb] cursor-pointer hover:bg-[#120e0f]/5 transition-colors">
                                     <div className="flex h-5 items-center">
-                                        <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-zinc-900 focus:ring-zinc-900" defaultChecked />
+                                        <input type="checkbox" className="h-4 w-4 border-2 border-[#120e0f] text-[#120e0f] focus:ring-[#120e0f]" defaultChecked />
                                     </div>
                                     <div>
-                                        <span className="block text-sm font-medium text-zinc-900">{item.title}</span>
-                                        <span className="block text-xs text-zinc-500 mt-1">{item.description}</span>
+                                        <span className="block text-sm font-medium text-[#120e0f]">{item.title}</span>
+                                        <span className="block text-xs text-[#120e0f]/60 mt-1">{item.description}</span>
                                     </div>
                                 </label>
                             ))}

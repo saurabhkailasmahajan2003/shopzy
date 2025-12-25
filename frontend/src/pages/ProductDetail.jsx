@@ -624,13 +624,13 @@ const ProductDetail = () => {
     <>
       <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
 
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="min-h-screen bg-[#fefcfb]">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
 
           {/* Back Button */}
           <button
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-[#120e0f] hover:text-[#120e0f]/70 mb-6 transition-colors border-2 border-[#120e0f] px-3 py-1.5 hover:bg-[#120e0f]/5"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -638,13 +638,13 @@ const ProductDetail = () => {
             back
           </button>
 
-          <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 xl:gap-16">
+          <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 xl:gap-12">
 
             {/* LEFT COLUMN: Product Visualization */}
             <div className="relative lg:sticky lg:top-8 h-fit order-first lg:order-first">
 
               {/* Main Product Image */}
-              <div className="relative aspect-square bg-gray-100 rounded-xl sm:rounded-2xl overflow-hidden mb-4 sm:mb-6 shadow-lg max-w-md mx-auto lg:max-w-full">
+              <div className="relative aspect-square bg-[#fefcfb] border-2 border-[#120e0f] overflow-hidden mb-4 sm:mb-6 max-w-md mx-auto lg:max-w-full">
                 {/* Best Seller Badge */}
                 <div className="absolute top-3 left-3 z-10 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full text-[10px] font-semibold text-gray-900 shadow-sm">
                   best seller
@@ -707,7 +707,7 @@ const ProductDetail = () => {
               {/* Size Selection */}
               {product.sizes && product.sizes.length > 0 && (
                 <div className="mb-4">
-                  <label className="block text-xs font-medium text-gray-900 mb-2">Select Size</label>
+                  <label className="block text-xs font-semibold text-[#120e0f] uppercase tracking-wide mb-2">Select Size</label>
                   <div className="flex flex-wrap gap-2">
                     {product.sizes.map((size) => {
                       const isSelected = selectedSize === size;
@@ -715,14 +715,15 @@ const ProductDetail = () => {
                         <button
                           key={size}
                           onClick={() => setSelectedSize(size)}
-                          className={`px-3 py-2 rounded-lg border-2 transition-all flex items-center gap-1.5 ${isSelected
-                            ? 'border-gray-900 bg-gray-50'
-                            : 'border-gray-200 hover:border-gray-300'
+                          className={`px-3 py-2 border-2 transition-all flex items-center gap-1.5 ${
+                            isSelected
+                            ? 'border-[#120e0f] bg-[#120e0f] text-[#fefcfb]'
+                            : 'border-[#120e0f] bg-[#fefcfb] text-[#120e0f] hover:bg-[#120e0f]/5'
                             }`}
                         >
-                          <span className="text-xs font-medium text-gray-900">{size}</span>
+                          <span className="text-xs font-medium">{size}</span>
                           {isSelected && (
-                            <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
                           )}
@@ -736,7 +737,7 @@ const ProductDetail = () => {
               {/* Color Swatches */}
               {(product.colors?.length > 0 || product.color) && (
                 <div>
-                  <label className="block text-xs font-medium text-gray-900 mb-2">Select Color</label>
+                  <label className="block text-xs font-semibold text-[#120e0f] uppercase tracking-wide mb-2">Select Color</label>
                   <div className="flex items-center gap-2 flex-wrap">
                     {(product.colors || [product.color || '#000000']).slice(0, 6).map((color, idx) => {
                       const isSelected = selectedColor === color || (!selectedColor && idx === 0);
@@ -744,14 +745,15 @@ const ProductDetail = () => {
                         <button
                           key={idx}
                           onClick={() => setSelectedColor(color)}
-                          className={`relative w-10 h-10 rounded-full border-2 transition-all ${isSelected ? 'border-gray-900 scale-110 shadow-md' : 'border-gray-300 hover:border-gray-500'
+                          className={`relative w-10 h-10 rounded-full border-2 transition-all ${
+                            isSelected ? 'border-[#120e0f] scale-110' : 'border-[#120e0f]/30 hover:border-[#120e0f]'
                             }`}
                           style={{ backgroundColor: color }}
                           aria-label={`Select color ${color}`}
                         >
                           {isSelected && (
                             <div className="absolute inset-0 flex items-center justify-center">
-                              <svg className="w-5 h-5 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                              <svg className="w-5 h-5 text-[#120e0f] drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                               </svg>
                             </div>
@@ -774,7 +776,7 @@ const ProductDetail = () => {
                     {product.brand}
                   </div>
                 )}
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-[#120e0f] leading-tight">
                   {nameWords.map((word, idx) => {
                     const shouldHighlight = highlightWords.some(hw => word.toLowerCase().includes(hw.toLowerCase()));
                     return (
@@ -794,12 +796,12 @@ const ProductDetail = () => {
               </div>
 
               {/* Price Section */}
-              <div className="flex items-baseline gap-3 pb-4 border-b border-gray-200">
-                <span className="text-3xl lg:text-4xl font-bold text-gray-900">₹{finalPrice.toLocaleString()}</span>
+              <div className="flex items-baseline gap-3 pb-4 border-b-2 border-[#120e0f]">
+                <span className="text-3xl lg:text-4xl font-bold text-[#120e0f]">₹{finalPrice.toLocaleString()}</span>
                 {originalPrice > finalPrice && (
                   <>
-                    <span className="text-lg text-gray-400 line-through">₹{originalPrice.toLocaleString()}</span>
-                    <span className="text-sm font-semibold text-green-600 bg-green-50 px-2 py-1 rounded">
+                    <span className="text-lg text-[#120e0f]/40 line-through">₹{originalPrice.toLocaleString()}</span>
+                    <span className="text-sm font-semibold text-[#120e0f] bg-[#120e0f]/10 border-2 border-[#120e0f] px-2 py-1">
                       {Math.round(((originalPrice - finalPrice) / originalPrice) * 100)}% OFF
                     </span>
                   </>
@@ -810,7 +812,7 @@ const ProductDetail = () => {
               <div className="flex flex-row gap-3">
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 flex items-center justify-center gap-2 bg-cta hover:bg-cta-dark text-white font-semibold px-6 py-3.5 rounded-lg transition-all shadow-lg hover:shadow-xl active:scale-[0.98] text-base"
+                  className="flex-1 flex items-center justify-center gap-2 bg-[#120e0f] hover:bg-[#120e0f]/90 text-[#fefcfb] font-semibold px-6 py-3.5 border-2 border-[#120e0f] transition-all active:scale-[0.98] text-base"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -819,7 +821,7 @@ const ProductDetail = () => {
                 </button>
                 <button
                   onClick={handleBuyNow}
-                  className="flex-1 flex items-center justify-center gap-2 bg-background hover:bg-primary/10 text-text font-semibold px-6 py-3.5 rounded-lg transition-all shadow-md hover:shadow-lg active:scale-[0.98] text-base border-2 border-primary"
+                  className="flex-1 flex items-center justify-center gap-2 bg-[#fefcfb] hover:bg-[#120e0f]/5 text-[#120e0f] font-semibold px-6 py-3.5 border-2 border-[#120e0f] transition-all active:scale-[0.98] text-base"
                 >
                   <span>Buy Now</span>
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -830,39 +832,39 @@ const ProductDetail = () => {
 
               {/* Quick Info Cards */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <div className="bg-[#fefcfb] border-2 border-[#120e0f] p-4">
                   <div className="flex items-center gap-2 mb-1">
-                    <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-[#120e0f]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    <span className="text-xs font-semibold text-gray-700 uppercase">Free Shipping</span>
+                    <span className="text-xs font-semibold text-[#120e0f] uppercase">Free Shipping</span>
                   </div>
-                  <p className="text-xs text-gray-600">On orders over ₹1,000</p>
+                  <p className="text-xs text-[#120e0f]/60">On orders over ₹1,000</p>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <div className="bg-[#fefcfb] border-2 border-[#120e0f] p-4">
                   <div className="flex items-center gap-2 mb-1">
-                    <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-[#120e0f]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
-                    <span className="text-xs font-semibold text-gray-700 uppercase">Easy Returns</span>
+                    <span className="text-xs font-semibold text-[#120e0f] uppercase">Easy Returns</span>
                   </div>
-                  <p className="text-xs text-gray-600">30 days return policy</p>
+                  <p className="text-xs text-[#120e0f]/60">30 days return policy</p>
                 </div>
               </div>
 
               {/* Reviews Summary */}
               {reviewStats && reviewStats.averageRating && (
-                <div className="bg-white border border-gray-200 rounded-lg p-5">
+                <div className="bg-[#fefcfb] border-2 border-[#120e0f] p-4 sm:p-5">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="text-center">
-                      <div className="text-3xl font-bold text-gray-900">{reviewStats.averageRating.toFixed(1)}</div>
+                      <div className="text-3xl font-bold text-[#120e0f]">{reviewStats.averageRating.toFixed(1)}</div>
                       <div className="flex items-center gap-0.5 mt-1">
                         {[1, 2, 3, 4, 5].map((star) => (
                           <svg
                             key={star}
                             className={`w-4 h-4 ${star <= Math.round(reviewStats.averageRating)
-                              ? 'text-yellow-400 fill-current'
-                              : 'text-gray-300'
+                              ? 'text-[#120e0f] fill-current'
+                              : 'text-[#120e0f]/20'
                               }`}
                             fill="currentColor"
                             viewBox="0 0 20 20"
@@ -873,8 +875,8 @@ const ProductDetail = () => {
                       </div>
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm text-gray-600 mb-2">
-                        Based on <span className="font-semibold text-gray-900">{reviewStats.totalReviews}</span> reviews
+                      <p className="text-sm text-[#120e0f]/60 mb-2">
+                        Based on <span className="font-semibold text-[#120e0f]">{reviewStats.totalReviews}</span> reviews
                       </p>
                       {reviewStats.ratingDistribution && (
                         <div className="space-y-1.5">
@@ -885,14 +887,14 @@ const ProductDetail = () => {
                               : 0;
                             return (
                               <div key={rating} className="flex items-center gap-2">
-                                <span className="text-xs text-gray-600 w-6">{rating}★</span>
-                                <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                                <span className="text-xs text-[#120e0f]/60 w-6">{rating}★</span>
+                                <div className="flex-1 h-1.5 bg-[#120e0f]/10 rounded-full overflow-hidden border border-[#120e0f]/20">
                                   <div
-                                    className="h-full bg-yellow-400 transition-all duration-300"
+                                    className="h-full bg-[#120e0f] transition-all duration-300"
                                     style={{ width: `${percentage}%` }}
                                   />
                                 </div>
-                                <span className="text-xs text-gray-500 w-8 text-right">{count}</span>
+                                <span className="text-xs text-[#120e0f]/60 w-8 text-right">{count}</span>
                               </div>
                             );
                           })}
@@ -901,25 +903,25 @@ const ProductDetail = () => {
                     </div>
                   </div>
                   {reviews.length > 0 && (
-                    <div className="pt-4 border-t border-gray-200">
+                    <div className="pt-4 border-t-2 border-[#120e0f]">
                       <div className="space-y-3">
                         {reviews.slice(0, 2).map((review) => (
                           <div key={review._id} className="flex items-start gap-3">
-                            <div className="flex-shrink-0 w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                              <span className="text-xs font-semibold text-gray-600">
+                            <div className="flex-shrink-0 w-8 h-8 bg-[#120e0f] text-[#fefcfb] rounded-full flex items-center justify-center border-2 border-[#120e0f]">
+                              <span className="text-xs font-semibold">
                                 {(review.userName || 'A')[0].toUpperCase()}
                               </span>
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-1">
-                                <span className="text-sm font-medium text-gray-900">{review.userName || 'Anonymous'}</span>
+                                <span className="text-sm font-medium text-[#120e0f]">{review.userName || 'Anonymous'}</span>
                                 <div className="flex items-center gap-0.5">
                                   {[1, 2, 3, 4, 5].map((star) => (
                                     <svg
                                       key={star}
                                       className={`w-3 h-3 ${star <= review.rating
-                                        ? 'text-yellow-400 fill-current'
-                                        : 'text-gray-300'
+                                        ? 'text-[#120e0f] fill-current'
+                                        : 'text-[#120e0f]/20'
                                         }`}
                                       fill="currentColor"
                                       viewBox="0 0 20 20"
@@ -929,8 +931,8 @@ const ProductDetail = () => {
                                   ))}
                                 </div>
                               </div>
-                              <p className="text-sm font-medium text-gray-900 mb-1 line-clamp-1">{review.title}</p>
-                              <p className="text-xs text-gray-600 line-clamp-2">{review.comment}</p>
+                              <p className="text-sm font-medium text-[#120e0f] mb-1 line-clamp-1">{review.title}</p>
+                              <p className="text-xs text-[#120e0f]/60 line-clamp-2">{review.comment}</p>
                             </div>
                           </div>
                         ))}
@@ -941,29 +943,29 @@ const ProductDetail = () => {
               )}
 
               {/* Product Details */}
-              <div className="bg-white border border-gray-200 rounded-lg p-5">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Product Details</h3>
-                <div className="space-y-3 text-sm text-gray-600">
+              <div className="bg-[#fefcfb] border-2 border-[#120e0f] p-4 sm:p-5">
+                <h3 className="text-lg font-semibold text-[#120e0f] mb-4">Product Details</h3>
+                <div className="space-y-3 text-sm text-[#120e0f]/80">
                   <p className="leading-relaxed">
                     {product.description || product.productDetails?.description || 'Premium quality product designed for comfort and style.'}
                   </p>
-                  <div className="pt-3 border-t border-gray-100 space-y-2">
+                  <div className="pt-3 border-t-2 border-[#120e0f] space-y-2">
                     {product.brand && (
                       <div className="flex justify-between">
-                        <span className="font-medium text-gray-900">Brand:</span>
-                        <span>{product.brand}</span>
+                        <span className="font-medium text-[#120e0f]">Brand:</span>
+                        <span className="text-[#120e0f]/60">{product.brand}</span>
                       </div>
                     )}
                     {product.productDetails?.fabric && (
                       <div className="flex justify-between">
-                        <span className="font-medium text-gray-900">Fabric:</span>
-                        <span>{product.productDetails.fabric}</span>
+                        <span className="font-medium text-[#120e0f]">Fabric:</span>
+                        <span className="text-[#120e0f]/60">{product.productDetails.fabric}</span>
                       </div>
                     )}
                     {product.color && (
                       <div className="flex justify-between">
-                        <span className="font-medium text-gray-900">Color:</span>
-                        <span className="capitalize">{product.color}</span>
+                        <span className="font-medium text-[#120e0f]">Color:</span>
+                        <span className="capitalize text-[#120e0f]/60">{product.color}</span>
                       </div>
                     )}
                   </div>
@@ -971,34 +973,34 @@ const ProductDetail = () => {
               </div>
 
               {/* Delivery & Returns Info */}
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-5">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Shipping & Returns</h3>
+              <div className="bg-[#fefcfb] border-2 border-[#120e0f] p-4 sm:p-5">
+                <h3 className="text-lg font-semibold text-[#120e0f] mb-4">Shipping & Returns</h3>
                 <div className="space-y-3 text-sm">
                   <div className="flex items-start gap-3">
-                    <svg className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-[#120e0f] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     <div>
-                      <p className="font-medium text-gray-900">Free Shipping</p>
-                      <p className="text-gray-600">On orders over ₹1,000. Standard delivery in 5-7 business days.</p>
+                      <p className="font-medium text-[#120e0f]">Free Shipping</p>
+                      <p className="text-[#120e0f]/60">On orders over ₹1,000. Standard delivery in 5-7 business days.</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <svg className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-[#120e0f] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
                     <div>
-                      <p className="font-medium text-gray-900">5-Day Returns</p>
-                      <p className="text-gray-600">Easy returns within 30 days of purchase. No questions asked.</p>
+                      <p className="font-medium text-[#120e0f]">5-Day Returns</p>
+                      <p className="text-[#120e0f]/60">Easy returns within 30 days of purchase. No questions asked.</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <svg className="w-5 h-5 text-purple-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-[#120e0f] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
                     <div>
-                      <p className="font-medium text-gray-900">Secure Payment</p>
-                      <p className="text-gray-600">Your payment information is safe and encrypted.</p>
+                      <p className="font-medium text-[#120e0f]">Secure Payment</p>
+                      <p className="text-[#120e0f]/60">Your payment information is safe and encrypted.</p>
                     </div>
                   </div>
                 </div>

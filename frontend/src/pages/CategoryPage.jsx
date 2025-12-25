@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import FilterSidebar from '../components/FilterSidebar';
+import StickyCartSummary from '../components/StickyCartSummary';
 import { productAPI } from '../utils/api';
 
 const CategoryPage = () => {
@@ -346,84 +347,86 @@ const CategoryPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#fefcfb] py-4 sm:py-6 lg:py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
         
         {/* Header Row - Breadcrumb, Title, and Product Count */}
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div className="flex items-center gap-4 flex-wrap">
-            {/* Breadcrumb Navigation */}
-            {(derivedGender || pathname === '/women') && (
-              <nav>
-                <ol className="flex items-center space-x-2 text-sm text-gray-500">
-                  <li>
-                    <Link to="/" className="hover:text-gray-900 transition-colors">
-                      Home
-                    </Link>
-                  </li>
-                  <li className="text-gray-400">/</li>
-                  {derivedGender && (
-                    <>
-                      <li>
-                        <Link to={`/${derivedGender}`} className="hover:text-gray-900 transition-colors capitalize">
-                          {derivedGender}
-                        </Link>
-                      </li>
-                      {category && (
-                        <>
-                          <li className="text-gray-400">/</li>
-                          <li className="text-gray-900 capitalize">
-                            {category === 'tshirt' ? 'T-Shirt' : category}
-                          </li>
-                        </>
-                      )}
-                    </>
-                  )}
-                  {!derivedGender && pathname === '/women' && (
-                    <li className="text-gray-900 capitalize">
-                      {pathname.replace('/', '')}
+        <div className="mb-4 sm:mb-6 flex flex-col gap-3 sm:gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 flex-wrap">
+              {/* Breadcrumb Navigation */}
+              {(derivedGender || pathname === '/women') && (
+                <nav className="text-xs sm:text-sm">
+                  <ol className="flex items-center space-x-1 sm:space-x-2 text-[#120e0f]/60">
+                    <li>
+                      <Link to="/" className="hover:text-[#120e0f] transition-colors">
+                        Home
+                      </Link>
                     </li>
-                  )}
-                </ol>
-              </nav>
-            )}
-            
-            {/* Title */}
-            <h1 className="text-3xl font-bold text-gray-900">
-              {isLoading && !pageTitle ? 'Loading...' : pageTitle}
-            </h1>
-          </div>
+                    <li className="text-[#120e0f]/40">/</li>
+                    {derivedGender && (
+                      <>
+                        <li>
+                          <Link to={`/${derivedGender}`} className="hover:text-[#120e0f] transition-colors capitalize">
+                            {derivedGender}
+                          </Link>
+                        </li>
+                        {category && (
+                          <>
+                            <li className="text-[#120e0f]/40">/</li>
+                            <li className="text-[#120e0f] capitalize">
+                              {category === 'tshirt' ? 'T-Shirt' : category}
+                            </li>
+                          </>
+                        )}
+                      </>
+                    )}
+                    {!derivedGender && pathname === '/women' && (
+                      <li className="text-[#120e0f] capitalize">
+                        {pathname.replace('/', '')}
+                      </li>
+                    )}
+                  </ol>
+                </nav>
+              )}
+              
+              {/* Title */}
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#120e0f]">
+                {isLoading && !pageTitle ? 'Loading...' : pageTitle}
+              </h1>
+            </div>
 
-          <div className="flex items-center gap-4">
-            {/* Product Count */}
-            {!isLoading && filteredList.length > 0 && (
-              <p className="text-sm text-gray-500 whitespace-nowrap">
-                Showing {((page - 1) * itemsPerPage) + 1} - {Math.min(page * itemsPerPage, filteredList.length)} of {filteredList.length} products
-              </p>
-            )}
-            
-            {/* Filter Toggle Button */}
-            <button
-              onClick={() => {
-                if (window.innerWidth >= 1024) {
-                  setShowFilters(!showFilters);
-                } else {
-                  setShowMobileFilters(!showMobileFilters);
-                }
-              }}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors whitespace-nowrap"
-              disabled={isLoading}
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-              </svg>
-              <span className="hidden lg:inline">{showFilters ? 'Hide Filters' : 'Show Filters'}</span>
-              <span className="lg:hidden">Filters</span>
-            </button>
+            <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+              {/* Product Count */}
+              {!isLoading && filteredList.length > 0 && (
+                <p className="text-xs sm:text-sm text-[#120e0f]/60 whitespace-nowrap">
+                  Showing {((page - 1) * itemsPerPage) + 1} - {Math.min(page * itemsPerPage, filteredList.length)} of {filteredList.length} products
+                </p>
+              )}
+              
+              {/* Filter Toggle Button */}
+              <button
+                onClick={() => {
+                  if (window.innerWidth >= 1024) {
+                    setShowFilters(!showFilters);
+                  } else {
+                    setShowMobileFilters(!showMobileFilters);
+                  }
+                }}
+                className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-[#fefcfb] border-2 border-[#120e0f] text-xs sm:text-sm font-medium text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors whitespace-nowrap"
+                disabled={isLoading}
+              >
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
+                <span className="hidden lg:inline">{showFilters ? 'Hide Filters' : 'Show Filters'}</span>
+                <span className="lg:hidden">Filters</span>
+              </button>
+            </div>
           </div>
         </div>
         
-        <div className="flex gap-6 relative">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 relative">
           {/* Filter Sidebar */}
           <div className={`
             ${showMobileFilters ? 'block' : 'hidden'} 
@@ -436,12 +439,12 @@ const CategoryPage = () => {
               ? 'lg:translate-x-0 lg:pointer-events-auto' 
               : 'lg:-translate-x-full lg:pointer-events-none lg:absolute lg:left-0 lg:overflow-hidden'
             }
-            ${showMobileFilters ? 'fixed inset-0 z-50 bg-white p-4 overflow-y-auto lg:relative lg:z-auto lg:bg-transparent lg:p-0 lg:-ml-8' : 'lg:-ml-8'}
+            ${showMobileFilters ? 'fixed inset-0 z-50 bg-[#fefcfb] p-4 sm:p-6 overflow-y-auto lg:relative lg:z-auto lg:bg-transparent lg:p-0' : ''}
           `}>
              {showMobileFilters && (
-               <div className="lg:hidden flex items-center justify-between mb-4">
-                 <h2 className="text-xl font-bold">Filters</h2>
-                 <button onClick={() => setShowMobileFilters(false)} className="text-gray-600 hover:text-gray-800">
+               <div className="lg:hidden flex items-center justify-between mb-4 sm:mb-6">
+                 <h2 className="text-lg sm:text-xl font-bold text-[#120e0f]">Filters</h2>
+                 <button onClick={() => setShowMobileFilters(false)} className="text-[#120e0f] hover:opacity-70 transition-opacity">
                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                    </svg>
@@ -451,16 +454,16 @@ const CategoryPage = () => {
              
              {/* Mobile Chips */}
              {derivedGender && (
-               <div className="lg:hidden mb-4 space-y-2">
-                 <p className="text-xs uppercase tracking-wide text-gray-500">Subcategories</p>
+               <div className="lg:hidden mb-4 sm:mb-6 space-y-2">
+                 <p className="text-xs uppercase tracking-wide text-[#120e0f]/60">Subcategories</p>
                  <div className="flex flex-wrap gap-2">
                    {['shirt', 'tshirt', 'trousers', 'saree', 'shoes', 'accessories'].map((sub) => (
                      <Link
                        key={sub}
                        to={`/${derivedGender}/${sub}`}
-                       className={`px-3 py-1 rounded-full text-xs font-semibold border ${
-                         derivedCategory === sub ? 'bg-gray-900 text-white' : 'text-gray-600'
-                       }`}
+                       className={`px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-semibold border-2 ${
+                         derivedCategory === sub ? 'bg-[#120e0f] text-[#fefcfb] border-[#120e0f]' : 'text-[#120e0f] border-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb]'
+                       } transition-colors`}
                        onClick={() => setShowMobileFilters(false)}
                      >
                        {sub === 'tshirt' ? 'T-Shirt' : sub.charAt(0).toUpperCase() + sub.slice(1)}
@@ -496,7 +499,7 @@ const CategoryPage = () => {
             {isLoading ? null : (
               products.length > 0 ? (
                 <>
-                  <div className={`grid grid-cols-2 gap-4 sm:gap-6 ${showFilters ? 'lg:grid-cols-3 xl:grid-cols-4' : 'lg:grid-cols-4'}`}>
+                  <div className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 ${showFilters ? 'lg:grid-cols-3 xl:grid-cols-4' : 'lg:grid-cols-4 xl:grid-cols-5'}`}>
                     {products.map((product) => (
                       <ProductCard key={product._id || product.id} product={normalizeProduct(product)} />
                     ))}
@@ -504,19 +507,20 @@ const CategoryPage = () => {
 
                   {/* Pagination Controls */}
                   {totalPages > 1 && (
-                    <div className="mt-8 flex flex-col items-center gap-4">
-                      <div className="flex items-center gap-2 flex-wrap justify-center">
+                    <div className="mt-6 sm:mt-8 flex flex-col items-center gap-3 sm:gap-4">
+                      <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-center">
                         {/* Previous Button */}
                         <button
                           onClick={() => handlePageChange(page - 1)}
                           disabled={page === 1}
-                          className="px-4 py-2 text-sm font-semibold text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-gray-300 transition-all"
+                          className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-[#120e0f] bg-[#fefcfb] border-2 border-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#fefcfb] disabled:hover:text-[#120e0f] transition-all"
                         >
                           <span className="flex items-center gap-1">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                             </svg>
-                            Previous
+                            <span className="hidden sm:inline">Previous</span>
+                            <span className="sm:hidden">Prev</span>
                           </span>
                         </button>
 
@@ -524,7 +528,7 @@ const CategoryPage = () => {
                         {getPageNumbers().map((pageNum, index) => {
                           if (pageNum === '...') {
                             return (
-                              <span key={`ellipsis-${index}`} className="px-2 text-gray-500">
+                              <span key={`ellipsis-${index}`} className="px-1 sm:px-2 text-[#120e0f]/60 text-xs sm:text-sm">
                                 ...
                               </span>
                             );
@@ -533,10 +537,10 @@ const CategoryPage = () => {
                             <button
                               key={pageNum}
                               onClick={() => handlePageChange(pageNum)}
-                              className={`min-w-[40px] px-3 py-2 text-sm font-semibold rounded-lg border-2 transition-all ${
+                              className={`min-w-[32px] sm:min-w-[40px] px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold border-2 transition-all ${
                                 page === pageNum
-                                  ? 'bg-gray-900 text-white border-gray-900 shadow-lg'
-                                  : 'text-gray-700 bg-white border-gray-300 hover:bg-gray-50 hover:border-gray-400'
+                                  ? 'bg-[#120e0f] text-[#fefcfb] border-[#120e0f]'
+                                  : 'text-[#120e0f] bg-[#fefcfb] border-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb]'
                               }`}
                             >
                               {pageNum}
@@ -548,11 +552,12 @@ const CategoryPage = () => {
                         <button
                           onClick={() => handlePageChange(page + 1)}
                           disabled={page === totalPages}
-                          className="px-4 py-2 text-sm font-semibold text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-gray-300 transition-all"
+                          className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-[#120e0f] bg-[#fefcfb] border-2 border-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#fefcfb] disabled:hover:text-[#120e0f] transition-all"
                         >
                           <span className="flex items-center gap-1">
-                            Next
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <span className="hidden sm:inline">Next</span>
+                            <span className="sm:hidden">Next</span>
+                            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                             </svg>
                           </span>
@@ -560,7 +565,7 @@ const CategoryPage = () => {
                       </div>
 
                       {/* Page Info */}
-                      <p className="text-sm text-gray-500">
+                      <p className="text-xs sm:text-sm text-[#120e0f]/60">
                         Page {page} of {totalPages}
                       </p>
                     </div>
@@ -590,6 +595,9 @@ const CategoryPage = () => {
           </div>
         </div>
       </div>
+      
+      {/* Sticky Cart Summary - Only on Category Pages */}
+      <StickyCartSummary />
     </div>
   );
 };

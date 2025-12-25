@@ -37,13 +37,13 @@ const SizeGuide = () => {
             </svg>
             Back to Home
           </Link>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Size Guide</h1>
-          <p className="text-gray-600">Find your perfect fit with our comprehensive size guide.</p>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Size Guide</h1>
+          <p className="text-sm sm:text-base text-gray-600">Find your perfect fit with our comprehensive size guide.</p>
         </div>
 
         {/* How to Measure */}
-        <div className="mb-12 bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">How to Measure</h2>
+        <div className="mb-8 sm:mb-12 bg-white rounded-lg shadow-sm p-4 sm:p-6">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">How to Measure</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h3 className="font-semibold text-gray-900 mb-2">For Tops & Shirts</h3>
@@ -65,25 +65,25 @@ const SizeGuide = () => {
         </div>
 
         {/* Men's Size Chart */}
-        <div className="mb-12 bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">Men's Size Chart</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
+        <div className="mb-8 sm:mb-12 bg-white rounded-lg shadow-sm p-4 sm:p-6">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4 sm:mb-6">Men's Size Chart</h2>
+          <div className="overflow-x-auto -mx-4 sm:mx-0">
+            <table className="w-full border-collapse min-w-[500px]">
               <thead>
                 <tr className="bg-gray-50">
-                  <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">Size</th>
-                  <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">Chest (inches)</th>
-                  <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">Waist (inches)</th>
-                  <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">Length (inches)</th>
+                  <th className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-900">Size</th>
+                  <th className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-900">Chest (inches)</th>
+                  <th className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-900">Waist (inches)</th>
+                  <th className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-900">Length (inches)</th>
                 </tr>
               </thead>
               <tbody>
                 {mensSizes.map((item, index) => (
                   <tr key={index} className="hover:bg-gray-50">
-                    <td className="border border-gray-300 px-4 py-3 font-medium text-gray-900">{item.size}</td>
-                    <td className="border border-gray-300 px-4 py-3 text-gray-700">{item.chest}</td>
-                    <td className="border border-gray-300 px-4 py-3 text-gray-700">{item.waist}</td>
-                    <td className="border border-gray-300 px-4 py-3 text-gray-700">{item.length}</td>
+                    <td className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-900">{item.size}</td>
+                    <td className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700">{item.chest}</td>
+                    <td className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700">{item.waist}</td>
+                    <td className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700">{item.length}</td>
                   </tr>
                 ))}
               </tbody>
@@ -92,25 +92,25 @@ const SizeGuide = () => {
         </div>
 
         {/* Women's Size Chart */}
-        <div className="mb-12 bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">Women's Size Chart</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
+        <div className="mb-8 sm:mb-12 bg-white rounded-lg shadow-sm p-4 sm:p-6">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4 sm:mb-6">Women's Size Chart</h2>
+          <div className="overflow-x-auto -mx-4 sm:mx-0">
+            <table className="w-full border-collapse min-w-[500px]">
               <thead>
                 <tr className="bg-gray-50">
-                  <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">Size</th>
-                  <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">Bust (inches)</th>
-                  <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">Waist (inches)</th>
-                  <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">Hips (inches)</th>
+                  <th className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-900">Size</th>
+                  <th className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-900">Bust (inches)</th>
+                  <th className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-900">Waist (inches)</th>
+                  <th className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-900">Hips (inches)</th>
                 </tr>
               </thead>
               <tbody>
                 {womensSizes.map((item, index) => (
                   <tr key={index} className="hover:bg-gray-50">
-                    <td className="border border-gray-300 px-4 py-3 font-medium text-gray-900">{item.size}</td>
-                    <td className="border border-gray-300 px-4 py-3 text-gray-700">{item.bust}</td>
-                    <td className="border border-gray-300 px-4 py-3 text-gray-700">{item.waist}</td>
-                    <td className="border border-gray-300 px-4 py-3 text-gray-700">{item.hips}</td>
+                    <td className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-900">{item.size}</td>
+                    <td className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700">{item.bust}</td>
+                    <td className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700">{item.waist}</td>
+                    <td className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700">{item.hips}</td>
                   </tr>
                 ))}
               </tbody>
@@ -119,25 +119,25 @@ const SizeGuide = () => {
         </div>
 
         {/* Shoe Size Chart */}
-        <div className="mb-12 bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">Shoe Size Chart</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
+        <div className="mb-8 sm:mb-12 bg-white rounded-lg shadow-sm p-4 sm:p-6">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4 sm:mb-6">Shoe Size Chart</h2>
+          <div className="overflow-x-auto -mx-4 sm:mx-0">
+            <table className="w-full border-collapse min-w-[400px]">
               <thead>
                 <tr className="bg-gray-50">
-                  <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">US</th>
-                  <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">UK</th>
-                  <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">EU</th>
-                  <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">CM</th>
+                  <th className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-900">US</th>
+                  <th className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-900">UK</th>
+                  <th className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-900">EU</th>
+                  <th className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-900">CM</th>
                 </tr>
               </thead>
               <tbody>
                 {shoeSizes.map((item, index) => (
                   <tr key={index} className="hover:bg-gray-50">
-                    <td className="border border-gray-300 px-4 py-3 font-medium text-gray-900">{item.us}</td>
-                    <td className="border border-gray-300 px-4 py-3 text-gray-700">{item.uk}</td>
-                    <td className="border border-gray-300 px-4 py-3 text-gray-700">{item.eu}</td>
-                    <td className="border border-gray-300 px-4 py-3 text-gray-700">{item.cm}</td>
+                    <td className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-900">{item.us}</td>
+                    <td className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700">{item.uk}</td>
+                    <td className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700">{item.eu}</td>
+                    <td className="border border-gray-300 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-700">{item.cm}</td>
                   </tr>
                 ))}
               </tbody>

@@ -81,7 +81,7 @@ const Invoice = ({ order, user, onPrint, onDownload }) => {
           <div>
             <h3 className="text-sm font-semibold text-gray-500 uppercase mb-3">From</h3>
             <div className="space-y-1 text-sm">
-              <p className="font-bold text-gray-900">Shopzy</p>
+              <p className="font-bold text-gray-900" style={{ fontFamily: "'Dancing Script', cursive" }}>Shopzy</p>
               <p className="text-gray-600">Fashion & Lifestyle Store</p>
               <p className="text-gray-600">Email: support@shopzy.com</p>
               <p className="text-gray-600">Phone: +91 1800-XXX-XXXX</p>

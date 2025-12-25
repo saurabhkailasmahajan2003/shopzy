@@ -3,9 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 // Helper for left-side static icons
-// Updated to gray-400 for light mode
 const LeftIcon = ({ children }) => (
-  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#120e0f]/40">
     {children}
   </div>
 );
@@ -82,12 +81,11 @@ const SignUp = () => {
     navigate('/login-otp');
   };
 
-  // Light Theme Input Class
-  // White bg, gray border, dark text
-  const inputClass = "block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-zinc-800 focus:border-transparent sm:text-sm transition duration-150 ease-in-out";
+  // Cart Theme Input Class
+  const inputClass = "block w-full pl-10 pr-10 py-2.5 sm:py-3 border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] placeholder-[#120e0f]/40 focus:outline-none focus:border-[#bb3435] sm:text-sm transition-colors duration-150";
 
   return (
-    <div className="fixed inset-0 z-50 flex min-h-screen font-sans bg-white">
+    <div className="fixed inset-0 z-50 flex min-h-screen font-sans bg-[#fefcfb]">
       
       {/* LEFT SIDE: Branding */}
       <div 
@@ -104,7 +102,7 @@ const SignUp = () => {
               </svg>
             </div>
             <div>
-              <span className="text-xl font-bold text-white tracking-tight leading-none block">
+              <span className="text-xl font-bold text-white tracking-tight leading-none block" style={{ fontFamily: "'Dancing Script', cursive" }}>
                 Shopzy
               </span>
             </div>
@@ -118,25 +116,21 @@ const SignUp = () => {
       </div>
 
       {/* RIGHT SIDE: Form */}
-      <div className="w-full lg:w-[55%] flex flex-col justify-center items-center p-8 lg:p-16 overflow-y-auto bg-white">
-        <div className="w-full max-w-md space-y-8">
-          <h1>Sign Up for Free</h1>
-          <h1>Sign Up for Free</h1>
-          <h1></h1>
-          
+      <div className="w-full lg:w-[55%] flex flex-col justify-center items-center p-4 sm:p-6 md:p-8 lg:p-12 xl:p-16 overflow-y-auto bg-[#fefcfb]">
+        <div className="w-full max-w-md space-y-4 sm:space-y-6 lg:space-y-8">
           <div className="text-center lg:text-left">
-            <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Create an account</h2>
-            <p className="mt-2 text-sm text-gray-600">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#120e0f] tracking-tight">Create an account</h2>
+            <p className="mt-2 text-xs sm:text-sm text-[#120e0f]/60">
               Already have an account?{' '}
-              <Link to="/login" className="font-medium text-zinc-900 hover:text-zinc-700 underline underline-offset-2 transition-colors">
+              <Link to="/login" className="font-medium text-[#bb3435] hover:underline underline-offset-2 transition-colors">
                 Sign in
               </Link>
             </p>
           </div>
 
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <form className="mt-6 sm:mt-8 space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
             {error && (
-              <div className="bg-red-50 border-l-4 border-red-500 p-4 text-sm text-red-700">
+              <div className="bg-[#fefcfb] border-2 border-[#bb3435] p-3 sm:p-4 text-xs sm:text-sm text-[#bb3435]">
                 <p>{error}</p>
               </div>
             )}
@@ -182,7 +176,7 @@ const SignUp = () => {
                   </svg>
                 </LeftIcon>
                 <input id="password" name="password" type={showPassword ? "text" : "password"} autoComplete="new-password" required value={formData.password} onChange={handleChange} className={inputClass} placeholder="Password" />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none transition-colors">
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#120e0f]/40 hover:text-[#120e0f] focus:outline-none transition-colors">
                   {showPassword ? (
                     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
                   ) : (
@@ -205,30 +199,30 @@ const SignUp = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-lg text-white bg-cta hover:bg-cta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cta transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed shadow-md"
+              className="group relative w-full flex justify-center py-2.5 sm:py-3 px-4 border-2 border-[#120e0f] bg-[#120e0f] text-[#fefcfb] text-xs sm:text-sm font-semibold uppercase tracking-tight hover:bg-[#120e0f]/90 focus:outline-none transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Creating account...' : 'Sign up'}
             </button>
           </form>
 
           {/* DIVIDER */}
-          <div className="relative my-6">
+          <div className="relative my-4 sm:my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
+              <div className="w-full border-t-2 border-[#120e0f]"></div>
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or continue with</span>
+            <div className="relative flex justify-center text-xs sm:text-sm">
+              <span className="px-2 bg-[#fefcfb] text-[#120e0f]/60">Or continue with</span>
             </div>
           </div>
 
           {/* SOCIAL BUTTONS GRID */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
             
-            {/* GOOGLE BUTTON (White BG, Gray Border) */}
+            {/* GOOGLE BUTTON */}
             <button
               type="button"
               onClick={handleGoogleLogin}
-              className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all focus:outline-none focus:ring-2 focus:ring-gray-200"
+              className="flex w-full items-center justify-center gap-2 sm:gap-3 border-2 border-[#120e0f] bg-[#fefcfb] px-3 py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-all focus:outline-none"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path
@@ -251,13 +245,13 @@ const SignUp = () => {
               <span className="sr-only sm:not-sr-only">Google</span>
             </button>
 
-            {/* OTP / MOBILE BUTTON (White BG, Gray Border) */}
+            {/* OTP / MOBILE BUTTON */}
             <button
               type="button"
               onClick={handleOTPLogin}
-              className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all focus:outline-none focus:ring-2 focus:ring-gray-200"
+              className="flex w-full items-center justify-center gap-2 sm:gap-3 border-2 border-[#120e0f] bg-[#fefcfb] px-3 py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-all focus:outline-none"
             >
-              <svg className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
               </svg>
               <span>Login by OTP</span>
@@ -265,8 +259,8 @@ const SignUp = () => {
 
           </div>
 
-          <div className="mt-6 text-center">
-            <Link to="/" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
+          <div className="mt-4 sm:mt-6 text-center">
+            <Link to="/" className="text-xs sm:text-sm text-[#120e0f]/60 hover:text-[#120e0f] transition-colors">
               ← Return to Home
             </Link>
           </div>

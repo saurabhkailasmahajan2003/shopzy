@@ -65,13 +65,13 @@ const TrackOrder = () => {
             </svg>
             Back to Home
           </Link>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Track Your Order</h1>
-          <p className="text-gray-600">Enter your order ID or tracking number to check the status of your order.</p>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Track Your Order</h1>
+          <p className="text-sm sm:text-base text-gray-600">Enter your order ID or tracking number to check the status of your order.</p>
         </div>
 
         {/* Track Order Form */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <form onSubmit={handleTrack} className="flex gap-4">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
+          <form onSubmit={handleTrack} className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="flex-1">
               <input
                 type="text"
@@ -84,7 +84,7 @@ const TrackOrder = () => {
             <button
               type="submit"
               disabled={loading}
-              className="px-8 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto px-6 sm:px-8 py-3 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Tracking...' : 'Track Order'}
             </button>
@@ -121,7 +121,7 @@ const TrackOrder = () => {
             <div className="mb-6 pb-6 border-b border-gray-200">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-2">Order #{trackingData.orderId}</h2>
+                  <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">Order #{trackingData.orderId}</h2>
                   <p className="text-sm text-gray-600">Tracking Number: {trackingData.trackingNumber}</p>
                 </div>
                 <span className={`px-4 py-2 rounded-full text-sm font-medium border ${getStatusColor(trackingData.status)}`}>

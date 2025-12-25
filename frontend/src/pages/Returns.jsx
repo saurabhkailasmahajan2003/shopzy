@@ -20,13 +20,13 @@ const Returns = () => {
             </svg>
             Back to Home
           </Link>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Returns & Refunds</h1>
-          <p className="text-gray-600">Our hassle-free return policy ensures you shop with confidence.</p>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Returns & Refunds</h1>
+          <p className="text-sm sm:text-base text-gray-600">Our hassle-free return policy ensures you shop with confidence.</p>
         </div>
 
         {/* Return Policy Overview */}
-        <div className="mb-12 bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Return Policy</h2>
+        <div className="mb-8 sm:mb-12 bg-white rounded-lg shadow-sm p-4 sm:p-6">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">Return Policy</h2>
           <div className="space-y-4 text-gray-700">
             <p>We offer a <strong>30-day return policy</strong> on all items. If you're not completely satisfied with your purchase, you can return it for a full refund or exchange.</p>
             <div className="bg-gray-50 rounded-lg p-4 mt-4">
@@ -52,9 +52,9 @@ const Returns = () => {
         </div>
 
         {/* Return Process */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">How to Return an Item</h2>
-          <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="mb-8 sm:mb-12">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4 sm:mb-6">How to Return an Item</h2>
+          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
             <div className="space-y-6">
               {returnSteps.map((item, index) => (
                 <div key={index} className="flex items-start">
@@ -74,8 +74,8 @@ const Returns = () => {
         </div>
 
         {/* Refund Information */}
-        <div className="mb-12 bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Refund Information</h2>
+        <div className="mb-8 sm:mb-12 bg-white rounded-lg shadow-sm p-4 sm:p-6">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">Refund Information</h2>
           <div className="space-y-4 text-gray-700">
             <div>
               <h3 className="font-semibold text-gray-900 mb-2">Refund Processing Time</h3>
@@ -99,8 +99,8 @@ const Returns = () => {
         </div>
 
         {/* Exchanges */}
-        <div className="mb-12 bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Exchanges</h2>
+        <div className="mb-8 sm:mb-12 bg-white rounded-lg shadow-sm p-4 sm:p-6">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">Exchanges</h2>
           <div className="space-y-4 text-gray-700">
             <p>We currently don't offer direct exchanges. If you need a different size or color:</p>
             <ol className="list-decimal list-inside space-y-2 ml-4">

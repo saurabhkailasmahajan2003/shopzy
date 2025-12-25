@@ -14,15 +14,37 @@ const apiRequest = async (endpoint, options = {}) => {
   };
 
   try {
+    console.log('API Request:', `${API_BASE_URL}${endpoint}`, {
+      method: config.method || 'GET',
+      hasToken: !!token,
+      body: config.body ? JSON.parse(config.body) : null
+    });
+    
     const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-    const data = await response.json();
+    
+    let data;
+    try {
+      data = await response.json();
+    } catch (parseError) {
+      console.error('Failed to parse response:', parseError);
+      throw new Error('Invalid response from server');
+    }
+
+    console.log('API Response:', {
+      status: response.status,
+      success: data.success,
+      message: data.message
+    });
 
     if (!response.ok) {
-      throw new Error(data.message || 'Something went wrong');
+      const errorMessage = data.message || data.error || `Server error: ${response.status}`;
+      console.error('API Error:', errorMessage);
+      throw new Error(errorMessage);
     }
 
     return data;
   } catch (error) {
+    console.error('API Request Error:', error);
     throw error;
   }
 };

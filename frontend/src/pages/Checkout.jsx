@@ -305,7 +305,7 @@ const Checkout = () => {
 
   return (
     <div 
-      className="min-h-screen bg-gray-50 transition-opacity duration-300"
+      className="min-h-screen bg-[#fefcfb] transition-opacity duration-300"
       style={{
         opacity: showSuccessModal ? 0.3 : 1,
         pointerEvents: showSuccessModal ? 'none' : 'auto',
@@ -313,22 +313,23 @@ const Checkout = () => {
       }}
     >
       {/* Professional Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-20 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
+      <div className="bg-[#fefcfb] border-b-2 border-[#120e0f] sticky top-0 z-20">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 h-12 sm:h-14 flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-semibold text-gray-900">Checkout</h1>
-            <p className="text-xs text-gray-500 mt-0.5">{cart.length} {cart.length === 1 ? 'item' : 'items'}</p>
+            <h1 className="text-base sm:text-lg font-semibold text-[#120e0f]">Checkout</h1>
+            <p className="text-[10px] sm:text-xs text-[#120e0f]/60 mt-0.5">{cart.length} {cart.length === 1 ? 'item' : 'items'}</p>
           </div>
           <button
             onClick={() => navigate('/cart')}
-            className="text-sm text-gray-600 hover:text-gray-900 font-medium"
+            className="text-xs sm:text-sm text-[#120e0f] hover:opacity-70 font-medium transition-opacity"
           >
-            ← Back to Cart
+            <span className="hidden sm:inline">← Back to Cart</span>
+            <span className="sm:hidden">← Back</span>
           </button>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
 
         {/* Success Modal with Smooth Animations */}
         {showSuccessModal && (
@@ -343,7 +344,7 @@ const Checkout = () => {
             }}
           >
             <div 
-              className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 text-center transform transition-all duration-300"
+              className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 max-w-md w-full mx-4 text-center transform transition-all duration-300"
               style={{
                 animation: 'slideUp 0.4s ease-out'
               }}
@@ -365,7 +366,7 @@ const Checkout = () => {
                 </div>
               </div>
               <h2 
-                className="text-2xl font-bold text-gray-900 mb-2 transform transition-all duration-500"
+                className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 transform transition-all duration-500"
                 style={{
                   animation: 'fadeInUp 0.5s ease-out 0.2s both'
                 }}
@@ -459,9 +460,9 @@ const Checkout = () => {
         {/* Enhanced Processing Order Overlay with Steps */}
         {isProcessingOrder && (
           <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 backdrop-blur-sm">
-            <div className="bg-white rounded-xl shadow-2xl p-8 max-w-md w-full mx-4">
+            <div className="bg-white rounded-xl shadow-2xl p-6 sm:p-8 max-w-md w-full mx-4">
               <div className="text-center">
-                <div className="flex justify-center mb-6">
+                <div className="flex justify-center mb-4 sm:mb-6">
                   <div className="relative">
                     <div className="w-20 h-20 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin"></div>
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -471,8 +472,8 @@ const Checkout = () => {
                     </div>
                   </div>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Placing Your Order</h3>
-                <p className="text-sm text-gray-600 mb-6">Please wait while we process your order...</p>
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Placing Your Order</h3>
+                <p className="text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6">Please wait while we process your order...</p>
                 
                 {/* Processing Steps */}
                 <div className="space-y-3 text-left">
@@ -594,14 +595,14 @@ const Checkout = () => {
           </div>
         )}
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
           {/* Left Column - Shipping Address Form */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {/* Shipping Address Card */}
             <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
-              <div className="px-6 py-4 border-b border-gray-200">
+              <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-base font-semibold text-gray-900">Shipping Address</h2>
+                  <h2 className="text-sm sm:text-base font-semibold text-gray-900">Shipping Address</h2>
                   {addressSaved && (
                     <div className="flex items-center gap-1.5 text-xs font-medium text-green-600 bg-green-50 px-2.5 py-1 rounded">
                       <Check size={12} />
@@ -610,9 +611,9 @@ const Checkout = () => {
                   )}
                 </div>
               </div>
-              <div className="p-6 space-y-4">
+              <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">
                     Full Name <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -621,12 +622,12 @@ const Checkout = () => {
                     value={shippingAddress.name}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors"
+                    className="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors"
                     placeholder="Enter your full name"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">
                     Phone Number <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -635,12 +636,12 @@ const Checkout = () => {
                     value={shippingAddress.phone}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors"
+                    className="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors"
                     placeholder="Enter your phone number"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">
                     Address <span className="text-red-500">*</span>
                   </label>
                   <textarea
@@ -655,7 +656,7 @@ const Checkout = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">
                       City <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -664,42 +665,42 @@ const Checkout = () => {
                       value={shippingAddress.city}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors"
+                      className="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors"
                       placeholder="City"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">State</label>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">State</label>
                     <input
                       type="text"
                       name="state"
                       value={shippingAddress.state}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors"
+                      className="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors"
                       placeholder="State"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">ZIP Code</label>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">ZIP Code</label>
                     <input
                       type="text"
                       name="zipCode"
                       value={shippingAddress.zipCode}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors"
+                      className="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors"
                       placeholder="ZIP Code"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Country</label>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Country</label>
                     <input
                       type="text"
                       name="country"
                       value={shippingAddress.country}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors"
+                      className="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors"
                       placeholder="Country"
                     />
                   </div>

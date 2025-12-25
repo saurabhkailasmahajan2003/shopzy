@@ -2,12 +2,14 @@ import { useState, memo } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../components/ToastContainer';
 import LoginModal from './LoginModal';
 import { handleImageError } from '../utils/imageFallback';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
+  const { success, error: showError } = useToast();
   
   const [isHovered, setIsHovered] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -38,11 +40,25 @@ const ProductCard = ({ product }) => {
   
   const isWatch = (product.category || '').toLowerCase().includes('watch');
   const isLens = (product.category || '').toLowerCase().includes('lens');
+  const isSkincare = (product.category || '').toLowerCase().includes('skincare') || (product.category || '').toLowerCase().includes('skin-care');
   const sizes = isWatch ? [] : (product.sizes || ['S', 'M', 'L', 'XL']); 
   const finalPrice = product.finalPrice || product.price || product.mrp || 0;
   const originalPrice = product.originalPrice || product.mrp || product.price || 0;
   const hasDiscount = originalPrice > finalPrice && finalPrice > 0;
+  const discountPercent = hasDiscount && originalPrice > 0 
+    ? Math.round(((originalPrice - finalPrice) / originalPrice) * 100) 
+    : 0;
   const productId = product._id || product.id;
+  
+  // Get reviews count and availability
+  const reviewsCount = product.reviewsCount || product.reviewCount || product.numReviews || 0;
+  const isBestseller = product.isBestseller || product.bestseller || false;
+  const isSoldOut = product.stock === 0 || product.quantity === 0 || product.inStock === false;
+  const soldCount = product.soldCount || product.totalSold || 0;
+  
+  // Description snippet
+  const description = product.description || product.shortDescription || product.longDescription || '';
+  const descriptionSnippet = description.length > 60 ? description.substring(0, 60) + '...' : description;
   
   // Get the image source with fallback
   // For lenses, use the 2nd image (index 1) as default if available
@@ -78,18 +94,33 @@ const ProductCard = ({ product }) => {
   };
 
   const handleAddToCart = async (selectedSize) => {
-    if (!isAuthenticated) return setShowLoginModal(true);
+    if (!isAuthenticated) {
+      setShowLoginModal(true);
+      return;
+    }
     
     setIsAdding(true);
     try {
-      await addToCart({ ...product, selectedSize });
+      console.log('ProductCard: Adding product to cart', {
+        productId: product._id || product.id,
+        productName: product.name || product.productName,
+        selectedSize
+      });
+      await addToCart(product, 1, selectedSize || '', '');
+      success('Product added to cart');
       setTimeout(() => {
         setIsAdding(false);
         setShowSizes(false);
       }, 1000);
     } catch (err) {
       setIsAdding(false);
-      if (err.message.includes('login')) setShowLoginModal(true);
+      setShowSizes(false);
+      console.error('ProductCard: Error adding to cart:', err);
+      const errorMessage = err.message || 'Failed to add product to cart';
+      showError(errorMessage);
+      if (errorMessage.toLowerCase().includes('login')) {
+        setShowLoginModal(true);
+      }
     }
   };
 
@@ -99,8 +130,7 @@ const ProductCard = ({ product }) => {
       <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
       
       <div 
-        // OPTIMIZATION: translate-z-0 forces hardware acceleration
-        className="group relative w-full select-none transform-gpu translate-z-0" 
+        className="group relative w-full select-none" 
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => {
           setIsHovered(false);
@@ -109,20 +139,45 @@ const ProductCard = ({ product }) => {
           }
         }}
       >
-        <Link to={`/product/${productId}`} className="block">
+        <Link to={`/product/${productId}`} className="block bg-[#fefcfb] border-2 border-[#120e0f] p-4">
           
           {/* IMAGE AREA */}
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl bg-gray-100 shadow-sm">
+          <div className="relative w-full aspect-square overflow-hidden bg-[#fefcfb] mb-4 border border-[#120e0f]">
             
+            {/* Bestseller Badge - Yellow with black border */}
+            {isBestseller && (
+              <span className="absolute top-2 left-2 z-20 bg-yellow-400 text-[#120e0f] text-[10px] font-bold px-2 py-1 border border-[#120e0f] uppercase tracking-wide">
+                Bestseller
+              </span>
+            )}
 
-            {/* Discount Tag */}
-            {hasDiscount && (
-               <span className="absolute top-3 left-3 z-20 bg-black text-white text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wide">
+            {/* Discount Tag (if not bestseller) */}
+            {!isBestseller && hasDiscount && (
+               <span className="absolute top-2 left-2 z-20 bg-[#fefcfb] text-[#120e0f] text-[10px] font-bold px-2 py-1 border border-[#120e0f] uppercase tracking-wide">
                  Sale
                </span>
             )}
 
-            {/* Base Image - Always visible */}
+            {/* Add to Cart Button - Top Right Corner */}
+            <button
+              onClick={handleAddClick}
+              disabled={isAdding || isSoldOut}
+              className="absolute top-2 right-2 z-20 w-8 h-8 flex items-center justify-center bg-[#fefcfb] border-2 border-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              title="Add to cart"
+            >
+              {isAdding ? (
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+              )}
+            </button>
+
+            {/* Base Image - Square, centered */}
             {defaultImageSrc && (
               <img
                 src={defaultImageSrc}
@@ -131,14 +186,14 @@ const ProductCard = ({ product }) => {
                 decoding="async"
                 loading="lazy"
                 className={`
-                  absolute inset-0 w-full h-full object-cover transition-all duration-500
-                  ${imageLoaded ? 'opacity-100 blur-0' : 'opacity-0 blur-sm'}
+                  w-full h-full object-contain transition-opacity duration-300
+                  ${imageLoaded ? 'opacity-100' : 'opacity-0'}
                 `}
                 onError={handleImageError}
               />
             )}
 
-            {/* Hover Image - Appears as cover on hover */}
+            {/* Hover Image - Simple fade transition */}
             {hoverImageSrc && (
               <>
                 {/* Preload hover image */}
@@ -154,7 +209,7 @@ const ProductCard = ({ product }) => {
                   src={hoverImageSrc}
                   alt={product.name || product.title || 'Product'}
                   className={`
-                    absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out
+                    absolute inset-0 w-full h-full object-contain transition-opacity duration-300
                     ${isHovered && hoverImageLoaded ? 'opacity-100 z-10' : 'opacity-0 z-0'}
                   `}
                   onError={handleImageError}
@@ -162,98 +217,67 @@ const ProductCard = ({ product }) => {
               </>
             )}
 
-            {/* --- THE FLOATING DOCK --- */}
-            <div className="absolute bottom-3 inset-x-2 sm:inset-x-4 z-20">
-              <div 
-                className={`
-                  bg-white/95 backdrop-blur-md rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.1)] 
-                  overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)]
-                  ${showSizes ? 'py-3' : 'h-10 sm:h-12 flex items-center justify-between pl-3 pr-1'}
-                `}
-                onClick={(e) => e.preventDefault()}
-              >
-                {!showSizes ? (
-                  <>
-                    <div className="flex flex-col leading-none justify-center">
-                      <span className="font-bold text-gray-900 text-sm sm:text-base">
-                        {finalPrice > 0 ? `₹${finalPrice.toLocaleString()}` : 'Price N/A'}
-                      </span>
-                      {hasDiscount && originalPrice > 0 && (
-                        <span className="text-[10px] text-gray-500 line-through">₹{originalPrice.toLocaleString()}</span>
-                      )}
-                    </div>
-                    
-                    <button
-                      onClick={handleAddClick}
-                      className="h-8 sm:h-10 px-3 sm:px-5 bg-cta hover:bg-cta-dark text-white rounded-md text-[10px] sm:text-xs font-bold uppercase tracking-wide transition-transform active:scale-95 flex items-center gap-1.5"
-                    >
-                      <span className='hidden lg:block'>Add</span>
-                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                      </svg>
-                    </button>
-                  </>
-                ) : (
-                  <div className="relative px-2 text-center w-full animate-fadeIn">
-                    <div className="flex items-center justify-between mb-2 px-1">
-                      <span className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Select Size</span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setShowSizes(false);
-                        }}
-                        className="p-1 -mr-1 text-gray-400 hover:text-gray-900"
-                      >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </div>
-
-                    <div className="grid grid-cols-4 gap-1.5">
-                      {sizes.slice(0, 4).map((size) => (
-                        <button
-                          key={size}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            handleAddToCart(size);
-                          }}
-                          disabled={isAdding}
-                          className={`
-                            h-8 rounded text-xs font-bold border transition-colors touch-manipulation
-                            ${isAdding 
-                              ? 'bg-gray-100 text-gray-300 border-gray-100'
-                              : 'border-gray-200 hover:border-black hover:bg-black hover:text-white text-gray-800 active:bg-black active:text-white'}
-                          `}
-                        >
-                          {size}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
 
-          {/* TEXT INFO */}
-          <div className="mt-3 px-1">
-             <div className="flex justify-between items-start">
-               <div className="flex-1 pr-2">
-                  <h3 className="text-sm font-medium text-gray-900 leading-tight line-clamp-1">
-                    {product.name}
-                  </h3>
-                  <p className="text-xs text-gray-500 mt-0.5">{product.category}</p>
-               </div>
-               
-               {product.rating && product.rating > 0 && (
-                 <div className="hidden sm:flex items-center gap-1 bg-gray-50 px-1.5 py-0.5 rounded text-[10px] font-bold text-gray-600">
-                   <span>★</span>
-                   <span>{product.rating}</span>
-                 </div>
-               )}
-             </div>
+          {/* PRODUCT DETAILS */}
+          <div className="space-y-3">
+            {/* Product Name - Bold, uppercase, minimal */}
+            <h3 className="text-sm font-bold text-[#120e0f] leading-tight line-clamp-2 uppercase tracking-tight">
+              {(product.name || product.productName || 'Product').toUpperCase()}
+            </h3>
+
+            {/* Reviews and Availability - Orange for sales info */}
+            {!isSkincare && (
+              <div className="flex items-center gap-1.5 text-xs text-[#120e0f]">
+                {reviewsCount > 0 && (
+                  <span className="font-medium">{reviewsCount.toLocaleString()} Reviews</span>
+                )}
+                {reviewsCount > 0 && (isSoldOut || soldCount > 0) && (
+                  <span className="text-[#120e0f]/40">|</span>
+                )}
+                {isSoldOut ? (
+                  <span className="text-orange-600 font-semibold">
+                    {soldCount >= 10000 ? `${(soldCount / 1000).toFixed(0)}L+ ` : soldCount > 0 ? `${(soldCount / 1000).toFixed(1)}L+ ` : ''}Sold Out!!
+                  </span>
+                ) : soldCount > 0 && (
+                  <span className="text-orange-600 font-semibold">
+                    {soldCount >= 10000 ? `${(soldCount / 1000).toFixed(0)}L+ ` : `${soldCount.toLocaleString()} `}Sold
+                  </span>
+                )}
+              </div>
+            )}
+            {isSkincare && reviewsCount > 0 && (
+              <div className="flex items-center gap-1.5 text-xs text-[#120e0f]">
+                <span className="font-medium">{reviewsCount.toLocaleString()} Reviews</span>
+              </div>
+            )}
+
+            {/* Description Snippet - Muted black/gray */}
+            {descriptionSnippet && (
+              <p className="text-xs text-[#120e0f]/60 line-clamp-2 leading-relaxed">
+                {descriptionSnippet}
+              </p>
+            )}
+
+            {/* Divider Line - Thin black line */}
+            <div className="border-t border-[#120e0f]"></div>
+
+            {/* Pricing Section - Minimal, clean */}
+            <div className="flex items-baseline gap-2 pt-1">
+              {hasDiscount && originalPrice > 0 && (
+                <span className="text-xs text-[#120e0f]/50 line-through">
+                  Rs. {originalPrice.toLocaleString()}
+                </span>
+              )}
+              <span className="text-base font-bold text-[#120e0f]">
+                Rs. {finalPrice > 0 ? finalPrice.toLocaleString() : '0'}
+              </span>
+              {hasDiscount && discountPercent > 0 && (
+                <span className="text-xs text-green-600 font-semibold">
+                  ({discountPercent}% off)
+                </span>
+              )}
+            </div>
           </div>
         </Link>
       </div>

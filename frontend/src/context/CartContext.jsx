@@ -30,8 +30,13 @@ export const CartProvider = ({ children }) => {
     try {
       setIsLoading(true);
       const response = await cartAPI.getCart();
+      console.log('Load cart response:', response);
       if (response.success) {
-        setCart(response.data.cart.items || []);
+        const items = response.data?.cart?.items || [];
+        console.log('Loaded cart items:', items.length);
+        setCart(items);
+      } else {
+        console.error('Failed to load cart:', response.message);
       }
     } catch (error) {
       console.error('Error loading cart:', error);
@@ -45,13 +50,42 @@ export const CartProvider = ({ children }) => {
       throw new Error('Please login to add items to cart');
     }
 
+    if (!product) {
+      throw new Error('Product is required');
+    }
+
+    // Ensure product has required fields
+    const productId = product._id || product.id;
+    if (!productId) {
+      throw new Error('Product ID is required');
+    }
+
     try {
+      console.log('Adding to cart:', { 
+        productId, 
+        productName: product.name || product.productName,
+        quantity, 
+        size, 
+        color 
+      });
+      
       const response = await cartAPI.addToCart(product, quantity, size, color);
-      if (response.success) {
-        setCart(response.data.cart.items || []);
+      console.log('Add to cart response:', response);
+      
+      if (response && response.success) {
+        const items = response.data?.cart?.items || [];
+        console.log('Setting cart items:', items.length, 'items');
+        setCart(items);
+        return response;
+      } else {
+        const errorMsg = response?.message || 'Failed to add to cart';
+        console.error('Add to cart failed:', errorMsg);
+        throw new Error(errorMsg);
       }
     } catch (error) {
-      throw error;
+      console.error('Error in addToCart:', error);
+      const errorMessage = error.message || 'Failed to add product to cart';
+      throw new Error(errorMessage);
     }
   };
 

@@ -41,17 +41,17 @@ const ShippingInfo = () => {
             </svg>
             Back to Home
           </Link>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Shipping Information</h1>
-          <p className="text-gray-600">Everything you need to know about shipping and delivery.</p>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Shipping Information</h1>
+          <p className="text-sm sm:text-base text-gray-600">Everything you need to know about shipping and delivery.</p>
         </div>
 
         {/* Shipping Options */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">Shipping Options</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="mb-8 sm:mb-12">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4 sm:mb-6">Shipping Options</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             {shippingOptions.map((option, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{option.name}</h3>
+              <div key={index} className="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-200">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">{option.name}</h3>
                 <p className="text-sm text-gray-600 mb-3">{option.duration}</p>
                 <p className="text-sm font-medium text-gray-900 mb-3">{option.price}</p>
                 <p className="text-sm text-gray-600">{option.description}</p>

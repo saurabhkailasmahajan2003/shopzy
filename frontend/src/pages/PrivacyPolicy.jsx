@@ -12,13 +12,13 @@ const PrivacyPolicy = () => {
             </svg>
             Back to Home
           </Link>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Privacy Policy</h1>
-          <p className="text-gray-600">Last updated: January 2024</p>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Privacy Policy</h1>
+          <p className="text-sm sm:text-base text-gray-600">Last updated: January 2024</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-8 space-y-8">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
           <section>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">1. Introduction</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">1. Introduction</h2>
             <p className="text-gray-700 leading-relaxed">
               Welcome to Shopzy. We are committed to protecting your personal information and your right to privacy. 
               This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit 
@@ -30,7 +30,7 @@ const PrivacyPolicy = () => {
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">2. Information We Collect</h2>
             <div className="space-y-4">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Personal Information</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Personal Information</h3>
                 <p className="text-gray-700 leading-relaxed">
                   We collect information that you provide directly to us, including:
                 </p>

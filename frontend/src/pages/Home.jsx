@@ -142,8 +142,12 @@ const Home = () => {
   const [activeStoryIndex, setActiveStoryIndex] = useState(null);
   const [isStoryViewerOpen, setIsStoryViewerOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+  const [currentPromoBannerIndex, setCurrentPromoBannerIndex] = useState(0);
   const categoryScrollRef = useRef(null);
   const lifestyleScrollRef = useRef(null);
+  const bannerCarouselRef = useRef(null);
+  const promoBannerCarouselRef = useRef(null);
 
   // --- DATA STATE & FETCHING (Unchanged) ---
   const [freshDrops, setFreshDrops] = useState([]);
@@ -186,99 +190,364 @@ const Home = () => {
     { hashtag: 'Scarf', emoji: '🧣', image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1764742548/NECK_20SCARF_20TREND_20190625_20GettyImages-1490484490_ccdwdy.webp' }
   ];
 
-  // Carousel logic removed - using single banner
+  // Banner carousel images
+  const banners = [
+    'https://res.cloudinary.com/de1bg8ivx/image/upload/v1766476937/Brown_Modern_New_Arrival_Leaderboard_Ad_gzs4iv.svg',
+    'https://res.cloudinary.com/de1bg8ivx/image/upload/v1766476935/Cream_Brown_Minimalist_Fashion_Sale_Leaderboard_Ad_tpvvpj.svg',
+    'https://res.cloudinary.com/de1bg8ivx/image/upload/v1766476935/Women_Fashion_Leaderboard_Ad_trr3pe.svg'
+  ];
+
+  // Auto-rotate mobile banner carousel
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBannerIndex((prev) => (prev + 1) % banners.length);
+    }, 5000); // Change banner every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [banners.length]);
+
+  // Auto-rotate desktop promo banner carousel
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentPromoBannerIndex((prev) => (prev + 1) % 4);
+    }, 5000); // Change banner every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Scroll to current mobile banner
+  useEffect(() => {
+    if (bannerCarouselRef.current) {
+      const bannerWidth = bannerCarouselRef.current.offsetWidth;
+      bannerCarouselRef.current.scrollTo({
+        left: currentBannerIndex * bannerWidth,
+        behavior: 'smooth'
+      });
+    }
+  }, [currentBannerIndex]);
+
+  // Scroll to current desktop promo banner
+  useEffect(() => {
+    if (promoBannerCarouselRef.current) {
+      const bannerWidth = promoBannerCarouselRef.current.offsetWidth;
+      promoBannerCarouselRef.current.scrollTo({
+        left: currentPromoBannerIndex * bannerWidth,
+        behavior: 'smooth'
+      });
+    }
+  }, [currentPromoBannerIndex]);
 
   return (
-    <div className="min-h-screen font-sans text-gray-800 mt-">
+    <div className="min-h-screen font-sans text-gray-800">
       
-      {/* --- HERO SECTION --- */}
-      <div className="relative w-full" style={{ backgroundColor: '#120e0f' }}>
-        <div className="relative w-full h-[60vh] sm:h-[70vh] md:h-[80vh] lg:h-[85vh] min-h-[500px] flex items-center justify-center">
-          {/* Mobile Background Image */}
-          <div className="absolute inset-0 md:hidden">
-            <img
-              src="https://res.cloudinary.com/de1bg8ivx/image/upload/v1766474763/Minimalist_Colorful_Trendy_Women_s_Fashion_Clothing_Sale_Instagram_Post_cbccxr.png"
-              alt="Fashion Collection"
-              className="w-full h-full object-cover"
-              loading="eager"
-            />
-            {/* Dark overlay for text readability */}
-            <div className="absolute inset-0" style={{ backgroundColor: 'rgba(18, 14, 15, 0.3)' }}></div>
-          </div>
-          
-          {/* Desktop Background Image */}
-          <div className="absolute inset-0 hidden md:block">
-            <img
-              src="https://res.cloudinary.com/de1bg8ivx/image/upload/v1766475381/desktop_banner_ycobu6.png"
-              alt="Fashion Collection"
-              className="w-full h-full object-cover"
-              loading="eager"
-              onError={(e) => {
-                e.target.src = 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1920&auto=format&fit=crop';
-              }}
-            />
-            {/* Dark overlay for text readability */}
-            <div className="absolute inset-0" style={{ backgroundColor: 'rgba(18, 14, 15, 0.3)' }}></div>
-          </div>
-          
-          {/* Content Overlay */}
-          <div className="relative z-20 flex items-center justify-center px-4 sm:px-6 lg:px-8 w-full">
-            <div className="max-w-7xl mx-auto w-full">
-              <div className="max-w-2xl">
-                {/* Small Label */}
-                <div className="mb-3 sm:mb-4">
-                  <span className="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider" style={{ backgroundColor: '#bb3435', color: '#fefcfb' }}>
-                    New Collection
+      {/* --- HERO SECTION (Desktop: Text Left, Banners Right | Mobile: Banners Only) --- */}
+      <div className="relative w-full bg-[#fefcfb]">
+        
+        {/* Desktop Hero Layout */}
+        <div className="hidden md:block relative w-full pb-10 lg:pb-14 xl:pb-18">
+          <div className="w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch min-h-[500px] lg:min-h-[600px]">
+              
+              {/* Left Side: Text Content - Takes 6 columns */}
+              <div className="lg:col-span-6 text-left space-y-6 lg:space-y-8 px-4 sm:px-6 lg:px-8 xl:px-12 flex flex-col justify-center pt-4 lg:pt-6 pb-10 lg:pb-14">
+                {/* NEW COLLECTION Label */}
+                <div>
+                  <span className="inline-block px-5 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-[0.15em] border-2 border-[#120e0f]" style={{ backgroundColor: '#bb3435', color: '#fefcfb' }}>
+                    NEW COLLECTION
                   </span>
                 </div>
                 
                 {/* Main Headline */}
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif font-bold leading-[1.1] mb-4 sm:mb-6" style={{ color: '#fefcfb' }}>
-                  Discover
-                  <br />
-                  <span style={{ color: '#bb3435' }}>Your Style</span>
-                </h1>
+                <div className="space-y-2">
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif font-bold leading-[1.05] tracking-tight" style={{ color: '#120e0f' }}>
+                    Discover
+                  </h1>
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif font-bold leading-[1.05] tracking-tight" style={{ color: '#bb3435' }}>
+                    Your Style
+                  </h1>
+                </div>
                 
                 {/* Subtitle */}
-                <p className="text-sm sm:text-base md:text-lg lg:text-xl mb-6 sm:mb-8 leading-relaxed" style={{ color: '#fefcfb' }}>
-                  Curated fashion, beauty essentials, and lifestyle products that reflect your unique personality
-                </p>
+                <div>
+                  <p className="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed max-w-lg" style={{ color: '#120e0f', opacity: 0.85 }}>
+                    Curated fashion, beauty essentials, and lifestyle products that reflect your unique personality
+                  </p>
+                </div>
                 
                 {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <Link
+                <div className="flex flex-col sm:flex-row gap-4 pt-2">
+                  <Link
                     to="/women"
-                    className="inline-block px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-semibold text-center"
+                    className="inline-flex items-center justify-center px-8 sm:px-10 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-center border-2 border-[#120e0f] transition-all hover:scale-105 active:scale-95"
                     style={{ backgroundColor: '#bb3435', color: '#fefcfb' }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#120e0f'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = '#bb3435'}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = '#120e0f';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = '#bb3435';
+                    }}
                   >
                     Shop Now
                   </Link>
                   <Link
                     to="/sale"
-                    className="inline-block px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-semibold text-center border-2"
-                    style={{ borderColor: '#fefcfb', color: '#fefcfb' }}
+                    className="inline-flex items-center justify-center px-8 sm:px-10 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-center border-2 border-[#120e0f] transition-all hover:scale-105 active:scale-95"
+                    style={{ backgroundColor: '#fefcfb', color: '#120e0f' }}
                     onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = '#fefcfb';
-                      e.target.style.color = '#120e0f';
+                      e.target.style.backgroundColor = '#120e0f';
+                      e.target.style.color = '#fefcfb';
                     }}
                     onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = 'transparent';
-                      e.target.style.color = '#fefcfb';
+                      e.target.style.backgroundColor = '#fefcfb';
+                      e.target.style.color = '#120e0f';
                     }}
                   >
                     View Sale
                   </Link>
                 </div>
               </div>
+
+              {/* Right Side: Banner Carousel - Takes 6 columns, smaller size, no borders */}
+              <div className="lg:col-span-6 relative w-full flex items-center justify-center">
+                <div className="relative overflow-hidden w-full max-w-md">
+                  <div 
+                    ref={promoBannerCarouselRef}
+                    className="flex overflow-x-hidden scroll-smooth scrollbar-hide"
+                    style={{ scrollSnapType: 'x mandatory' }}
+                  >
+                    {[
+                      'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656833/Purple_Women_Clothing_Promo_Instagram_Post_d2cxg9.png',
+                      'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656659/Pink_and_Gold_Simple_Diwali_Skincare_Cosmetic_Beauty_Offers_Instagram_Post_1_xzglzv.png',
+                      'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656392/Brown_White_Modern_Elegant_Sale_and_Discount_Instagram_Post_frmjoo.svg',
+                      'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766655996/Red_and_White_Modern_Bridal_Shower_Social_Media_Graphic_1_v9pexp.svg'
+                    ].map((banner, index) => (
+                      <div
+                        key={index}
+                        className="flex-shrink-0 w-full"
+                        style={{ scrollSnapAlign: 'start' }}
+                      >
+                        <img
+                          src={banner}
+                          alt={`Promo Banner ${index + 1}`}
+                          className="w-full h-auto object-contain"
+                          loading={index === 0 ? 'eager' : 'lazy'}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Carousel Indicators */}
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10 bg-[#fefcfb]/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-[#120e0f]/20">
+                  {[0, 1, 2, 3].map((index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentPromoBannerIndex(index)}
+                      className={`h-2 transition-all rounded-full ${
+                        index === currentPromoBannerIndex 
+                          ? 'w-8 bg-[#120e0f]' 
+                          : 'w-2 bg-[#120e0f]/30 hover:bg-[#120e0f]/50'
+                      }`}
+                      aria-label={`Go to banner ${index + 1}`}
+                    />
+                  ))}
+                </div>
+
+                {/* Navigation Arrows */}
+                <button
+                  onClick={() => setCurrentPromoBannerIndex((prev) => (prev - 1 + 4) % 4)}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-2 z-10 transition-colors shadow-md"
+                  aria-label="Previous banner"
+                >
+                  <IconChevronLeft />
+                </button>
+                <button
+                  onClick={() => setCurrentPromoBannerIndex((prev) => (prev + 1) % 4)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-2 z-10 transition-colors shadow-md"
+                  aria-label="Next banner"
+                >
+                  <IconChevronRight />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Hero Layout: Banners Only */}
+        <div className="md:hidden relative w-full">
+          {/* Original Mobile Banner Carousel */}
+          <div className="relative w-full overflow-hidden bg-[#fefcfb] border-b-2 border-[#120e0f]">
+            <div 
+              ref={bannerCarouselRef}
+              className="flex overflow-x-hidden scroll-smooth scrollbar-hide"
+              style={{ scrollSnapType: 'x mandatory' }}
+            >
+              {banners.map((banner, index) => (
+                <div
+                  key={index}
+                  className="flex-shrink-0 w-full"
+                  style={{ scrollSnapAlign: 'start' }}
+                >
+                  <img
+                    src={banner}
+                    alt={`Banner ${index + 1}`}
+                    className="w-full h-auto object-contain"
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Carousel Indicators */}
+            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
+              {banners.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentBannerIndex(index)}
+                  className={`h-2 transition-all ${
+                    index === currentBannerIndex 
+                      ? 'w-8 bg-[#120e0f]' 
+                      : 'w-2 bg-[#120e0f]/30'
+                  }`}
+                  aria-label={`Go to banner ${index + 1}`}
+                />
+              ))}
+            </div>
+
+            {/* Navigation Arrows */}
+            <button
+              onClick={() => setCurrentBannerIndex((prev) => (prev - 1 + banners.length) % banners.length)}
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-1.5 z-10 transition-colors shadow-md"
+              aria-label="Previous banner"
+            >
+              <IconChevronLeft />
+            </button>
+            <button
+              onClick={() => setCurrentBannerIndex((prev) => (prev + 1) % banners.length)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-1.5 z-10 transition-colors shadow-md"
+              aria-label="Next banner"
+            >
+              <IconChevronRight />
+            </button>
+          </div>
+
+          {/* New Promotional Banners Carousel */}
+          <div className="relative w-full overflow-hidden bg-[#fefcfb] border-b-2 border-[#120e0f]">
+            <div className="flex overflow-x-auto scroll-smooth scrollbar-hide" style={{ scrollSnapType: 'x mandatory' }}>
+              {[
+                'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656833/Purple_Women_Clothing_Promo_Instagram_Post_d2cxg9.png',
+                'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656659/Pink_and_Gold_Simple_Diwali_Skincare_Cosmetic_Beauty_Offers_Instagram_Post_1_xzglzv.png',
+                'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656392/Brown_White_Modern_Elegant_Sale_and_Discount_Instagram_Post_frmjoo.svg',
+                'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766655996/Red_and_White_Modern_Bridal_Shower_Social_Media_Graphic_1_v9pexp.svg'
+              ].map((banner, index) => (
+                <div
+                  key={index}
+                  className="flex-shrink-0 w-full"
+                  style={{ scrollSnapAlign: 'start' }}
+                >
+                  <img
+                    src={banner}
+                    alt={`Promo Banner ${index + 1}`}
+                    className="w-full h-auto object-contain"
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
 
+      {/* --- NEW FASHION SALE PROMOTIONAL BANNER --- */}
+      <div className="relative w-full bg-[#fefcfb] border-t-2 border-[#120e0f] overflow-hidden">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 items-center">
+            
+            {/* Left Model Section */}
+            <div className="relative hidden md:block">
+              <div className="relative h-64 sm:h-80 md:h-96 bg-[#fefcfb] border-2 border-[#120e0f] overflow-hidden">
+                <img
+                  src="https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766657960/White_and_Beige_Neutral_Clean_Women_Bags_Instagram_Post_ymve41.png"
+                  alt="Women Bags Promo"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+
+            {/* Central Promotional Section */}
+            <div className="relative col-span-1 md:col-span-1">
+              <div className="relative bg-[#fefcfb] p-6 sm:p-8 md:p-10 border-2 border-[#120e0f] min-h-[300px] sm:min-h-[400px] flex flex-col items-center justify-center">
+                
+                {/* Abstract Brown Blob Shapes */}
+                <div className="absolute top-4 left-4 w-16 h-16 bg-[#a06a4e]/20 rounded-full blur-xl"></div>
+                <div className="absolute bottom-8 right-6 w-20 h-20 bg-[#a06a4e]/15 rounded-full blur-2xl"></div>
+                <div className="absolute top-1/2 left-1/4 w-12 h-12 bg-[#a06a4e]/10 rounded-full blur-lg"></div>
+                
+                {/* Black Dotted Patterns */}
+                <div className="absolute top-6 left-6 flex gap-1">
+                  <div className="w-1 h-1 bg-[#120e0f] rounded-full"></div>
+                  <div className="w-1 h-1 bg-[#120e0f] rounded-full"></div>
+                  <div className="w-1 h-1 bg-[#120e0f] rounded-full"></div>
+                </div>
+                <div className="absolute bottom-10 right-8 flex gap-1">
+                  <div className="w-1 h-1 bg-[#120e0f] rounded-full"></div>
+                  <div className="w-1 h-1 bg-[#120e0f] rounded-full"></div>
+                  <div className="w-1 h-1 bg-[#120e0f] rounded-full"></div>
+                </div>
+                
+                {/* Black Starburst Icons */}
+                <div className="absolute top-8 right-8">
+                  <svg className="w-6 h-6 text-[#120e0f]" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2L14.5 8.5L21 11L14.5 13.5L12 20L9.5 13.5L3 11L9.5 8.5L12 2Z"/>
+                  </svg>
+                </div>
+                <div className="absolute bottom-12 left-10">
+                  <svg className="w-4 h-4 text-[#120e0f]" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2L14.5 8.5L21 11L14.5 13.5L12 20L9.5 13.5L3 11L9.5 8.5L12 2Z"/>
+                  </svg>
+                </div>
+                
+                {/* Main Content */}
+                <div className="relative z-10 text-center">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase tracking-tight mb-3 sm:mb-4" style={{ color: '#a06a4e' }}>
+                    NEW FASHION SALE
+                  </h2>
+                  <p className="text-lg sm:text-xl md:text-2xl font-medium uppercase tracking-wide mb-6 sm:mb-8" style={{ color: '#a06a4e', opacity: 0.8 }}>
+                    SAVE UP TO 50% OFF
+                  </p>
+                  <Link
+                    to="/sale"
+                    className="inline-block px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-semibold border-2 border-[#120e0f] bg-[#120e0f] text-[#fefcfb] hover:bg-[#fefcfb] hover:text-[#120e0f] transition-colors"
+                  >
+                    Shop Now
+                  </Link>
+                </div>
+                
+                {/* Pagination Dots */}
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
+                  <div className="w-2 h-2 bg-[#120e0f]"></div>
+                  <div className="w-2 h-2 bg-[#120e0f]/30"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Model Section */}
+            <div className="relative hidden md:block">
+              <div className="relative h-64 sm:h-80 md:h-96 bg-[#fefcfb] border-2 border-[#120e0f] overflow-hidden">
+                <img
+                  src="https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766658151/Beige_Modern_Minimalist_Fashion_Clothing_Sale_Promotional_Instagram_Post_q8geu5.png"
+                  alt="Fashion Sale Promo"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
       {/* --- THREE COLUMN PRODUCT SECTIONS --- */}
-      <div className="relative w-full bg-white">
+      <div className="relative w-full bg-[#e3e0df]">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
           {/* Column 1: Women's Fashion */}
           <Link to="/women" className="relative group overflow-hidden bg-gradient-to-br from-purple-100 via-pink-50 to-purple-50 min-h-[400px] sm:min-h-[500px] md:min-h-[600px] flex flex-col">
@@ -289,10 +558,10 @@ const Home = () => {
             </div>
             
             {/* Content */}
-            <div className="relative z-10 p-4 sm:p-6 md:p-8 flex flex-col h-full">
+            <div className="relative z-10 p-4 sm:p-6 md:p-8 flex flex-col h-full bg-[#fefcfb]">
               {/* Brand/Logo */}
               <div className="mb-3 sm:mb-4">
-                <div className="inline-block bg-purple-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-2">
+                <div className="inline-block bg-purple-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-2" style={{ fontFamily: "'Dancing Script', cursive" }}>
                   Shopzy
                 </div>
                 <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-text mt-2">
@@ -367,10 +636,10 @@ const Home = () => {
           </div>
             
             {/* Content */}
-            <div className="relative z-10 p-4 sm:p-6 md:p-8 flex flex-col h-full">
+            <div className="relative z-10 p-4 sm:p-6 md:p-8 flex flex-col h-full bg-[#f3f3f3]">
               {/* Brand/Logo */}
               <div className="mb-3 sm:mb-4">
-                <div className="inline-block bg-blue-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-2">
+                <div className="inline-block bg-blue-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-2" style={{ fontFamily: "'Dancing Script', cursive" }}>
                   Shopzy
                 </div>
                 <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-text mt-2">
@@ -406,15 +675,15 @@ const Home = () => {
                       </p>
                     </div>
                   </div>
-                ))}
-              </div>
+            ))}
+          </div>
               
               {/* CTA */}
               <div className="mt-4 sm:mt-6">
                 <span className="text-xs sm:text-sm font-bold text-text">
                   Explore →
                 </span>
-              </div>
+        </div>
             </div>
           </Link>
 
@@ -427,18 +696,18 @@ const Home = () => {
         </div>
             
             {/* Content */}
-            <div className="relative z-10 p-4 sm:p-6 md:p-8 flex flex-col h-full">
+            <div className="relative z-10 p-4 sm:p-6 md:p-8 flex flex-col h-full bg-[#fefcfb]">
               {/* Brand/Logo */}
               <div className="mb-3 sm:mb-4">
-                <div className="inline-block bg-pink-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-2">
+                <div className="inline-block bg-pink-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-2" style={{ fontFamily: "'Dancing Script', cursive" }}>
                   Shopzy
                 </div>
                 <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-text mt-2">
                   Accessories
                 </h2>
                 <p className="text-xs sm:text-sm text-text/70 mt-1">Watches & More</p>
-              </div>
-              
+      </div>
+
               {/* Products Display */}
               <div className="flex-1 flex flex-col justify-center space-y-3 sm:space-y-4 mt-3 sm:mt-4">
                 {[...watches.slice(0, 2), ...accessories.slice(0, 2)].map((product, idx) => {
@@ -610,7 +879,7 @@ const Home = () => {
                           className="max-w-full max-h-28 sm:max-h-32 md:max-h-40 lg:max-h-48 object-contain"
                           onError={(e) => handleImageError(e, 300, 300)}
                         />
-                      </div>
+                </div>
 
                       {/* Offer Text */}
                       <div className="mt-auto pt-2 sm:pt-3">
@@ -805,152 +1074,200 @@ const Home = () => {
 
       
 
-      {/* <section className="py-5 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-between items-end mb-10">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Shop by Category</h2>
-              <p className="text-gray-500 mt-2 font-light">Curated essentials for the modern wardrobe.</p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                id: 'women',
-                label: 'WOMEN',
-                sub: 'Elegance Redefined',
-                image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop'
-              },
-              {
-                id: 'watches',
-                label: 'WATCHES',
-                sub: 'Timeless Luxury',
-                image: 'https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?q=80&w=600&auto=format&fit=crop'
-              },
-              {
-                id: 'accessories',
-                label: 'ACCESSORIES',
-                sub: 'Finishing Touches',
-                image: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=600&auto=format&fit=crop'
-              },
-              {
-                id: 'skincare',
-                label: 'SKINCARE',
-                sub: 'Glow & Radiance',
-                image: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=600&auto=format&fit=crop'
-              }
-            ].map((cat) => (
-              <Link
-                key={cat.id}
-                to={`/${cat.id}`}
-                className="group relative block h-96 overflow-hidden rounded-2xl shadow-sm"
-              >
-                
-                <img
-                  src={cat.image}
-                  alt={cat.label}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60"></div>
-
-              
-                <div className="absolute bottom-4 left-4 right-4 p-5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 shadow-lg">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <h3 className="text-xl font-bold text-white tracking-widest">{cat.label}</h3>
-                      <p className="text-gray-200 text-xs mt-1 font-medium">{cat.sub}</p>
-                    </div>
-
-                    
-                    <div className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section> */}
-
-      {/* --- BROWSE BY CATEGORY (Accordion - Light & Compact) --- */}
-      <section className="py-5 sm:py-8 mb-12 sm:mb-20 bg-white">
+      {/* --- THREE SECTION BANNER (Skincare Legends, Hot Sellers, Greatest Combos) --- */}
+      <section className="py-8 sm:py-12 bg-[#fefcfb]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-6 sm:mb-8 text-center">
-             <span className="text-amber-600 font-bold tracking-[0.2em] text-sm sm:text-base uppercase">Curated Collections</span>
-             <h2 className="text-2xl sm:text-3xl font-bold text-gray-600 mt-2">Shop By Category</h2>
-          </div>
-
-          {/* Accordion Container - Compact Height */}
-          <div className="flex flex-col md:flex-row h-[300px] sm:h-[400px] md:h-[400px] gap-2 sm:gap-3 w-full">
-            {[
-              { 
-                id: 'women', 
-                label: 'WOMEN', 
-                desc: 'Modern silhouettes.',
-                image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1765191722/c037121844264e7d40ffc2bb11335a21_vadndt.jpg' 
-              },
-              { 
-                id: 'watches', 
-                label: 'WATCHES', 
-                desc: 'Precision crafted.',
-                image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1765191651/photo-1524592094714-0f0654e20314_dv6fdz.avif' 
-              },
-              { 
-                id: 'accessories', 
-                label: 'ACCESSORIES', 
-                desc: 'Final touches.',
-                image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1765191618/photo-1515562141207-7a88fb7ce338_k4onlv.avif' 
-              }
-            ].map((cat) => (
-              <Link 
-                key={cat.id} 
-                to={`/${cat.id}`} 
-                className="group relative flex-1 overflow-hidden rounded-lg cursor-pointer"
-              >
-                {/* Background Image */}
-                <div className="absolute inset-0 w-full h-full">
-                  <img 
-                    src={cat.image} 
-                    alt={cat.label} 
-                    className="w-full h-full object-cover filter md:grayscale" 
-                  />
-                  {/* Overlay - Lighter for Light Theme */}
-                  <div className="absolute inset-0 bg-black/20"></div>
-                  {/* Text Gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80"></div>
-                </div>
-
-                {/* Content */}
-                <div className="absolute bottom-0 w-full p-4 sm:p-6 flex flex-col justify-end items-start">
-                  
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white uppercase tracking-widest mb-1 whitespace-nowrap">
-                    {cat.label}
-                  </h3>
-
-                  <div className="max-h-16 sm:max-h-20 opacity-100 overflow-hidden">
-                    <p className="text-gray-200 text-xs sm:text-sm font-medium mb-2">
-                      {cat.desc}
-                    </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+            
+            {/* Left Section: SKINCARE LEGENDS */}
+            <div className="relative bg-gradient-to-b from-[#d4c5b8] to-[#c4b5a8] border-2 border-[#120e0f] p-6 sm:p-8 min-h-[500px] sm:min-h-[600px] flex flex-col">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6" style={{ color: '#120e0f' }}>
+                Introducing the SKINCARE LEGENDS!
+              </h2>
+              
+              {/* Category Buttons */}
+              <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-6 sm:mb-8">
+                <Link to="/skincare?category=serum" className="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors text-center">
+                  Skin Brightening Star
+                </Link>
+                <Link to="/skincare?category=serum" className="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors text-center">
+                  De-tan Professional
+                </Link>
+                <Link to="/skincare?category=serum" className="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors text-center">
+                  Pigmentation Specialist
+                </Link>
+                <Link to="/skincare?category=serum" className="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors text-center">
+                  Acne Fighter
+                </Link>
+              </div>
+              
+              {/* Moisturizer Section */}
+              <div className="mb-4 sm:mb-6">
+                <Link 
+                  to="/skincare?category=moisturizer"
+                  className="block w-full px-4 sm:px-5 py-3 sm:py-3.5 text-sm sm:text-base font-bold border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors text-center"
+                >
+                  Moisturizer - Skincare
+                </Link>
+              </div>
+              
+              {/* Skincare Products */}
+              <div className="flex-1 flex items-center justify-center mb-6">
+                <div className="text-center w-full">
+                  <p className="text-sm sm:text-base text-[#120e0f]/70 mb-4">Premium Skincare Serums</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {skincareProducts.slice(0, 4).map((product, idx) => {
+                      const imageUrl = product.image || product.imageUrl || product.images?.[0];
+                      return (
+                        <Link
+                          key={product._id || product.id || idx}
+                          to={`/skincare/${product._id || product.id}`}
+                          className="w-full h-20 sm:h-24 bg-[#fefcfb] border-2 border-[#120e0f] overflow-hidden flex items-center justify-center hover:border-[#bb3435] transition-colors"
+                        >
+                          {imageUrl ? (
+                            <img
+                              src={imageUrl}
+                              alt={product.name || product.productName}
+                              className="w-full h-full object-contain p-2"
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
+                          ) : null}
+                          <div className="w-full h-full flex items-center justify-center text-[8px] sm:text-[10px] text-[#120e0f] p-1" style={{ display: imageUrl ? 'none' : 'flex' }}>
+                            {product.name || product.productName || 'Product'}
+                          </div>
+                        </Link>
+                      );
+                    })}
                   </div>
                 </div>
+              </div>
+              
+              {/* CTA Button */}
+              <Link
+                to="/skincare"
+                className="w-full py-3 sm:py-3.5 text-sm sm:text-base font-bold text-center border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors"
+              >
+                NEW LAUNCH
               </Link>
-            ))}
+            </div>
+
+            {/* Middle Section: HOT SELLERS */}
+            <div className="relative bg-[#e8e8e8] border-2 border-[#120e0f] p-6 sm:p-8 min-h-[500px] sm:min-h-[600px] flex flex-col">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3" style={{ color: '#120e0f' }}>
+                HOT SELLERS
+              </h2>
+              <p className="text-sm sm:text-base mb-4 sm:mb-6" style={{ color: '#120e0f' }}>
+                High In Demand Secure Yours Now!
+              </p>
+              
+              {/* Hot Sellers Skincare Products */}
+              <div className="flex-1 flex items-center justify-center mb-6">
+                <div className="text-center w-full">
+                  <p className="text-sm sm:text-base text-[#120e0f]/70 mb-4">Best Selling Products</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {skincareProducts.slice(4, 9).map((product, idx) => {
+                      const imageUrl = product.image || product.imageUrl || product.images?.[0];
+                      return (
+                        <Link
+                          key={product._id || product.id || idx}
+                          to={`/skincare/${product._id || product.id}`}
+                          className="w-full h-20 sm:h-24 bg-[#fefcfb] border-2 border-[#120e0f] overflow-hidden flex items-center justify-center hover:border-[#bb3435] transition-colors"
+                        >
+                          {imageUrl ? (
+                            <img
+                              src={imageUrl}
+                              alt={product.name || product.productName}
+                              className="w-full h-full object-contain p-2"
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
+                          ) : null}
+                          <div className="w-full h-full flex items-center justify-center text-[8px] sm:text-[10px] text-[#120e0f] p-1" style={{ display: imageUrl ? 'none' : 'flex' }}>
+                            {product.name || product.productName || 'Product'}
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+              
+              {/* CTA Button */}
+              <Link
+                to="/sale"
+                className="w-full py-3 sm:py-3.5 text-sm sm:text-base font-bold text-center border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors"
+              >
+                Hot Sellers
+              </Link>
+            </div>
+
+            {/* Right Section: Greatest Combos */}
+            <div className="relative bg-gradient-to-b from-[#d4c5b8] to-[#c4b5a8] border-2 border-[#120e0f] p-6 sm:p-8 min-h-[500px] sm:min-h-[600px] flex flex-col">
+              <div className="relative mb-4 sm:mb-6">
+                <div className="absolute -left-2 -top-2 bg-[#bb3435] border-2 border-[#120e0f] px-3 sm:px-4 py-2 sm:py-2.5 transform rotate-[-12deg] z-10">
+                  <span className="text-xs sm:text-sm font-bold text-[#fefcfb]">UP TO 60% OFF</span>
+                </div>
+              </div>
+              
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6" style={{ color: '#120e0f' }}>
+                Grab your Biggest Savings with our Greatest Combos!
+              </h2>
+              
+              {/* Combo Skincare Products */}
+              <div className="flex-1 flex items-center justify-center mb-6">
+                <div className="text-center w-full">
+                  <p className="text-sm sm:text-base text-[#120e0f]/70 mb-4">Combo Products</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {skincareProducts.slice(0, 8).map((product, idx) => {
+                      const imageUrl = product.image || product.imageUrl || product.images?.[0];
+                      return (
+                        <Link
+                          key={product._id || product.id || idx}
+                          to={`/skincare/${product._id || product.id}`}
+                          className="w-full h-16 sm:h-20 bg-[#fefcfb] border-2 border-[#120e0f] overflow-hidden flex items-center justify-center hover:border-[#bb3435] transition-colors"
+                        >
+                          {imageUrl ? (
+                            <img
+                              src={imageUrl}
+                              alt={product.name || product.productName}
+                              className="w-full h-full object-contain p-2"
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
+                          ) : null}
+                          <div className="w-full h-full flex items-center justify-center text-[8px] sm:text-[10px] text-[#120e0f] p-1" style={{ display: imageUrl ? 'none' : 'flex' }}>
+                            {product.name || product.productName || 'Product'}
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+              
+              {/* CTA Button */}
+              <Link
+                to="/sale"
+                className="w-full py-3 sm:py-3.5 text-sm sm:text-base font-bold text-center border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors"
+              >
+                Combos
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
+    
 
-      <div className="w-full overflow-hidden">
-        <img
-          src="https://res.cloudinary.com/de1bg8ivx/image/upload/v1765186209/83d30f87-eb70-4315-8291-e1880c206991.png"
-          alt="Full size"
-          className="block w-full h-auto m-0 p-0 border-none outline-none"
-        />
-      </div>
+
+      
       {/* <div className="w-fit m-0 p-0 leading-none overflow-visible h-auto w-auto hidden lg:block">
         <img
           src="https://res.cloudinary.com/de1bg8ivx/image/upload/v1765186240/d347cf32-1980-4355-9ac5-9168cf727263.png"
@@ -970,14 +1287,7 @@ const Home = () => {
         viewAllLink="/women/shoes"
         isLoading={isLoading}
       />
-      <div className="w-full overflow-hidden hidden lg:block">
-        <h2 className='m-5 text-start text-2xl font-bold'>Coming soon...</h2>
-        <img
-          src="https://res.cloudinary.com/de1bg8ivx/image/upload/v1765187037/ce43b64f-3f08-4346-ad66-1f7306b1006f.png"
-          alt="Full size"
-          className="block w-full h-auto m-0 p-0 border-none outline-none"
-        />
-      </div>
+      
 
       <div className="w-full overflow-hidden lg:hidden">
         <img
@@ -1010,9 +1320,9 @@ const Home = () => {
               {isLoading ? [1, 2, 3].map(i => <SkeletonCard key={i} />) : womenItems.slice(0, 3).map(p => (
                 <div key={p._id} className="transform scale-90 sm:scale-100">
                   <ProductCard product={p} />
-                </div>
-              ))}
             </div>
+              ))}
+          </div>
             {/* Content under the images */}
             <div className="mt-6 sm:mt-8 text-center">
               <p className="text-xs sm:text-sm mb-4" style={{ color: '#120e0f', opacity: 0.8 }}>
@@ -1126,7 +1436,5 @@ const ProductSection = ({ title, subtitle, products, viewAllLink, bgColor = 'bg-
     </section>
   );
 };
-
-
 
 export default Home;

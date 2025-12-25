@@ -7,7 +7,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About Section */}
           <div>
-            <h3 className="text-white text-lg font-semibold mb-4">About Shopzy</h3>
+            <h3 className="text-white text-lg font-semibold mb-4">About <span style={{ fontFamily: "'Dancing Script', cursive" }}>Shopzy</span></h3>
             <p className="text-sm mb-4">
               Your one-stop destination for fashion, watches, and accessories. Shop the latest trends with the best prices.
             </p>

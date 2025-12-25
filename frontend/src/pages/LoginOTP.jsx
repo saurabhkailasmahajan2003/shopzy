@@ -7,7 +7,7 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { auth } from '../firebase'; 
 
 const LeftIcon = ({ children }) => (
-  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#120e0f]/40">
     {children}
   </div>
 );
@@ -86,10 +86,10 @@ const LoginOTP = () => {
     }
   };
 
-  const inputClass = "block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-zinc-800 focus:border-transparent sm:text-sm transition duration-150 ease-in-out";
+  const inputClass = "block w-full pl-10 pr-3 py-2.5 sm:py-3 border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] placeholder-[#120e0f]/40 focus:outline-none focus:border-[#bb3435] sm:text-sm transition-colors duration-150";
 
   return (
-    <div className="fixed inset-0 z-50 flex min-h-screen bg-white font-sans">
+    <div className="fixed inset-0 z-50 flex min-h-screen bg-[#fefcfb] font-sans">
       {/* Left Side */}
       <div 
         className="hidden lg:flex flex-col justify-between w-[45%] p-12 text-white relative overflow-hidden bg-cover bg-center"
@@ -106,7 +106,7 @@ const LoginOTP = () => {
               </svg>
             </div>
             <div>
-              <span className="text-xl font-bold text-white tracking-tight leading-none block">
+              <span className="text-xl font-bold text-white tracking-tight leading-none block" style={{ fontFamily: "'Dancing Script', cursive" }}>
                 Shopzy
               </span>
             </div>
@@ -121,21 +121,21 @@ const LoginOTP = () => {
       </div>
 
       {/* Right Side */}
-      <div className="w-full lg:w-[55%] flex flex-col justify-center items-center p-8 lg:p-16 overflow-y-auto bg-white">
-        <div className="w-full max-w-md space-y-8">
+      <div className="w-full lg:w-[55%] flex flex-col justify-center items-center p-4 sm:p-6 md:p-8 lg:p-12 xl:p-16 overflow-y-auto bg-[#fefcfb]">
+        <div className="w-full max-w-md space-y-4 sm:space-y-6 lg:space-y-8">
           <div className="text-center lg:text-left">
-            <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Login via OTP</h2>
-            <p className="mt-2 text-sm text-gray-600">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#120e0f] tracking-tight">Login via OTP</h2>
+            <p className="mt-2 text-xs sm:text-sm text-[#120e0f]/60">
               Go back to{' '}
-              <Link to="/login" className="font-medium text-zinc-900 hover:text-zinc-700 underline underline-offset-2">
+              <Link to="/login" className="font-medium text-[#bb3435] hover:underline underline-offset-2 transition-colors">
                 Standard Login
               </Link>
             </p>
           </div>
 
-          <form className="mt-8 space-y-6" onSubmit={expandForm ? handleVerifyOtp : handleSendOtp}>
+          <form className="mt-6 sm:mt-8 space-y-4 sm:space-y-6" onSubmit={expandForm ? handleVerifyOtp : handleSendOtp}>
             {error && (
-              <div className="bg-red-50 border-l-4 border-red-500 p-4 text-sm text-red-700">
+              <div className="bg-[#fefcfb] border-2 border-[#bb3435] p-3 sm:p-4 text-xs sm:text-sm text-[#bb3435]">
                 <p>{error}</p>
               </div>
             )}
@@ -190,7 +190,7 @@ const LoginOTP = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-lg text-white bg-cta hover:bg-cta-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cta transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed shadow-md"
+                className="group relative w-full flex justify-center py-2.5 sm:py-3 px-4 border-2 border-[#120e0f] bg-[#120e0f] text-[#fefcfb] text-xs sm:text-sm font-semibold uppercase tracking-tight hover:bg-[#120e0f]/90 focus:outline-none transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? (expandForm ? "Verifying..." : "Sending OTP...") : (expandForm ? 'Verify OTP' : 'Send OTP')}
               </button>

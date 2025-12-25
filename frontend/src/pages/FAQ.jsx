@@ -127,16 +127,16 @@ const FAQ = () => {
             </svg>
             Back to Home
           </Link>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Frequently Asked Questions</h1>
-          <p className="text-gray-600">Find answers to common questions about shopping with us.</p>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Frequently Asked Questions</h1>
+          <p className="text-sm sm:text-base text-gray-600">Find answers to common questions about shopping with us.</p>
         </div>
 
         {/* FAQ Sections */}
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8">
           {faqs.map((section, sectionIndex) => (
             <div key={sectionIndex} className="bg-white rounded-lg shadow-sm overflow-hidden">
-              <div className="bg-gray-900 text-white px-6 py-4">
-                <h2 className="text-xl font-semibold">{section.category}</h2>
+              <div className="bg-gray-900 text-white px-4 sm:px-6 py-3 sm:py-4">
+                <h2 className="text-lg sm:text-xl font-semibold">{section.category}</h2>
               </div>
               <div className="divide-y divide-gray-200">
                 {section.questions.map((faq, faqIndex) => {
@@ -146,9 +146,9 @@ const FAQ = () => {
                     <div key={faqIndex}>
                       <button
                         onClick={() => toggleQuestion(index)}
-                        className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors"
+                        className="w-full px-4 sm:px-6 py-3 sm:py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors"
                       >
-                        <span className="font-medium text-gray-900 pr-4">{faq.q}</span>
+                        <span className="text-sm sm:text-base font-medium text-gray-900 pr-2 sm:pr-4">{faq.q}</span>
                         <svg
                           className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-transform ${isOpen ? 'transform rotate-180' : ''}`}
                           fill="none"
@@ -159,8 +159,8 @@ const FAQ = () => {
                         </svg>
                       </button>
                       {isOpen && (
-                        <div className="px-6 py-4 bg-gray-50">
-                          <p className="text-gray-700 leading-relaxed">{faq.a}</p>
+                        <div className="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50">
+                          <p className="text-sm sm:text-base text-gray-700 leading-relaxed">{faq.a}</p>
                         </div>
                       )}
                     </div>

@@ -12,13 +12,13 @@ const TermsOfService = () => {
             </svg>
             Back to Home
           </Link>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Terms of Service</h1>
-          <p className="text-gray-600">Last updated: January 2024</p>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Terms of Service</h1>
+          <p className="text-sm sm:text-base text-gray-600">Last updated: January 2024</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-8 space-y-8">
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
           <section>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">1. Agreement to Terms</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-3 sm:mb-4">1. Agreement to Terms</h2>
             <p className="text-gray-700 leading-relaxed">
               By accessing or using Shopzy's website and services, you agree to be bound by these Terms of Service 
               and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited 
@@ -59,7 +59,7 @@ const TermsOfService = () => {
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">4. Products and Pricing</h2>
             <div className="space-y-4">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Product Information</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Product Information</h3>
                 <p className="text-gray-700 leading-relaxed">
                   We strive to provide accurate product descriptions, images, and pricing. However, we do not warrant 
                   that product descriptions or other content on this site is accurate, complete, reliable, current, or 

@@ -68,44 +68,46 @@ const Cart = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans text-gray-900 pb-20">
+    <div className="min-h-screen bg-[#fefcfb] font-sans text-[#120e0f] pb-12 sm:pb-16 lg:pb-20">
       
       {/* Professional Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
-            <Link to="/" className="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
-                <IconArrowLeft className="w-4 h-4 mr-1.5" />
-                Continue Shopping
+      <div className="bg-[#fefcfb] border-b-2 border-[#120e0f] sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 h-12 sm:h-14 flex items-center justify-between">
+            <Link to="/" className="flex items-center text-xs sm:text-sm font-medium text-[#120e0f] hover:opacity-70 transition-opacity">
+                <IconArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-1.5" />
+                <span className="hidden sm:inline">Continue Shopping</span>
+                <span className="sm:hidden">Back</span>
             </Link>
             
             <div className="hidden md:flex items-center space-x-2 text-xs font-medium">
-                <span className="text-gray-900">Shopping Bag</span>
-                <span className="text-gray-300">•</span>
-                <span className="text-gray-500">Checkout</span>
-                <span className="text-gray-300">•</span>
-                <span className="text-gray-500">Payment</span>
+                <span className="text-[#120e0f]">Shopping Bag</span>
+                <span className="text-[#120e0f]/40">•</span>
+                <span className="text-[#120e0f]/60">Checkout</span>
+                <span className="text-[#120e0f]/40">•</span>
+                <span className="text-[#120e0f]/60">Payment</span>
             </div>
 
-            <div className="flex items-center text-xs font-medium text-gray-500">
-                <IconLock className="w-3.5 h-3.5 mr-1.5" />
-                Secure Checkout
+            <div className="flex items-center text-xs font-medium text-[#120e0f]/60">
+                <IconLock className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1 sm:mr-1.5" />
+                <span className="hidden sm:inline">Secure Checkout</span>
+                <span className="sm:hidden">Secure</span>
             </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-gray-900 mb-1">Shopping Bag</h1>
-          <p className="text-sm text-gray-600">{cart.length} {cart.length === 1 ? 'item' : 'items'}</p>
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
+        <div className="mb-4 sm:mb-6 lg:mb-8">
+          <h1 className="text-lg sm:text-xl lg:text-2xl font-semibold text-[#120e0f] mb-1">Shopping Bag</h1>
+          <p className="text-xs sm:text-sm text-[#120e0f]/60">{cart.length} {cart.length === 1 ? 'item' : 'items'}</p>
         </div>
 
-        <div className="lg:grid lg:grid-cols-12 lg:gap-10 items-start">
+        <div className="flex flex-col lg:grid lg:grid-cols-12 lg:gap-6 xl:gap-10 items-start">
           
           {/* --- LEFT COLUMN: Cart Items --- */}
-          <div className="lg:col-span-8">
+          <div className="w-full lg:col-span-8">
             
             {/* Professional Shipping Progress Bar */}
-            <div className="bg-white p-5 rounded-lg border border-gray-200 shadow-sm mb-6">
+            <div className="bg-[#fefcfb] p-3 sm:p-4 lg:p-5 border-2 border-[#120e0f] mb-3 sm:mb-4 lg:mb-6">
                 <div className="flex items-center justify-between mb-3">
                     <span className="text-sm font-medium text-gray-700">
                         {remainingForFreeShip > 0 
@@ -126,15 +128,15 @@ const Cart = () => {
                 </div>
             </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+            <div className="bg-[#fefcfb] border-2 border-[#120e0f] overflow-hidden">
               {/* Desktop Header */}
-              <div className="hidden sm:grid grid-cols-12 gap-4 px-6 py-3.5 bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <div className="hidden sm:grid grid-cols-12 gap-3 sm:gap-4 px-3 sm:px-4 lg:px-6 py-2.5 sm:py-3 bg-[#fefcfb] border-b-2 border-[#120e0f] text-xs font-semibold text-[#120e0f] uppercase tracking-wider">
                 <div className="col-span-6">Product</div>
                 <div className="col-span-3 text-center">Quantity</div>
                 <div className="col-span-3 text-right">Total</div>
               </div>
 
-              <div className="divide-y divide-gray-100">
+              <div className="divide-y-2 divide-[#120e0f]">
                 {cart.map((item) => {
                   const product = item.product || item;
                   const itemId = item._id || item.id;
@@ -148,12 +150,12 @@ const Cart = () => {
                   const productPrice = product.finalPrice || product.price || 0;
                   
                   return (
-                    <div key={itemId} className="p-5 sm:p-6 border-b border-gray-100 last:border-0 hover:bg-gray-50/30 transition-colors">
-                      <div className="grid grid-cols-1 sm:grid-cols-12 gap-5 items-center">
+                    <div key={itemId} className="p-3 sm:p-4 lg:p-5 xl:p-6 border-b-2 border-[#120e0f] last:border-0 hover:bg-[#120e0f]/5 transition-colors">
+                      <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4 lg:gap-5 items-center">
                         
                         {/* Product Info (Col 6) */}
-                        <div className="sm:col-span-6 flex gap-4">
-                          <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-gray-50 rounded-md overflow-hidden border border-gray-200">
+                        <div className="sm:col-span-6 flex gap-3 sm:gap-4">
+                          <div className="relative w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 flex-shrink-0 bg-[#fefcfb] border-2 border-[#120e0f] overflow-hidden">
                             <img
                               src={productImage}
                               alt={product.name || 'Product'}
@@ -224,34 +226,34 @@ const Cart = () => {
           </div>
 
           {/* --- Professional RIGHT COLUMN: Summary --- */}
-          <div className="lg:col-span-4 mt-8 lg:mt-0">
-            <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 sticky top-20">
-              <h2 className="text-lg font-semibold text-gray-900 mb-6 pb-4 border-b border-gray-200">Order Summary</h2>
+          <div className="w-full lg:col-span-4 mt-4 sm:mt-6 lg:mt-0">
+            <div className="bg-[#fefcfb] border-2 border-[#120e0f] p-4 sm:p-5 lg:p-6 sticky top-12 sm:top-16 lg:top-20">
+              <h2 className="text-base sm:text-lg font-semibold text-[#120e0f] mb-3 sm:mb-4 lg:mb-6 pb-2 sm:pb-3 border-b-2 border-[#120e0f]">Order Summary</h2>
 
-              <dl className="space-y-3.5 text-sm">
+              <dl className="space-y-2.5 sm:space-y-3.5 text-xs sm:text-sm">
                 <div className="flex justify-between">
-                  <dt className="text-gray-600">Subtotal</dt>
-                  <dd className="font-medium text-gray-900">₹{getCartTotal().toLocaleString()}</dd>
+                  <dt className="text-[#120e0f]/60">Subtotal</dt>
+                  <dd className="font-medium text-[#120e0f]">₹{getCartTotal().toLocaleString()}</dd>
                 </div>
                 <div className="flex justify-between items-center">
-                  <dt className="flex items-center text-gray-600">
+                  <dt className="flex items-center text-[#120e0f]/60">
                       Shipping
-                      {remainingForFreeShip <= 0 && <IconCheck className="w-3.5 h-3.5 text-green-600 ml-1.5" />}
+                      {remainingForFreeShip <= 0 && <IconCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-green-600 ml-1 sm:ml-1.5" />}
                   </dt>
-                  <dd className={`font-medium ${remainingForFreeShip <= 0 ? 'text-green-600' : 'text-gray-900'}`}>
+                  <dd className={`font-medium ${remainingForFreeShip <= 0 ? 'text-green-600' : 'text-[#120e0f]'}`}>
                       {remainingForFreeShip <= 0 ? 'Free' : 'Calculated at checkout'}
                   </dd>
                 </div>
-                <div className="flex justify-between pb-4 border-b border-gray-200">
-                  <dt className="text-gray-600">Tax Estimate</dt>
-                  <dd className="font-medium text-gray-900">₹0.00</dd>
+                <div className="flex justify-between pb-3 sm:pb-4 border-b-2 border-[#120e0f]">
+                  <dt className="text-[#120e0f]/60">Tax Estimate</dt>
+                  <dd className="font-medium text-[#120e0f]">₹0.00</dd>
                 </div>
 
-                <div className="flex justify-between items-center pt-3">
-                  <dt className="text-base font-semibold text-gray-900">Total</dt>
-                  <dd className="text-xl font-semibold text-gray-900">₹{getCartTotal().toLocaleString()}</dd>
+                <div className="flex justify-between items-center pt-2 sm:pt-3">
+                  <dt className="text-sm sm:text-base font-semibold text-[#120e0f]">Total</dt>
+                  <dd className="text-lg sm:text-xl font-semibold text-[#120e0f]">₹{getCartTotal().toLocaleString()}</dd>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">Including GST</p>
+                <p className="text-xs text-[#120e0f]/60 mt-1">Including GST</p>
               </dl>
 
               {/* Promo Code Accordion Style */}
@@ -276,14 +278,14 @@ const Cart = () => {
                    </details>
               </div>
 
-              <div className="mt-6 pt-6 border-t border-gray-200">
+              <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t-2 border-[#120e0f]">
                 <button
                   onClick={() => navigate('/checkout')}
-                  className="w-full flex items-center justify-center px-6 py-3 bg-cta text-white text-sm font-medium rounded-md hover:bg-cta-dark transition-colors shadow-sm"
+                  className="w-full flex items-center justify-center px-4 sm:px-6 py-2.5 sm:py-3 bg-[#120e0f] text-[#fefcfb] text-xs sm:text-sm font-medium hover:bg-[#120e0f]/90 transition-colors uppercase tracking-tight"
                 >
                   Proceed to Checkout
                 </button>
-                <p className="mt-3 text-center text-xs text-gray-500">
+                <p className="mt-2 sm:mt-3 text-center text-xs text-[#120e0f]/60">
                     Free shipping on orders over ₹1,000
                 </p>
               </div>
