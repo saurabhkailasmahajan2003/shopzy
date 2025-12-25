@@ -199,28 +199,36 @@ const Home = () => {
     'https://res.cloudinary.com/de1bg8ivx/image/upload/v1766476935/Women_Fashion_Leaderboard_Ad_trr3pe.svg'
   ];
 
-  // Auto-rotate mobile banner carousel
+  // Auto-rotate mobile banner carousel - Faster interval
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentBannerIndex((prev) => (prev + 1) % banners.length);
-    }, 5000); // Change banner every 5 seconds
+    }, 3500); // Change banner every 3.5 seconds (faster)
 
     return () => clearInterval(interval);
   }, [banners.length]);
 
-  // Auto-rotate desktop promo banner carousel
+  // Auto-rotate desktop promo banner carousel - Infinite scroll
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentPromoBannerIndex((prev) => (prev + 1) % 4);
+      setCurrentPromoBannerIndex((prev) => {
+        const next = prev + 1;
+        // Reset to 0 after 4 to maintain indicator sync, but scroll continues infinitely
+        return next >= 4 ? 0 : next;
+      });
     }, 5000); // Change banner every 5 seconds
 
     return () => clearInterval(interval);
   }, []);
 
-  // Auto-rotate mobile promo banner carousel
+  // Auto-rotate mobile promo banner carousel - Infinite scroll
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentMobilePromoBannerIndex((prev) => (prev + 1) % 4);
+      setCurrentMobilePromoBannerIndex((prev) => {
+        const next = prev + 1;
+        // Reset to 0 after 4 to maintain indicator sync, but scroll continues infinitely
+        return next >= 4 ? 0 : next;
+      });
     }, 5000); // Change banner every 5 seconds
 
     return () => clearInterval(interval);
@@ -237,27 +245,81 @@ const Home = () => {
     }
   }, [currentBannerIndex]);
 
-  // Scroll to current desktop promo banner
+  // Infinite scroll for desktop promo banner
   useEffect(() => {
     if (promoBannerCarouselRef.current) {
-      const bannerWidth = promoBannerCarouselRef.current.offsetWidth;
-      promoBannerCarouselRef.current.scrollTo({
-        left: currentPromoBannerIndex * bannerWidth,
+      const carousel = promoBannerCarouselRef.current;
+      const bannerWidth = carousel.offsetWidth;
+      const scrollPosition = currentPromoBannerIndex * bannerWidth;
+      
+      carousel.scrollTo({
+        left: scrollPosition,
         behavior: 'smooth'
       });
     }
   }, [currentPromoBannerIndex]);
 
-  // Scroll to current mobile promo banner
+  // Infinite scroll for mobile promo banner
   useEffect(() => {
     if (mobilePromoBannerCarouselRef.current) {
-      const bannerWidth = mobilePromoBannerCarouselRef.current.offsetWidth;
-      mobilePromoBannerCarouselRef.current.scrollTo({
-        left: currentMobilePromoBannerIndex * bannerWidth,
+      const carousel = mobilePromoBannerCarouselRef.current;
+      const bannerWidth = carousel.offsetWidth;
+      const scrollPosition = currentMobilePromoBannerIndex * bannerWidth;
+      
+      carousel.scrollTo({
+        left: scrollPosition,
         behavior: 'smooth'
       });
     }
   }, [currentMobilePromoBannerIndex]);
+
+  // Handle infinite scroll on scroll event for desktop - seamless loop
+  useEffect(() => {
+    const carousel = promoBannerCarouselRef.current;
+    if (!carousel) return;
+
+    const handleScroll = () => {
+      const bannerWidth = carousel.offsetWidth;
+      const scrollLeft = carousel.scrollLeft;
+      const totalBanners = 4;
+      const totalWidth = bannerWidth * totalBanners;
+      
+      // If scrolled past the first set of banners, jump back seamlessly
+      if (scrollLeft >= totalWidth) {
+        carousel.scrollTo({
+          left: scrollLeft - totalWidth,
+          behavior: 'auto'
+        });
+      }
+    };
+
+    carousel.addEventListener('scroll', handleScroll);
+    return () => carousel.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Handle infinite scroll on scroll event for mobile - seamless loop
+  useEffect(() => {
+    const carousel = mobilePromoBannerCarouselRef.current;
+    if (!carousel) return;
+
+    const handleScroll = () => {
+      const bannerWidth = carousel.offsetWidth;
+      const scrollLeft = carousel.scrollLeft;
+      const totalBanners = 4;
+      const totalWidth = bannerWidth * totalBanners;
+      
+      // If scrolled past the first set of banners, jump back seamlessly
+      if (scrollLeft >= totalWidth) {
+        carousel.scrollTo({
+          left: scrollLeft - totalWidth,
+          behavior: 'auto'
+        });
+      }
+    };
+
+    carousel.addEventListener('scroll', handleScroll);
+    return () => carousel.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen font-sans text-gray-800">
@@ -337,25 +399,29 @@ const Home = () => {
                     className="flex overflow-x-hidden scroll-smooth scrollbar-hide"
                     style={{ scrollSnapType: 'x mandatory' }}
                   >
-                    {[
-                      'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656833/Purple_Women_Clothing_Promo_Instagram_Post_d2cxg9.png',
-                      'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656659/Pink_and_Gold_Simple_Diwali_Skincare_Cosmetic_Beauty_Offers_Instagram_Post_1_xzglzv.png',
-                      'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656392/Brown_White_Modern_Elegant_Sale_and_Discount_Instagram_Post_frmjoo.svg',
-                      'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766655996/Red_and_White_Modern_Bridal_Shower_Social_Media_Graphic_1_v9pexp.svg'
-                    ].map((banner, index) => (
-                      <div
-                        key={index}
-                        className="flex-shrink-0 w-full"
-                        style={{ scrollSnapAlign: 'start' }}
-                      >
-                        <img
-                          src={banner}
-                          alt={`Promo Banner ${index + 1}`}
-                          className="w-full h-auto object-contain"
-                          loading={index === 0 ? 'eager' : 'lazy'}
-                        />
-                      </div>
-                    ))}
+                    {(() => {
+                      const promoBanners = [
+                        'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656833/Purple_Women_Clothing_Promo_Instagram_Post_d2cxg9.png',
+                        'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656659/Pink_and_Gold_Simple_Diwali_Skincare_Cosmetic_Beauty_Offers_Instagram_Post_1_xzglzv.png',
+                        'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656392/Brown_White_Modern_Elegant_Sale_and_Discount_Instagram_Post_frmjoo.svg',
+                        'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766655996/Red_and_White_Modern_Bridal_Shower_Social_Media_Graphic_1_v9pexp.svg'
+                      ];
+                      // Duplicate banners for infinite scroll
+                      return [...promoBanners, ...promoBanners].map((banner, index) => (
+                        <div
+                          key={index}
+                          className="flex-shrink-0 w-full"
+                          style={{ scrollSnapAlign: 'start' }}
+                        >
+                          <img
+                            src={banner}
+                            alt={`Promo Banner ${(index % 4) + 1}`}
+                            className="w-full h-auto object-contain"
+                            loading={index < 4 ? 'eager' : 'lazy'}
+                          />
+                        </div>
+                      ));
+                    })()}
                   </div>
                 </div>
 
@@ -404,25 +470,29 @@ const Home = () => {
               className="flex overflow-x-hidden scroll-smooth scrollbar-hide"
               style={{ scrollSnapType: 'x mandatory' }}
             >
-              {[
-                'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656833/Purple_Women_Clothing_Promo_Instagram_Post_d2cxg9.png',
-                'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656659/Pink_and_Gold_Simple_Diwali_Skincare_Cosmetic_Beauty_Offers_Instagram_Post_1_xzglzv.png',
-                'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656392/Brown_White_Modern_Elegant_Sale_and_Discount_Instagram_Post_frmjoo.svg',
-                'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766655996/Red_and_White_Modern_Bridal_Shower_Social_Media_Graphic_1_v9pexp.svg'
-              ].map((banner, index) => (
-                <div
-                  key={index}
-                  className="flex-shrink-0 w-full"
-                  style={{ scrollSnapAlign: 'start' }}
-                >
-                  <img
-                    src={banner}
-                    alt={`Promo Banner ${index + 1}`}
-                    className="w-full h-auto object-contain"
-                    loading={index === 0 ? 'eager' : 'lazy'}
-                  />
-                </div>
-              ))}
+              {(() => {
+                const promoBanners = [
+                  'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656833/Purple_Women_Clothing_Promo_Instagram_Post_d2cxg9.png',
+                  'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656659/Pink_and_Gold_Simple_Diwali_Skincare_Cosmetic_Beauty_Offers_Instagram_Post_1_xzglzv.png',
+                  'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656392/Brown_White_Modern_Elegant_Sale_and_Discount_Instagram_Post_frmjoo.svg',
+                  'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766655996/Red_and_White_Modern_Bridal_Shower_Social_Media_Graphic_1_v9pexp.svg'
+                ];
+                // Duplicate banners for infinite scroll
+                return [...promoBanners, ...promoBanners].map((banner, index) => (
+                  <div
+                    key={index}
+                    className="flex-shrink-0 w-full"
+                    style={{ scrollSnapAlign: 'start' }}
+                  >
+                    <img
+                      src={banner}
+                      alt={`Promo Banner ${(index % 4) + 1}`}
+                      className="w-full h-auto object-contain"
+                      loading={index < 4 ? 'eager' : 'lazy'}
+                    />
+                  </div>
+                ));
+              })()}
             </div>
 
             {/* Carousel Indicators */}
@@ -593,7 +663,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* --- THREE BANNERS CAROUSEL (Moved from above hero) --- */}
+      {/* --- THREE BANNERS CAROUSEL (Visible on all devices) --- */}
       <div className="relative w-full bg-[#fefcfb] border-t-2 border-[#120e0f] overflow-hidden">
         <div className="relative w-full">
           <div 
@@ -632,22 +702,6 @@ const Home = () => {
               />
             ))}
           </div>
-
-          {/* Navigation Arrows */}
-          <button
-            onClick={() => setCurrentBannerIndex((prev) => (prev - 1 + banners.length) % banners.length)}
-            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-1.5 sm:p-2 z-10 transition-colors"
-            aria-label="Previous banner"
-          >
-            <IconChevronLeft />
-          </button>
-          <button
-            onClick={() => setCurrentBannerIndex((prev) => (prev + 1) % banners.length)}
-            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-1.5 sm:p-2 z-10 transition-colors"
-            aria-label="Next banner"
-          >
-            <IconChevronRight />
-          </button>
         </div>
       </div>
 
@@ -870,61 +924,6 @@ const Home = () => {
               </div>
             </div>
           </Link>
-        </div>
-      </div>
-
-      {/* --- BRAND ADVERTISEMENT SECTION (Nykaa Style) --- */}
-      <div className="bg-background py-6 sm:py-8 lg:py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6">
-            {/* Brand Card 1 - Sarees */}
-            <Link to="/women/saree" className="group relative overflow-hidden rounded-lg bg-white shadow-md">
-              <div className="relative h-64 sm:h-72 md:h-80 bg-gradient-to-br from-primary/20 to-cta/20">
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded text-xs font-bold text-text">
-                  SAREE
-                </div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <h3 className="text-xl font-bold text-text mb-1">Elegant Collection</h3>
-                  <p className="text-sm text-text-muted">Traditional & Modern</p>
-                  <span className="text-sm font-semibold text-cta inline-block mt-2">
-                    Shop Now →
-                  </span>
-                </div>
-              </div>
-            </Link>
-
-            {/* Brand Card 2 - Skincare */}
-            <Link to="/skincare" className="group relative overflow-hidden rounded-lg bg-white shadow-md">
-              <div className="relative h-64 sm:h-72 md:h-80 bg-gradient-to-br from-text/10 to-gray-700/10">
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded text-xs font-bold text-text">
-                  SKINCARE
-                </div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <h3 className="text-xl font-bold text-text mb-1">Glow & Shine</h3>
-                  <p className="text-sm text-text-muted">Nourish Your Skin</p>
-                  <span className="text-sm font-semibold text-cta inline-block mt-2">
-                    Explore →
-                  </span>
-                </div>
-              </div>
-            </Link>
-
-            {/* Brand Card 3 - Sale */}
-            <Link to="/sale" className="group relative overflow-hidden rounded-lg bg-white shadow-md sm:col-span-2 md:col-span-1">
-              <div className="relative h-64 sm:h-72 md:h-80 bg-gradient-to-br from-cta/20 to-primary/20">
-                <div className="absolute top-4 left-4 bg-cta text-white px-3 py-1 rounded text-xs font-bold">
-                  SALE
-                </div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <h3 className="text-xl font-bold text-text mb-1">Up to 50% Off</h3>
-                  <p className="text-sm text-text-muted">Limited Time</p>
-                  <span className="text-sm font-semibold text-cta inline-block mt-2">
-                    Shop Sale →
-                  </span>
-                </div>
-              </div>
-            </Link>
-          </div>
         </div>
       </div>
 
