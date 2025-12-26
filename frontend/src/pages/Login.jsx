@@ -103,10 +103,13 @@ const Login = () => {
                 <path d="M12 18C12 15.5 13.5 14 16 14C18.5 14 20 15.5 20 17C20 18.5 18.5 19.5 17 20C15.5 20.5 14 21.5 14 23C14 25.5 15.5 27 18 27C20.5 27 22 25.5 22 24" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
               </svg>
             </div>
-            <div>
-              <span className="text-xl font-bold text-white tracking-tight leading-none block" style={{ fontFamily: "'Dancing Script', cursive" }}>
-                Shopzy
-              </span>
+            <div className="bg-transparent">
+              <img 
+                src="https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766755411/White_and_Beige_Neutral_Clean_Women_Bags_Instagram_Post_1_xytoa9.png"
+                alt="Shopzy Logo"
+                className="h-10 w-auto object-contain"
+                style={{ backgroundColor: 'transparent', background: 'transparent' }}
+              />
             </div>
           </div>
           <h1 className="text-4xl font-light leading-tight mb-4 text-white drop-shadow-md">

@@ -162,19 +162,21 @@ const Navbar = () => {
                MAIN NAVBAR (Dribbble Style)
           ======================= */}
       <nav 
-        className={`sticky top-0 left-0 right-0 z-50 transition-all duration-300 transform glass-effect luxury-shadow
-        ${isNavHidden ? '-translate-y-full' : 'translate-y-0'}`}
+        className={`sticky top-0 left-0 right-0 z-50 transition-all duration-300 transform glass-effect        ${isNavHidden ? '-translate-y-full' : 'translate-y-0'}`}
         style={{ backgroundColor: 'rgba(250, 248, 245, 0.85)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
       >
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
           <div className="flex items-center justify-between h-14 sm:h-16 lg:h-18 gap-3 sm:gap-4 lg:gap-6">
 
             {/* LEFT: Logo - Luxury styling */}
-            <div className="flex-shrink-0">
-              <Link to="/" className="flex items-center gap-2">
-                <span className="text-xl sm:text-2xl lg:text-3xl font-serif font-bold tracking-wide" style={{ color: '#3D2817' }}>
-                  Shopzy
-                </span>
+            <div className="flex-shrink-0 bg-transparent">
+              <Link to="/" className="flex items-center bg-transparent">
+                <img 
+                  src="https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766755411/White_and_Beige_Neutral_Clean_Women_Bags_Instagram_Post_1_xytoa9.png"
+                  alt="Shopzy Logo"
+                  className="h-5 sm:h-7 lg:h-8 w-auto object-contain"
+                  style={{ backgroundColor: 'transparent', background: 'transparent' }}
+                />
               </Link>
             </div>
 

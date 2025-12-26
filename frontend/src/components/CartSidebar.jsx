@@ -275,10 +275,6 @@ const CartSidebar = ({ isOpen, onClose }) => {
               BUY NOW
             </button>
 
-            {/* Powered By */}
-            <p className="text-xs text-[#3D2817]/60 text-center">
-              Powered By Shiprocket
-            </p>
           </div>
         )}
       </div>

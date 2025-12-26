@@ -16,6 +16,11 @@ import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
+import GeneralPage from './pages/mobile/GeneralPage';
+import OrdersPage from './pages/mobile/OrdersPage';
+import BillingPage from './pages/mobile/BillingPage';
+import SecurityPage from './pages/mobile/SecurityPage';
+import NotificationsPage from './pages/mobile/NotificationsPage';
 import ContactUs from './pages/ContactUs';
 import FAQ from './pages/FAQ';
 import ShippingInfo from './pages/ShippingInfo';
@@ -64,6 +69,11 @@ function AppContent() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/general" element={<GeneralPage />} />
+          <Route path="/profile/orders" element={<OrdersPage />} />
+          <Route path="/profile/billing" element={<BillingPage />} />
+          <Route path="/profile/security" element={<SecurityPage />} />
+          <Route path="/profile/notifications" element={<NotificationsPage />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/faq" element={<FAQ />} />

@@ -304,14 +304,14 @@ const OrderSuccess = () => {
         >
           <button
             onClick={() => setShowInvoice(true)}
-            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3.5 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 font-semibold text-base shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3.5 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 font-semibold text-base shadow-lg transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
           >
             <FileText className="w-5 h-5" />
             View Invoice
           </button>
           <button
             onClick={handleGoToOrders}
-            className="w-full bg-gradient-to-r from-black to-gray-800 text-white py-3.5 rounded-xl hover:from-gray-800 hover:to-black transition-all duration-300 font-semibold text-base shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+            className="w-full bg-gradient-to-r from-black to-gray-800 text-white py-3.5 rounded-xl hover:from-gray-800 hover:to-black transition-all duration-300 font-semibold text-base shadow-lg transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
           >
             <Package className="w-5 h-5" />
             View My Orders

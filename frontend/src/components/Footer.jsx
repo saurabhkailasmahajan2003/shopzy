@@ -7,7 +7,15 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About Section */}
           <div>
-            <h3 className="text-white text-lg font-semibold mb-4">About <span style={{ fontFamily: "'Dancing Script', cursive" }}>Shopzy</span></h3>
+            <div className="mb-4 bg-transparent">
+              <img 
+                src="https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766755411/White_and_Beige_Neutral_Clean_Women_Bags_Instagram_Post_1_xytoa9.png"
+                alt="Shopzy Logo"
+                className="h-12 w-auto object-contain mb-4"
+                style={{ backgroundColor: 'transparent', background: 'transparent' }}
+              />
+            </div>
+            <h3 className="text-white text-lg font-semibold mb-4">About Shopzy</h3>
             <p className="text-sm mb-4">
               Your one-stop destination for fashion, watches, and accessories. Shop the latest trends with the best prices.
             </p>

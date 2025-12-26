@@ -1317,7 +1317,7 @@ const ProductDetail = () => {
                 {isAuthenticated && !showReviewForm && (
                   <button
                     onClick={() => setShowReviewForm(true)}
-                    className="px-4 py-2 bg-[#3D2817] text-white text-sm font-medium rounded-lg hover:bg-[#8B4513] transition-all luxury-shadow hover:shadow-lg active:scale-95"
+                    className="px-4 py-2 bg-[#3D2817] text-white text-sm font-medium rounded-lg hover:bg-[#8B4513] transition-all luxury-shadow active:scale-95"
                   >
                     Write a Review
                   </button>
@@ -1325,7 +1325,7 @@ const ProductDetail = () => {
                 {!isAuthenticated && (
                   <button
                     onClick={() => setShowLoginModal(true)}
-                    className="px-4 py-2 bg-[#3D2817] text-white text-sm font-medium rounded-lg hover:bg-[#8B4513] transition-all luxury-shadow hover:shadow-lg active:scale-95"
+                    className="px-4 py-2 bg-[#3D2817] text-white text-sm font-medium rounded-lg hover:bg-[#8B4513] transition-all luxury-shadow active:scale-95"
                   >
                     Login to Write a Review
                   </button>
@@ -1415,7 +1415,7 @@ const ProductDetail = () => {
                     <button
                       type="submit"
                       disabled={submittingReview}
-                      className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-[#3D2817] text-white text-sm sm:text-base font-semibold rounded-lg hover:bg-[#8B4513] transition-all luxury-shadow hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
+                      className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-[#3D2817] text-white text-sm sm:text-base font-semibold rounded-lg hover:bg-[#8B4513] transition-all luxury-shadow disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
                     >
                       {submittingReview ? 'Submitting...' : 'Submit Review'}
                     </button>

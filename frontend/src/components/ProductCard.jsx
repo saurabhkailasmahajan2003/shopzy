@@ -133,21 +133,21 @@ const ProductCard = ({ product }) => {
           }
         }}
       >
-        <Link to={`/product/${productId}`} className="block bg-[#FAF8F5] border border-[#3D2817]/30 p-4 luxury-shadow rounded hover:shadow-lg transition-shadow">
+        <Link to={`/product/${productId}`} className="block bg-[#FAF8F5] border border-[#3D2817]/30 p-2 sm:p-3 md:p-4 luxury-shadow rounded transition-shadow">
           
           {/* IMAGE AREA */}
-          <div className="relative w-full aspect-square overflow-hidden bg-white mb-4 border border-[#3D2817]/20 rounded">
+          <div className="relative w-full aspect-square overflow-hidden bg-white mb-2 sm:mb-3 md:mb-4 border border-[#3D2817]/20 rounded">
             
             {/* Bestseller Badge - Yellow with black border */}
             {isBestseller && (
-              <span className="absolute top-2 left-2 z-20 bg-[#D4AF37] text-[#3D2817] text-[10px] font-bold px-2 py-1 border border-[#3D2817]/30 rounded uppercase tracking-wide">
+              <span className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 z-20 bg-[#D4AF37] text-[#3D2817] text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 border border-[#3D2817]/30 rounded uppercase tracking-wide">
                 Bestseller
               </span>
             )}
 
             {/* Discount Tag (if not bestseller) */}
             {!isBestseller && hasDiscount && (
-               <span className="absolute top-2 left-2 z-20 bg-white text-[#3D2817] text-[10px] font-bold px-2 py-1 border border-[#3D2817]/30 rounded uppercase tracking-wide">
+               <span className="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 z-20 bg-white text-[#3D2817] text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 border border-[#3D2817]/30 rounded uppercase tracking-wide">
                  Sale
                </span>
             )}
@@ -157,17 +157,17 @@ const ProductCard = ({ product }) => {
               type="button"
               onClick={handleAddClick}
               disabled={isAdding || isSoldOut}
-              className="absolute top-2 right-2 z-30 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-sm border border-[#3D2817]/30 hover:bg-[#3D2817] hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded luxury-shadow"
+              className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 z-30 w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-white/90 backdrop-blur-sm border border-[#3D2817]/30 hover:bg-[#3D2817] hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded luxury-shadow"
               title="Add to cart"
               aria-label="Add to cart"
             >
               {isAdding ? (
-                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
               ) : (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
               )}
@@ -216,15 +216,15 @@ const ProductCard = ({ product }) => {
           </div>
 
           {/* PRODUCT DETAILS */}
-          <div className="space-y-3">
+          <div className="space-y-1.5 sm:space-y-2 md:space-y-3">
             {/* Product Name - Bold, uppercase, minimal */}
-            <h3 className="text-sm font-bold text-[#3D2817] leading-tight line-clamp-2 uppercase tracking-tight">
+            <h3 className="text-xs sm:text-sm font-bold text-[#3D2817] leading-tight line-clamp-2 uppercase tracking-tight">
               {(product.name || product.productName || 'Product').toUpperCase()}
             </h3>
 
             {/* Reviews and Availability - Orange for sales info */}
             {!isSkincare && (
-              <div className="flex items-center gap-1.5 text-xs text-[#3D2817]">
+              <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-[#3D2817]">
                 {reviewsCount > 0 && (
                   <span className="font-medium">{reviewsCount.toLocaleString()} Reviews</span>
                 )}
@@ -243,14 +243,14 @@ const ProductCard = ({ product }) => {
               </div>
             )}
             {isSkincare && reviewsCount > 0 && (
-              <div className="flex items-center gap-1.5 text-xs text-[#3D2817]">
+              <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-[#3D2817]">
                 <span className="font-medium">{reviewsCount.toLocaleString()} Reviews</span>
               </div>
             )}
 
             {/* Description Snippet - Muted black/gray */}
             {descriptionSnippet && (
-              <p className="text-xs text-[#3D2817]/60 line-clamp-2 leading-relaxed">
+              <p className="text-[10px] sm:text-xs text-[#3D2817]/60 line-clamp-2 leading-relaxed">
                 {descriptionSnippet}
               </p>
             )}
@@ -259,17 +259,17 @@ const ProductCard = ({ product }) => {
             <div className="border-t border-[#3D2817]/30"></div>
 
             {/* Pricing Section - Minimal, clean */}
-            <div className="flex items-baseline gap-2 pt-1">
+            <div className="flex items-baseline gap-1.5 sm:gap-2 pt-0.5 sm:pt-1">
               {hasDiscount && originalPrice > 0 && (
-                <span className="text-xs text-[#3D2817]/50 line-through">
+                <span className="text-[10px] sm:text-xs text-[#3D2817]/50 line-through">
                   Rs. {originalPrice.toLocaleString()}
                 </span>
               )}
-              <span className="text-base font-bold text-[#3D2817]">
+              <span className="text-sm sm:text-base font-bold text-[#3D2817]">
                 Rs. {finalPrice > 0 ? finalPrice.toLocaleString() : '0'}
               </span>
               {hasDiscount && discountPercent > 0 && (
-                <span className="text-xs text-green-600 font-semibold">
+                <span className="text-[10px] sm:text-xs text-green-600 font-semibold">
                   ({discountPercent}% off)
                 </span>
               )}

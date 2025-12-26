@@ -63,6 +63,71 @@ const IconChevronRight = (props) => (
     </svg>
   );
 
+// Mobile Order Card component
+const MobileOrderCard = ({ order, user }) => {
+  const [showInvoice, setShowInvoice] = useState(false);
+
+  return (
+    <>
+      <div className="bg-white/60 backdrop-blur-sm border border-[#3D2817]/30 rounded-lg p-4 luxury-shadow-sm">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <p className="text-xs text-[#3D2817]/60 mb-1">Order ID</p>
+            <p className="text-sm font-bold text-[#3D2817]">#{order._id?.slice(-6).toUpperCase()}</p>
+          </div>
+          <span className={`px-3 py-1 text-xs font-semibold border rounded ${
+            order.status === 'delivered' ? 'bg-green-50/80 text-green-800 border-green-300' : 
+            order.status === 'shipped' ? 'bg-blue-50/80 text-blue-800 border-blue-300' :
+            'bg-yellow-50/80 text-yellow-800 border-yellow-300'
+          }`}>
+            {order.status?.charAt(0).toUpperCase() + order.status?.slice(1)}
+          </span>
+        </div>
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <p className="text-xs text-[#3D2817]/60 mb-1">Date</p>
+            <p className="text-sm text-[#3D2817]">{new Date(order.orderDate || order.createdAt).toLocaleDateString()}</p>
+          </div>
+          <div className="text-right">
+            <p className="text-xs text-[#3D2817]/60 mb-1">Total</p>
+            <p className="text-lg font-bold text-[#8B4513]">₹{order.totalAmount?.toLocaleString()}</p>
+          </div>
+        </div>
+        <button
+          onClick={() => setShowInvoice(true)}
+          className="w-full flex items-center justify-center gap-2 py-2.5 border border-[#3D2817]/30 text-sm font-semibold text-[#3D2817] hover:bg-[#3D2817] hover:text-[#FAF8F5] transition-colors rounded luxury-shadow-sm"
+        >
+          <FileText className="w-4 h-4" />
+          View Invoice
+        </button>
+      </div>
+      {showInvoice && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 overflow-y-auto" onClick={() => setShowInvoice(false)}>
+          <div className="bg-white rounded-lg max-w-4xl w-full my-8 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+              <h2 className="text-xl font-bold text-gray-900">Invoice</h2>
+              <button
+                onClick={() => setShowInvoice(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="p-6">
+              <Invoice 
+                order={order} 
+                user={user}
+                onPrint={() => window.print()}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
 
 // OrderRow component for displaying order with invoice
 const OrderRow = ({ order, user }) => {
@@ -70,28 +135,28 @@ const OrderRow = ({ order, user }) => {
 
   return (
     <>
-      <tr className="hover:bg-[#3D2817]/5 transition-colors">
-        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-[#3D2817]">
+      <tr className="hover:bg-white/40 backdrop-blur-sm transition-colors">
+        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-semibold text-[#3D2817]">
           #{order._id?.slice(-6).toUpperCase()}
         </td>
-        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-[#3D2817]/60">
+        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-[#3D2817]/70">
           {new Date(order.orderDate || order.createdAt).toLocaleDateString()}
         </td>
         <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
-          <span className={`inline-flex items-center px-2.5 py-0.5 text-xs font-medium border-2
-            ${order.status === 'delivered' ? 'bg-green-50 text-green-700 border-green-300' : 
-              order.status === 'shipped' ? 'bg-blue-50 text-blue-700 border-blue-300' :
-              'bg-yellow-50 text-yellow-700 border-yellow-300'}`}>
+          <span className={`inline-flex items-center px-3 py-1 text-xs font-semibold border
+            ${order.status === 'delivered' ? 'bg-green-50/80 backdrop-blur-sm text-green-800 border-green-300' : 
+              order.status === 'shipped' ? 'bg-blue-50/80 backdrop-blur-sm text-blue-800 border-blue-300' :
+              'bg-yellow-50/80 backdrop-blur-sm text-yellow-800 border-yellow-300'}`}>
             {order.status?.charAt(0).toUpperCase() + order.status?.slice(1)}
           </span>
         </td>
-        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-[#3D2817] text-right font-medium">
+        <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-[#8B4513] text-right font-bold">
           ₹{order.totalAmount?.toLocaleString()}
         </td>
         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-center">
           <button
             onClick={() => setShowInvoice(true)}
-            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-[#3D2817] hover:text-[#3D2817]/70 border-2 border-[#3D2817]/30 hover:bg-[#3D2817]/5 transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#3D2817] hover:text-[#FAF8F5] border border-[#3D2817]/30 hover:bg-[#3D2817] transition-colors luxury-shadow-sm"
           >
             <FileText className="w-3.5 h-3.5" />
             View
@@ -242,7 +307,7 @@ const Profile = () => {
   };
 
   // Reusable Input Style (Cart Style)
-  const labelClass = "block text-xs font-semibold text-[#3D2817]/60 uppercase tracking-wide mb-2";
+  const labelClass = "block text-xs font-semibold text-[#3D2817] uppercase tracking-wider mb-2.5";
 
   if (authLoading || isLoading) {
     return (
@@ -262,105 +327,301 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-[#FAF8F5] font-sans text-[#3D2817]">
       
-      {/* HEADER STRIP */}
-      <div className="bg-[#FAF8F5] border-b-2 border-[#3D2817]/30 sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 h-12 sm:h-14 flex items-center justify-between">
-            <div className="flex items-center gap-2 sm:gap-3">
-                 <Link to="/" className="flex items-center text-xs sm:text-sm font-medium text-[#3D2817] hover:opacity-70 transition-opacity">
-                    <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                    <span className="hidden sm:inline">Continue Shopping</span>
-                    <span className="sm:hidden">Back</span>
-                 </Link>
-                 <span className="h-4 sm:h-6 w-px bg-[#3D2817]"></span>
-                <h1 className="text-sm sm:text-base font-semibold tracking-tight text-[#3D2817]">Account Settings</h1>
+      {/* MOBILE VIEW - Profile Style */}
+      <div className="lg:hidden">
+        {/* Mobile Header */}
+        <div className="bg-[#3D2817] text-[#FAF8F5]">
+          <div className="px-4 pt-12 pb-4">
+            <div className="flex items-center justify-between">
+              <Link to="/" className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                <svg className="w-5 h-5 text-[#FAF8F5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+              </Link>
+              <h1 className="text-lg font-bold text-[#FAF8F5]">Profile</h1>
+              <Link to="/profile/general" className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                <svg className="w-5 h-5 text-[#FAF8F5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </Link>
             </div>
-          <button onClick={logout} className="text-xs sm:text-sm font-medium text-[#3D2817] hover:text-[#3D2817]/70 transition-colors">
-            Sign out
-          </button>
+          </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
-          
-          {/* LEFT SIDEBAR NAVIGATION */}
-          <div className="lg:col-span-3 space-y-4 sm:space-y-6">
-            {/* User Mini Card */}
-            <div className="bg-[#FAF8F5] border-2 border-[#3D2817]/30 p-3 sm:p-4">
-                <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-[#3D2817] text-[#fefcfb] flex items-center justify-center font-bold text-sm sm:text-base border-2 border-[#3D2817]/30">
-                        {userInitial}
-                    </div>
-                    <div className="overflow-hidden flex-1">
-                        <p className="text-sm sm:text-base font-bold truncate text-[#3D2817]">{displayName}</p>
-                        <p className="text-xs text-[#3D2817]/60 truncate">{user?.email}</p>
-                    </div>
-                </div>
+        {/* Mobile Content - White Background */}
+        <div className="bg-white rounded-t-3xl -mt-4 pt-8 pb-6">
+          {/* Profile Picture & Info */}
+          <div className="flex flex-col items-center mb-8">
+            <div className="h-24 w-24 rounded-full bg-[#8B4513] text-[#FAF8F5] flex items-center justify-center font-bold text-3xl mb-3 border-4 border-white shadow-lg">
+              {userInitial}
             </div>
+            <h2 className="text-2xl font-bold text-[#3D2817] mb-1">{displayName}</h2>
+            <p className="text-sm text-[#3D2817]/60">{user?.email}</p>
+          </div>
 
-            {/* Nav Menu */}
-            <nav className="space-y-1">
-              {menuItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id)}
-                  className={`w-full flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 text-sm font-medium transition-all duration-200 border-2 ${
-                    activeTab === item.id
-                      ? 'bg-[#FAF8F5] text-[#3D2817] border-[#3D2817]/30'
-                      : 'bg-[#FAF8F5] text-[#3D2817]/60 border-[#3D2817]/30 hover:text-[#3D2817] hover:bg-[#3D2817]/5'
-                  }`}
-                >
-                  <item.icon className={`w-4 h-4 ${activeTab === item.id ? 'text-[#3D2817]' : 'text-[#3D2817]/60'}`} />
-                  {item.label}
-                  {activeTab === item.id && <IconChevronRight className="w-4 h-4 ml-auto text-[#3D2817]" />}
-                </button>
-              ))}
-               {isAdmin && (
-                <Link to="/admin" className="w-full flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 bg-[#FAF8F5] border-2 border-[#3D2817]/30 text-sm font-medium text-[#3D2817]/60 hover:text-[#3D2817] hover:bg-[#3D2817]/5 transition-all">
-                    <IconAdmin className="w-4 h-4 text-[#3D2817]/60" />
-                    Admin Dashboard
-                </Link>
-               )}
-            </nav>
-
-            {/* Quick Stats (Mini) */}
-            <div className="bg-[#FAF8F5] border-2 border-[#3D2817]/30 p-3 sm:p-4">
-                 <Link to="/orders" className="block text-center">
-                    <span className="block text-xl sm:text-2xl font-bold text-[#3D2817]">{profileData?.orders?.length || 0}</span>
-                    <span className="text-[10px] uppercase tracking-wide text-[#3D2817]/60">Orders</span>
-                 </Link>
+          {/* Location Section */}
+          <div className="px-4 mb-6">
+            <p className="text-xs text-[#3D2817]/60 mb-3 uppercase tracking-wider">Location</p>
+            <div className="flex items-center justify-between py-3 border-b border-[#3D2817]/10">
+              <div className="flex items-center gap-3">
+                <svg className="w-5 h-5 text-[#8B4513]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0L6.343 16.657a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span className="text-[#8B4513] font-medium">
+                  {user?.address?.country || user?.address?.state || 'India'}
+                </span>
+              </div>
+              <svg className="w-4 h-4 text-[#3D2817]/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              </svg>
             </div>
           </div>
 
-          {/* RIGHT CONTENT AREA */}
-          <div className="lg:col-span-9">
-            <div className="bg-[#FAF8F5] border-2 border-[#3D2817]/30 min-h-[500px]">
-                
-                {/* Content Header */}
-                <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-5 border-b-2 border-[#3D2817]/30 flex justify-between items-center">
-                    <div>
-                        <h2 className="text-lg sm:text-xl font-semibold text-[#3D2817]">
-                            {menuItems.find(i => i.id === activeTab)?.label}
-                        </h2>
-                        <p className="text-xs sm:text-sm text-[#3D2817]/60 mt-1">
-                            {menuItems.find(i => i.id === activeTab)?.description}
-                        </p>
-                    </div>
+          {/* Account Settings Section */}
+          <div className="px-4 mb-6">
+            <p className="text-xs text-[#3D2817]/60 mb-3 uppercase tracking-wider">Account Settings</p>
+            {menuItems.map((item) => {
+              const routeMap = {
+                'profile': '/profile/general',
+                'orders': '/profile/orders',
+                'payments': '/profile/billing',
+                'security': '/profile/security',
+                'notifications': '/profile/notifications',
+              };
+              return (
+                <Link
+                  key={item.id}
+                  to={routeMap[item.id] || '/profile'}
+                  className="flex items-center justify-between py-4 border-b border-[#3D2817]/10 active:bg-[#3D2817]/5"
+                >
+                  <div className="flex items-center gap-3">
+                    <item.icon className="w-5 h-5 text-[#3D2817]/70" />
+                    <span className="text-[#3D2817] font-medium">{item.label}</span>
+                  </div>
+                  <IconChevronRight className="w-5 h-5 text-[#3D2817]/40" />
+                </Link>
+              );
+            })}
+            {isAdmin && (
+              <Link to="/admin" className="flex items-center justify-between py-4 border-b border-[#3D2817]/10 active:bg-[#3D2817]/5">
+                <div className="flex items-center gap-3">
+                  <IconAdmin className="w-5 h-5 text-[#3D2817]/70" />
+                  <span className="text-[#3D2817] font-medium">Admin Dashboard</span>
                 </div>
+                <IconChevronRight className="w-5 h-5 text-[#3D2817]/40" />
+              </Link>
+            )}
+          </div>
 
-                {/* Notifications & Messages */}
-                {(error || success) && (
-                    <div className={`mx-4 sm:mx-6 lg:mx-8 mt-4 sm:mt-6 px-4 py-3 border-2 ${error ? 'bg-red-50 text-red-700 border-red-300' : 'bg-green-50 text-green-700 border-green-300'} text-sm flex items-center gap-2`}>
-                        <span className={`w-2 h-2 rounded-full ${error ? 'bg-red-500' : 'bg-green-500'}`}></span>
-                        {error || success}
-                    </div>
-                )}
+          {/* Quick Actions */}
+          <div className="px-4 mb-6">
+            <p className="text-xs text-[#3D2817]/60 mb-3 uppercase tracking-wider">Quick Actions</p>
+            <Link to="/" className="flex items-center justify-between py-4 border-b border-[#3D2817]/10 active:bg-[#3D2817]/5">
+              <div className="flex items-center gap-3">
+                <IconShoppingBag className="w-5 h-5 text-[#3D2817]/70" />
+                <span className="text-[#3D2817] font-medium">Continue Shopping</span>
+              </div>
+              <IconChevronRight className="w-5 h-5 text-[#3D2817]/40" />
+            </Link>
+            <Link to="/cart" className="flex items-center justify-between py-4 border-b border-[#3D2817]/10 active:bg-[#3D2817]/5">
+              <div className="flex items-center gap-3">
+                <IconShoppingCart className="w-5 h-5 text-[#3D2817]/70" />
+                <span className="text-[#3D2817] font-medium">View Cart</span>
+              </div>
+              <IconChevronRight className="w-5 h-5 text-[#3D2817]/40" />
+            </Link>
+          </div>
 
-                <div className="p-4 sm:p-6 lg:p-8">
+          {/* Logout */}
+          <div className="px-4">
+            <button
+              onClick={logout}
+              className="flex items-center justify-between w-full py-4 border-b border-[#3D2817]/10 active:bg-red-50"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
+                  <IconLogout className="w-3 h-3 text-white" />
+                </div>
+                <span className="text-red-600 font-medium">Log out</span>
+              </div>
+              <IconChevronRight className="w-5 h-5 text-red-600/40" />
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Profile Form - Only show on profile page */}
+        {activeTab === 'profile' && (
+          <div className="px-4 py-6">
+            {(error || success) && (
+              <div className={`mb-6 px-4 py-3 border ${error ? 'bg-red-50/80 backdrop-blur-sm text-red-800 border-red-300' : 'bg-green-50/80 backdrop-blur-sm text-green-800 border-green-300'} text-sm flex items-center gap-2.5 rounded luxury-shadow-sm`}>
+                <span className={`w-2 h-2 rounded-full ${error ? 'bg-red-500' : 'bg-green-500'}`}></span>
+                {error || success}
+              </div>
+            )}
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label className={labelClass}>Full Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-white/60 backdrop-blur-sm text-[#3D2817] focus:outline-none focus:ring-2 focus:ring-[#8B4513]/20 focus:border-[#8B4513] transition duration-150 ease-in-out placeholder-[#3D2817]/40 rounded-lg luxury-shadow-sm"
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Phone</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-white/60 backdrop-blur-sm text-[#3D2817] focus:outline-none focus:ring-2 focus:ring-[#8B4513]/20 focus:border-[#8B4513] transition duration-150 ease-in-out placeholder-[#3D2817]/40 rounded-lg luxury-shadow-sm"
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Email Address</label>
+                <div className="relative">
+                  <input
+                    type="email"
+                    value={formData.email}
+                    disabled
+                    className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-[#3D2817]/5 text-[#3D2817]/60 cursor-not-allowed rounded-lg luxury-shadow-sm"
+                  />
+                  <span className="absolute right-3 top-3 text-xs font-semibold text-[#3D2817] bg-[#8B4513]/10 px-2.5 py-1 border border-[#8B4513]/30 rounded">
+                    Verified
+                  </span>
+                </div>
+              </div>
+              <div>
+                <label className={labelClass}>Delivery Address</label>
+                <textarea
+                  name="address"
+                  rows="4"
+                  value={formData.address}
+                  onChange={handleChange}
+                  className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-white/60 backdrop-blur-sm text-[#3D2817] focus:outline-none focus:ring-2 focus:ring-[#8B4513]/20 focus:border-[#8B4513] transition duration-150 ease-in-out placeholder-[#3D2817]/40 resize-none rounded-lg luxury-shadow-sm"
+                  placeholder="Street, City, State, Zip, Country"
+                />
+              </div>
+              <div className="pt-4 border-t border-[#3D2817]/30 flex gap-3">
+                <button type="submit" className="flex-1 px-6 py-3 bg-[#3D2817] text-[#FAF8F5] text-sm font-semibold hover:bg-[#8B4513] transition-colors border border-[#3D2817] rounded-lg luxury-shadow">
+                  Save Changes
+                </button>
+                <button type="button" onClick={loadProfile} className="px-6 py-3 bg-white/60 backdrop-blur-sm text-[#3D2817] text-sm font-semibold border border-[#3D2817]/30 hover:bg-[#3D2817]/5 hover:border-[#3D2817]/50 transition-colors rounded-lg luxury-shadow-sm">
+                  Reset
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+      </div>
+
+      {/* DESKTOP VIEW - Dashboard Style */}
+      <div className="hidden lg:flex min-h-screen bg-[#FAF8F5]">
+        {/* LEFT SIDEBAR */}
+        <div className="w-64 bg-white border-r border-[#3D2817]/30 flex flex-col">
+          {/* Logo/Header */}
+          <div className="p-6 border-b border-[#3D2817]/30">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-[#3D2817] text-[#FAF8F5] flex items-center justify-center font-bold text-lg">
+                  {userInitial}
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-[#3D2817]">Shopzy</h2>
+                  <p className="text-xs text-[#3D2817]/60">Account</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Navigation Menu */}
+          <nav className="flex-1 p-4 space-y-1">
+            {menuItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all duration-200 rounded-lg ${
+                  activeTab === item.id
+                    ? 'bg-[#3D2817] text-[#FAF8F5] luxury-shadow'
+                    : 'text-[#3D2817]/70 hover:text-[#3D2817] hover:bg-[#3D2817]/5'
+                }`}
+              >
+                <item.icon className={`w-5 h-5 ${activeTab === item.id ? 'text-[#FAF8F5]' : 'text-[#3D2817]/70'}`} />
+                <span className="flex-1 text-left">{item.label}</span>
+              </button>
+            ))}
+            {isAdmin && (
+              <Link to="/admin" className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-[#3D2817]/70 hover:text-[#3D2817] hover:bg-[#3D2817]/5 rounded-lg transition-all">
+                <IconAdmin className="w-5 h-5 text-[#3D2817]/70" />
+                <span className="flex-1 text-left">Admin Dashboard</span>
+              </Link>
+            )}
+          </nav>
+
+          {/* User Info Footer */}
+          <div className="p-4 border-t border-[#3D2817]/30">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="h-10 w-10 rounded-full bg-[#8B4513] text-[#FAF8F5] flex items-center justify-center font-bold">
+                {userInitial}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-[#3D2817] truncate">{displayName}</p>
+                <p className="text-xs text-[#3D2817]/60 truncate">{user?.email}</p>
+              </div>
+            </div>
+            <button
+              onClick={logout}
+              className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            >
+              <IconLogout className="w-5 h-5" />
+              <span>Sign out</span>
+            </button>
+          </div>
+        </div>
+
+        {/* MAIN CONTENT AREA */}
+        <div className="flex-1 flex flex-col">
+          {/* Header */}
+          <div className="bg-white border-b border-[#3D2817]/30 px-8 py-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-[#3D2817]">Hey, {displayName.split(' ')[0]}!</h1>
+                <p className="text-sm text-[#3D2817]/60 mt-1">
+                  {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Content Area */}
+          <div className="flex-1 p-8 overflow-y-auto">
+            {/* Content Header */}
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-[#3D2817]">
+                {menuItems.find(i => i.id === activeTab)?.label}
+              </h2>
+              <p className="text-sm text-[#3D2817]/70 mt-1">
+                {menuItems.find(i => i.id === activeTab)?.description}
+              </p>
+            </div>
+
+            {/* Notifications & Messages */}
+            {(error || success) && (
+              <div className={`mb-6 px-4 py-3 border ${error ? 'bg-red-50/80 backdrop-blur-sm text-red-800 border-red-300' : 'bg-green-50/80 backdrop-blur-sm text-green-800 border-green-300'} text-sm flex items-center gap-2.5 rounded luxury-shadow-sm`}>
+                <span className={`w-2 h-2 rounded-full ${error ? 'bg-red-500' : 'bg-green-500'}`}></span>
+                {error || success}
+              </div>
+            )}
+
+            <div className="bg-white rounded-lg border border-[#3D2817]/30 luxury-shadow-sm">
+              <div className="p-6">
                     {/* --- TAB: PROFILE --- */}
                     {activeTab === 'profile' && (
                         <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
                                 <div>
                                     <label className={labelClass}>Full Name</label>
                                     <input
@@ -368,7 +629,7 @@ const Profile = () => {
                                         name="name"
                                         value={formData.name}
                                         onChange={handleChange}
-                                        className="block w-full px-4 py-2.5 border-2 border-[#3D2817]/30 text-sm bg-[#FAF8F5] text-[#3D2817] focus:outline-none focus:ring-2 focus:ring-[#120e0f] focus:border-transparent transition duration-150 ease-in-out placeholder-[#120e0f]/40"
+                                        className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-white/60 backdrop-blur-sm text-[#3D2817] focus:outline-none focus:ring-2 focus:ring-[#8B4513]/20 focus:border-[#8B4513] transition duration-150 ease-in-out placeholder-[#3D2817]/40 luxury-shadow-sm"
                                     />
                                 </div>
                                 <div>
@@ -378,7 +639,7 @@ const Profile = () => {
                                         name="phone"
                                         value={formData.phone}
                                         onChange={handleChange}
-                                        className="block w-full px-4 py-2.5 border-2 border-[#3D2817]/30 text-sm bg-[#FAF8F5] text-[#3D2817] focus:outline-none focus:ring-2 focus:ring-[#120e0f] focus:border-transparent transition duration-150 ease-in-out placeholder-[#120e0f]/40"
+                                        className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-white/60 backdrop-blur-sm text-[#3D2817] focus:outline-none focus:ring-2 focus:ring-[#8B4513]/20 focus:border-[#8B4513] transition duration-150 ease-in-out placeholder-[#3D2817]/40 luxury-shadow-sm"
                                     />
                                 </div>
                                 <div className="md:col-span-2">
@@ -388,9 +649,9 @@ const Profile = () => {
                                             type="email"
                                             value={formData.email}
                                             disabled
-                                            className="block w-full px-4 py-2.5 border-2 border-[#3D2817]/30/30 text-sm bg-[#3D2817]/5 text-[#3D2817]/60 cursor-not-allowed"
+                                            className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-[#3D2817]/5 text-[#3D2817]/60 cursor-not-allowed luxury-shadow-sm"
                                         />
-                                        <span className="absolute right-3 top-2.5 text-xs font-medium text-[#3D2817]/60 bg-[#3D2817]/10 px-2 py-0.5 border border-[#3D2817]/30/20">
+                                        <span className="absolute right-3 top-3 text-xs font-semibold text-[#3D2817] bg-[#8B4513]/10 px-2.5 py-1 border border-[#8B4513]/30 rounded">
                                             Verified
                                         </span>
                                     </div>
@@ -399,19 +660,19 @@ const Profile = () => {
                                     <label className={labelClass}>Delivery Address</label>
                                     <textarea
                                         name="address"
-                                        rows="3"
+                                        rows="4"
                                         value={formData.address}
                                         onChange={handleChange}
-                                        className="block w-full px-4 py-2.5 border-2 border-[#3D2817]/30 text-sm bg-[#FAF8F5] text-[#3D2817] focus:outline-none focus:ring-2 focus:ring-[#120e0f] focus:border-transparent transition duration-150 ease-in-out placeholder-[#120e0f]/40"
+                                        className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-white/60 backdrop-blur-sm text-[#3D2817] focus:outline-none focus:ring-2 focus:ring-[#8B4513]/20 focus:border-[#8B4513] transition duration-150 ease-in-out placeholder-[#3D2817]/40 resize-none luxury-shadow-sm"
                                         placeholder="Street, City, State, Zip, Country"
                                     />
                                 </div>
                             </div>
-                            <div className="pt-4 border-t-2 border-[#3D2817]/30 flex gap-3">
-                                <button type="submit" className="px-5 py-2.5 bg-[#3D2817] text-[#fefcfb] text-sm font-semibold hover:bg-[#3D2817]/90 transition-colors border-2 border-[#3D2817]/30">
+                            <div className="pt-6 border-t border-[#3D2817]/30 flex gap-3">
+                                <button type="submit" className="px-6 py-3 bg-[#3D2817] text-[#FAF8F5] text-sm font-semibold hover:bg-[#8B4513] transition-colors border border-[#3D2817] luxury-shadow">
                                     Save Changes
                                 </button>
-                                <button type="button" onClick={loadProfile} className="px-5 py-2.5 bg-[#FAF8F5] text-[#3D2817] text-sm font-semibold border-2 border-[#3D2817]/30 hover:bg-[#3D2817]/5 transition-colors">
+                                <button type="button" onClick={loadProfile} className="px-6 py-3 bg-white/60 backdrop-blur-sm text-[#3D2817] text-sm font-semibold border border-[#3D2817]/30 hover:bg-[#3D2817]/5 hover:border-[#3D2817]/50 transition-colors luxury-shadow-sm">
                                     Reset
                                 </button>
                             </div>
@@ -422,18 +683,18 @@ const Profile = () => {
                     {activeTab === 'orders' && (
                         <div>
                            {profileData?.orders && profileData.orders.length > 0 ? (
-                            <div className="overflow-x-auto border-2 border-[#3D2817]/30">
-                                <table className="min-w-full divide-y-2 divide-[#120e0f]">
-                                    <thead className="bg-[#FAF8F5]">
+                            <div className="overflow-x-auto border border-[#3D2817]/30 luxury-shadow-sm">
+                                <table className="min-w-full divide-y divide-[#3D2817]/20">
+                                    <thead className="bg-white/40 backdrop-blur-sm">
                                         <tr>
-                                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-[#3D2817] uppercase tracking-wider border-b-2 border-[#3D2817]/30">Order ID</th>
-                                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-[#3D2817] uppercase tracking-wider border-b-2 border-[#3D2817]/30">Date</th>
-                                            <th className="px-4 sm:px-6 py-3 text-left text-xs font-semibold text-[#3D2817] uppercase tracking-wider border-b-2 border-[#3D2817]/30">Status</th>
-                                            <th className="px-4 sm:px-6 py-3 text-right text-xs font-semibold text-[#3D2817] uppercase tracking-wider border-b-2 border-[#3D2817]/30">Total</th>
-                                            <th className="px-4 sm:px-6 py-3 text-center text-xs font-semibold text-[#3D2817] uppercase tracking-wider border-b-2 border-[#3D2817]/30">Invoice</th>
+                                            <th className="px-4 sm:px-6 py-4 text-left text-xs font-bold text-[#3D2817] uppercase tracking-wider border-b border-[#3D2817]/30">Order ID</th>
+                                            <th className="px-4 sm:px-6 py-4 text-left text-xs font-bold text-[#3D2817] uppercase tracking-wider border-b border-[#3D2817]/30">Date</th>
+                                            <th className="px-4 sm:px-6 py-4 text-left text-xs font-bold text-[#3D2817] uppercase tracking-wider border-b border-[#3D2817]/30">Status</th>
+                                            <th className="px-4 sm:px-6 py-4 text-right text-xs font-bold text-[#3D2817] uppercase tracking-wider border-b border-[#3D2817]/30">Total</th>
+                                            <th className="px-4 sm:px-6 py-4 text-center text-xs font-bold text-[#3D2817] uppercase tracking-wider border-b border-[#3D2817]/30">Invoice</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="bg-[#FAF8F5] divide-y-2 divide-[#120e0f]">
+                                    <tbody className="bg-white/20 backdrop-blur-sm divide-y divide-[#3D2817]/20">
                                         {profileData.orders.map((order) => (
                                             <OrderRow key={order._id} order={order} user={profileData.user} />
                                         ))}
@@ -441,12 +702,13 @@ const Profile = () => {
                                 </table>
                             </div>
                            ) : (
-                            <div className="text-center py-12">
-                                <div className="w-16 h-16 bg-[#FAF8F5] border-2 border-[#3D2817]/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <IconShoppingBag className="w-8 h-8 text-[#3D2817]/60" />
+                            <div className="text-center py-16">
+                                <div className="w-20 h-20 bg-white/60 backdrop-blur-sm border border-[#3D2817]/30 rounded-full flex items-center justify-center mx-auto mb-5 luxury-shadow">
+                                    <IconShoppingBag className="w-10 h-10 text-[#3D2817]/60" />
                                 </div>
-                                <h3 className="text-lg font-medium text-[#3D2817]">No orders placed yet</h3>
-                                <Link to="/" className="mt-4 inline-flex items-center px-4 py-2.5 border-2 border-[#3D2817]/30 text-sm font-medium text-[#3D2817] bg-[#FAF8F5] hover:bg-[#3D2817]/5 transition-colors">
+                                <h3 className="text-xl font-semibold text-[#3D2817] mb-2">No orders placed yet</h3>
+                                <p className="text-sm text-[#3D2817]/70 mb-6">Start shopping to see your orders here</p>
+                                <Link to="/" className="inline-flex items-center px-6 py-3 border border-[#3D2817]/30 text-sm font-semibold text-[#3D2817] bg-white/60 backdrop-blur-sm hover:bg-[#3D2817] hover:text-[#FAF8F5] transition-colors luxury-shadow">
                                     Browse Products
                                 </Link>
                             </div>
@@ -456,38 +718,41 @@ const Profile = () => {
 
                      {/* --- TAB: PAYMENTS (Credit Card UI) --- */}
                      {activeTab === 'payments' && (
-                        <div className="max-w-2xl">
-                            <h3 className="text-sm font-semibold text-[#3D2817] mb-4">Saved Cards</h3>
+                        <div className="max-w-2xl space-y-6">
+                            <div>
+                                <h3 className="text-base font-bold text-[#3D2817] mb-1">Saved Cards</h3>
+                                <p className="text-sm text-[#3D2817]/70">Manage your payment methods</p>
+                            </div>
                             
                             {/* Realistic CSS Credit Card */}
-                            <div className="relative w-full max-w-sm h-48 bg-gradient-to-br from-[#120e0f] to-black overflow-hidden text-[#fefcfb] p-6 mb-6 border-2 border-[#3D2817]/30 transition-transform transform hover:-translate-y-1">
+                            <div className="relative w-full max-w-sm h-52 bg-gradient-to-br from-[#3D2817] to-[#1A1209] overflow-hidden text-[#FAF8F5] p-6 mb-6 border border-[#3D2817]/50 luxury-shadow-lg transition-transform transform hover:-translate-y-1">
                                 <div className="absolute top-0 right-0 -mr-10 -mt-10 w-40 h-40 rounded-full bg-white opacity-5"></div>
                                 <div className="absolute bottom-0 left-0 -ml-10 -mb-10 w-40 h-40 rounded-full bg-white opacity-5"></div>
                                 
                                 <div className="flex justify-between items-start mb-8">
-                                    <div className="w-10 h-6 bg-[#FAF8F5]/20 rounded flex items-center justify-center border border-[#fefcfb]/30">
-                                        <div className="w-6 h-4 border border-[#fefcfb]/30 rounded-sm"></div>
+                                    <div className="w-12 h-8 bg-white/20 rounded flex items-center justify-center border border-white/30">
+                                        <div className="w-8 h-5 border border-white/30 rounded-sm"></div>
                                     </div>
-                                    <span className="text-xs font-mono opacity-70">DEBIT</span>
+                                    <span className="text-xs font-mono opacity-80">DEBIT</span>
                                 </div>
                                 
                                 <div className="mb-6">
-                                    <p className="font-mono text-xl tracking-widest">•••• •••• •••• 4242</p>
+                                    <p className="font-mono text-2xl tracking-widest">•••• •••• •••• 4242</p>
                                 </div>
                                 
                                 <div className="flex justify-between items-end">
                                     <div>
                                         <p className="text-[10px] opacity-70 uppercase tracking-wider mb-1">Card Holder</p>
-                                        <p className="font-medium tracking-wide uppercase text-sm">{displayName}</p>
+                                        <p className="font-semibold tracking-wide uppercase text-sm">{displayName}</p>
                                     </div>
                                     <div>
                                         <p className="text-[10px] opacity-70 uppercase tracking-wider mb-1">Expires</p>
-                                        <p className="font-medium tracking-wide text-sm">12/28</p>
+                                        <p className="font-semibold tracking-wide text-sm">12/28</p>
                                     </div>
                                 </div>
                             </div>
 
-                            <button className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 border-2 border-[#3D2817]/30 text-sm font-medium text-[#3D2817] bg-[#FAF8F5] hover:bg-[#3D2817]/5 transition-all">
+                            <button className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 border border-[#3D2817]/30 text-sm font-semibold text-[#3D2817] bg-white/60 backdrop-blur-sm hover:bg-[#3D2817] hover:text-[#FAF8F5] transition-colors luxury-shadow-sm">
                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
                                 Add Payment Method
                             </button>
@@ -497,21 +762,21 @@ const Profile = () => {
                     {/* --- TAB: SECURITY --- */}
                     {activeTab === 'security' && (
                          <div className="max-w-2xl space-y-4">
-                            <div className="flex items-center justify-between p-4 border-2 border-[#3D2817]/30 bg-[#FAF8F5]">
+                            <div className="flex items-center justify-between p-5 border border-[#3D2817]/30 bg-white/60 backdrop-blur-sm luxury-shadow-sm">
                                 <div>
-                                    <h4 className="text-sm font-semibold text-[#3D2817]">Password</h4>
-                                    <p className="text-xs text-[#3D2817]/60 mt-1">Last changed 30 days ago</p>
+                                    <h4 className="text-sm font-bold text-[#3D2817]">Password</h4>
+                                    <p className="text-xs text-[#3D2817]/70 mt-1">Last changed 30 days ago</p>
                                 </div>
-                                <button className="text-sm font-medium text-[#3D2817] hover:text-[#3D2817]/70 border-2 border-[#3D2817]/30 px-3 py-1.5 hover:bg-[#3D2817]/5 transition-colors">Update</button>
+                                <button className="text-sm font-semibold text-[#3D2817] hover:text-[#FAF8F5] border border-[#3D2817]/30 px-4 py-2 hover:bg-[#3D2817] transition-colors luxury-shadow-sm">Update</button>
                             </div>
-                            <div className="flex items-center justify-between p-4 border-2 border-[#3D2817]/30 bg-[#FAF8F5]">
+                            <div className="flex items-center justify-between p-5 border border-[#3D2817]/30 bg-white/60 backdrop-blur-sm luxury-shadow-sm">
                                 <div>
-                                    <h4 className="text-sm font-semibold text-[#3D2817]">Two-Factor Authentication</h4>
-                                    <p className="text-xs text-[#3D2817]/60 mt-1">Add an extra layer of security</p>
+                                    <h4 className="text-sm font-bold text-[#3D2817]">Two-Factor Authentication</h4>
+                                    <p className="text-xs text-[#3D2817]/70 mt-1">Add an extra layer of security</p>
                                 </div>
-                                <div className="relative inline-block w-10 mr-2 align-middle select-none">
-                                    <input type="checkbox" className="toggle-checkbox absolute block w-5 h-5 rounded-full bg-[#FAF8F5] border-2 appearance-none cursor-pointer border-[#3D2817]/30"/>
-                                    <label className="toggle-label block overflow-hidden h-5 rounded-full bg-[#3D2817]/20 cursor-pointer"></label>
+                                <div className="relative inline-block w-11 h-6 align-middle select-none">
+                                    <input type="checkbox" className="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border border-[#3D2817]/30 appearance-none cursor-pointer top-0.5 left-0.5 transition-all"/>
+                                    <label className="toggle-label block overflow-hidden h-6 rounded-full bg-[#3D2817]/20 cursor-pointer"></label>
                                 </div>
                             </div>
                         </div>
@@ -519,25 +784,25 @@ const Profile = () => {
 
                     {/* --- TAB: NOTIFICATIONS --- */}
                     {activeTab === 'notifications' && (
-                        <div className="max-w-2xl space-y-2">
+                        <div className="max-w-2xl space-y-3">
                              {[
                               { id: 'email', title: 'Order Updates', description: 'Get notified when your order status changes.' },
                               { id: 'promo', title: 'Promotional Emails', description: 'Receive emails about new products and sales.' },
                             ].map((item) => (
-                                <label key={item.id} className="flex items-start gap-4 p-4 border-2 border-[#3D2817]/30 bg-[#FAF8F5] cursor-pointer hover:bg-[#3D2817]/5 transition-colors">
-                                    <div className="flex h-5 items-center">
-                                        <input type="checkbox" className="h-4 w-4 border-2 border-[#3D2817]/30 text-[#3D2817] focus:ring-[#120e0f]" defaultChecked />
+                                <label key={item.id} className="flex items-start gap-4 p-5 border border-[#3D2817]/30 bg-white/60 backdrop-blur-sm cursor-pointer hover:bg-white/80 transition-colors luxury-shadow-sm">
+                                    <div className="flex h-5 items-center mt-0.5">
+                                        <input type="checkbox" className="h-4 w-4 border border-[#3D2817]/30 text-[#8B4513] focus:ring-[#8B4513]/20 rounded" defaultChecked />
                                     </div>
-                                    <div>
-                                        <span className="block text-sm font-medium text-[#3D2817]">{item.title}</span>
-                                        <span className="block text-xs text-[#3D2817]/60 mt-1">{item.description}</span>
+                                    <div className="flex-1">
+                                        <span className="block text-sm font-semibold text-[#3D2817]">{item.title}</span>
+                                        <span className="block text-xs text-[#3D2817]/70 mt-1">{item.description}</span>
                                     </div>
                                 </label>
                             ))}
                         </div>
                     )}
 
-                </div>
+              </div>
             </div>
           </div>
         </div>
