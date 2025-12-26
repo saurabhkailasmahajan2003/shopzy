@@ -110,9 +110,10 @@ const CartSidebar = ({ isOpen, onClose }) => {
                 </button>
               </div>
             ) : (
-              cart.map((item) => {
+              cart.map((item, index) => {
                 const product = item.product || item;
-                const itemId = item._id || item.id;
+                // Get the cart item ID (MongoDB _id of the cart item, not the product)
+                const itemId = item._id || item.id || `temp-${index}`;
                 
                 const productImage = product.images?.length 
                   ? product.images[0] 
@@ -184,7 +185,11 @@ const CartSidebar = ({ isOpen, onClose }) => {
                           {/* Quantity Selector */}
                           <div className="flex items-center gap-2">
                             <button
-                              onClick={() => updateQuantity(itemId, item.quantity - 1)}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                updateQuantity(itemId, item.quantity - 1);
+                              }}
                               disabled={item.quantity <= 1}
                               className="w-7 h-7 flex items-center justify-center border-2 border-[#120e0f] bg-[#fefcfb] hover:bg-[#120e0f] hover:text-[#fefcfb] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                             >
@@ -196,7 +201,11 @@ const CartSidebar = ({ isOpen, onClose }) => {
                               {item.quantity}
                             </span>
                             <button
-                              onClick={() => updateQuantity(itemId, item.quantity + 1)}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                updateQuantity(itemId, item.quantity + 1);
+                              }}
                               className="w-7 h-7 flex items-center justify-center border-2 border-[#120e0f] bg-[#fefcfb] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors"
                             >
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

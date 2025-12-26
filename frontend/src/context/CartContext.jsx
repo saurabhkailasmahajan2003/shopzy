@@ -76,14 +76,20 @@ export const CartProvider = ({ children }) => {
         const items = response.data?.cart?.items || [];
         console.log('Setting cart items:', items.length, 'items');
         setCart(items);
+        // Reload cart to ensure sync
+        await loadCart();
         return response;
       } else {
         const errorMsg = response?.message || 'Failed to add to cart';
         console.error('Add to cart failed:', errorMsg);
+        // Try to reload cart anyway
+        await loadCart();
         throw new Error(errorMsg);
       }
     } catch (error) {
       console.error('Error in addToCart:', error);
+      // Reload cart to sync with backend
+      await loadCart();
       const errorMessage = error.message || 'Failed to add product to cart';
       throw new Error(errorMessage);
     }
@@ -94,33 +100,62 @@ export const CartProvider = ({ children }) => {
       return;
     }
 
+    // Ensure itemId is a string
+    const itemIdString = String(itemId).replace('temp-', '');
+
     try {
-      const response = await cartAPI.removeFromCart(itemId);
-      if (response.success) {
-        setCart(response.data.cart.items || []);
+      console.log('Removing from cart:', { itemId: itemIdString, originalItemId: itemId });
+      const response = await cartAPI.removeFromCart(itemIdString);
+      if (response && response.success) {
+        setCart(response.data?.cart?.items || []);
+      } else {
+        // Reload cart to sync with backend
+        await loadCart();
       }
     } catch (error) {
       console.error('Error removing from cart:', error);
+      // Reload cart to sync with backend
+      await loadCart();
     }
   };
 
   const updateQuantity = async (itemId, quantity) => {
     if (!isAuthenticated) {
+      console.error('Cannot update quantity: User not authenticated');
       return;
     }
 
+    if (!itemId) {
+      console.error('Cannot update quantity: Item ID is missing');
+      return;
+    }
+
+    // Ensure itemId is a string
+    const itemIdString = String(itemId).replace('temp-', '');
+
     if (quantity <= 0) {
-      await removeFromCart(itemId);
+      await removeFromCart(itemIdString);
       return;
     }
 
     try {
-      const response = await cartAPI.updateCartItem(itemId, quantity);
-      if (response.success) {
-        setCart(response.data.cart.items || []);
+      console.log('Updating quantity:', { itemId: itemIdString, quantity, originalItemId: itemId });
+      const response = await cartAPI.updateCartItem(itemIdString, quantity);
+      console.log('Update quantity response:', response);
+      
+      if (response && response.success) {
+        const items = response.data?.cart?.items || [];
+        console.log('Updated cart items:', items.length, 'items');
+        setCart(items);
+      } else {
+        console.error('Failed to update quantity:', response?.message || 'Unknown error');
+        // Reload cart to sync with backend
+        await loadCart();
       }
     } catch (error) {
       console.error('Error updating cart:', error);
+      // Reload cart to sync with backend
+      await loadCart();
     }
   };
 

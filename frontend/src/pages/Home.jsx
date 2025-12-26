@@ -145,6 +145,9 @@ const Home = () => {
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const [currentPromoBannerIndex, setCurrentPromoBannerIndex] = useState(0);
   const [currentMobilePromoBannerIndex, setCurrentMobilePromoBannerIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
   const categoryScrollRef = useRef(null);
   const lifestyleScrollRef = useRef(null);
   const bannerCarouselRef = useRef(null);
@@ -198,6 +201,16 @@ const Home = () => {
     'https://res.cloudinary.com/de1bg8ivx/image/upload/v1766476935/Cream_Brown_Minimalist_Fashion_Sale_Leaderboard_Ad_tpvvpj.svg',
     'https://res.cloudinary.com/de1bg8ivx/image/upload/v1766476935/Women_Fashion_Leaderboard_Ad_trr3pe.svg'
   ];
+
+  // Detect mobile viewport
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Auto-rotate mobile banner carousel - Faster interval
   useEffect(() => {
@@ -321,6 +334,39 @@ const Home = () => {
     return () => carousel.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Touch swipe handlers for mobile hero banners
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      setCurrentMobilePromoBannerIndex((prev) => {
+        const next = prev + 1;
+        return next >= 4 ? 0 : next;
+      });
+    }
+    if (isRightSwipe) {
+      setCurrentMobilePromoBannerIndex((prev) => {
+        const next = prev - 1;
+        return next < 0 ? 3 : next;
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen font-sans text-gray-800">
       
@@ -441,21 +487,6 @@ const Home = () => {
                   ))}
                 </div>
 
-                {/* Navigation Arrows */}
-                <button
-                  onClick={() => setCurrentPromoBannerIndex((prev) => (prev - 1 + 4) % 4)}
-                  className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-1.5 md:p-2 z-10 transition-colors"
-                  aria-label="Previous banner"
-                >
-                  <IconChevronLeft />
-                </button>
-                <button
-                  onClick={() => setCurrentPromoBannerIndex((prev) => (prev + 1) % 4)}
-                  className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-1.5 md:p-2 z-10 transition-colors"
-                  aria-label="Next banner"
-                >
-                  <IconChevronRight />
-                </button>
               </div>
             </div>
           </div>
@@ -469,6 +500,9 @@ const Home = () => {
               ref={mobilePromoBannerCarouselRef}
               className="flex overflow-x-hidden scroll-smooth scrollbar-hide"
               style={{ scrollSnapType: 'x mandatory' }}
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
             >
               {(() => {
                 const promoBanners = [
@@ -511,21 +545,6 @@ const Home = () => {
               ))}
             </div>
 
-            {/* Navigation Arrows - Positioned slightly above for mobile */}
-            <button
-              onClick={() => setCurrentMobilePromoBannerIndex((prev) => (prev - 1 + 4) % 4)}
-              className="absolute left-2 top-[40%] -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-1.5 z-10 transition-colors"
-              aria-label="Previous banner"
-            >
-              <IconChevronLeft />
-            </button>
-            <button
-              onClick={() => setCurrentMobilePromoBannerIndex((prev) => (prev + 1) % 4)}
-              className="absolute right-2 top-[40%] -translate-y-1/2 bg-[#fefcfb]/90 hover:bg-[#fefcfb] border-2 border-[#120e0f] p-1.5 z-10 transition-colors"
-              aria-label="Next banner"
-            >
-              <IconChevronRight />
-            </button>
           </div>
 
           {/* Mobile Text Content - Below Banners */}
@@ -581,8 +600,8 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 items-center">
             
             {/* Left Model Section */}
-            <div className="relative hidden md:block">
-              <div className="relative h-64 sm:h-80 md:h-96 bg-[#fefcfb] border-2 border-[#120e0f] overflow-hidden">
+            <div className="relative">
+              <div className="relative h-full sm:h-64 md:h-80 lg:h-96 bg-[#fefcfb] border-2 border-[#120e0f] overflow-hidden">
                 <img
                   src="https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766657960/White_and_Beige_Neutral_Clean_Women_Bags_Instagram_Post_ymve41.png"
                   alt="Women Bags Promo"
@@ -649,8 +668,8 @@ const Home = () => {
             </div>
 
             {/* Right Model Section */}
-            <div className="relative hidden md:block">
-              <div className="relative h-64 sm:h-80 md:h-96 bg-[#fefcfb] border-2 border-[#120e0f] overflow-hidden">
+            <div className="relative">
+              <div className="relative h-full sm:h-64 md:h-80 lg:h-96 bg-[#fefcfb] border-2 border-[#120e0f] overflow-hidden">
                 <img
                   src="https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766658151/Beige_Modern_Minimalist_Fashion_Clothing_Sale_Promotional_Instagram_Post_q8geu5.png"
                   alt="Fashion Sale Promo"
@@ -686,22 +705,6 @@ const Home = () => {
               </div>
             ))}
           </div>
-
-          {/* Carousel Indicators */}
-          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
-            {banners.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentBannerIndex(index)}
-                className={`h-2 transition-all ${
-                  index === currentBannerIndex 
-                    ? 'w-8 bg-[#120e0f]' 
-                    : 'w-2 bg-[#120e0f]/30'
-                }`}
-                aria-label={`Go to banner ${index + 1}`}
-              />
-            ))}
-          </div>
         </div>
       </div>
 
@@ -730,7 +733,7 @@ const Home = () => {
               
               {/* Products Display */}
               <div className="flex-1 flex flex-col justify-center space-y-3 sm:space-y-4 mt-3 sm:mt-4">
-                {womenItems.slice(0, 4).map((product, idx) => {
+                {womenItems.slice(0, isMobile ? 2 : 4).map((product, idx) => {
                   // Handle images - support array, object, or string formats
                   let imageUrl = null;
                   if (product.images) {
@@ -747,8 +750,10 @@ const Home = () => {
                   }
                   
                   return (
-                    <div key={product.id || product._id || idx} className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 border" style={{ backgroundColor: '#fefcfb', borderColor: '#120e0f' }}>
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 flex-shrink-0 overflow-hidden flex items-center justify-center" style={{ border: '1px solid #120e0f' }}>
+                    <div key={product.id || product._id || idx} className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border-2 relative" style={{ backgroundColor: '#fefcfb', borderColor: '#120e0f' }}>
+                      {/* Red accent line */}
+                      <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: '#8B4513' }}></div>
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 flex-shrink-0 overflow-hidden flex items-center justify-center border-2" style={{ borderColor: '#120e0f' }}>
                         {imageUrl ? (
                           <img
                             src={imageUrl}
@@ -760,15 +765,15 @@ const Home = () => {
                             }}
                           />
                         ) : null}
-                        <div className="w-full h-full flex items-center justify-center text-[10px]" style={{ display: imageUrl ? 'none' : 'flex', backgroundColor: '#fefcfb', color: '#120e0f' }}>
+                        <div className="w-full h-full flex items-center justify-center text-xs" style={{ display: imageUrl ? 'none' : 'flex', backgroundColor: '#fefcfb', color: '#120e0f' }}>
                           No Image
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[10px] sm:text-xs md:text-sm font-semibold truncate" style={{ color: '#120e0f' }}>
+                        <p className="text-sm sm:text-base md:text-lg font-bold mb-1 line-clamp-2" style={{ color: '#120e0f' }}>
                           {product.name || product.productName || 'Product'}
                         </p>
-                        <p className="text-[10px] sm:text-xs" style={{ color: '#bb3435' }}>
+                        <p className="text-base sm:text-lg md:text-xl font-bold" style={{ color: '#8B4513' }}>
                           ₹{product.finalPrice || product.price || '0'}
                         </p>
                       </div>
@@ -809,9 +814,11 @@ const Home = () => {
               
               {/* Products Display */}
               <div className="flex-1 flex flex-col justify-center space-y-3 sm:space-y-4 mt-3 sm:mt-4">
-                {skincareProducts.slice(0, 4).map((product, idx) => (
-                  <div key={product.id || product._id || idx} className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 border" style={{ backgroundColor: '#fefcfb', borderColor: '#120e0f' }}>
-                    <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 flex-shrink-0 overflow-hidden flex items-center justify-center" style={{ border: '1px solid #120e0f' }}>
+                {skincareProducts.slice(0, isMobile ? 2 : 4).map((product, idx) => (
+                  <div key={product.id || product._id || idx} className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border-2 relative" style={{ backgroundColor: '#fefcfb', borderColor: '#120e0f' }}>
+                    {/* Red accent line */}
+                    <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: '#8B4513' }}></div>
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 flex-shrink-0 overflow-hidden flex items-center justify-center border-2" style={{ borderColor: '#120e0f' }}>
                       <img
                         src={product.image || product.imageUrl || 'https://via.placeholder.com/80'}
                         alt={product.name || product.productName || 'Product'}
@@ -821,15 +828,15 @@ const Home = () => {
                           e.target.nextSibling.style.display = 'flex';
                         }}
                       />
-                      <div className="w-full h-full flex items-center justify-center text-[10px]" style={{ display: 'none', backgroundColor: '#fefcfb', color: '#120e0f' }}>
+                      <div className="w-full h-full flex items-center justify-center text-xs" style={{ display: 'none', backgroundColor: '#fefcfb', color: '#120e0f' }}>
                         No Image
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[10px] sm:text-xs md:text-sm font-semibold truncate" style={{ color: '#120e0f' }}>
+                      <p className="text-sm sm:text-base md:text-lg font-bold mb-1 line-clamp-2" style={{ color: '#120e0f' }}>
                         {product.name || product.productName || 'Product'}
                       </p>
-                      <p className="text-[10px] sm:text-xs" style={{ color: '#bb3435' }}>
+                      <p className="text-base sm:text-lg md:text-xl font-bold" style={{ color: '#8B4513' }}>
                         ₹{product.finalPrice || product.price || '0'}
                       </p>
                     </div>
@@ -869,7 +876,10 @@ const Home = () => {
 
               {/* Products Display */}
               <div className="flex-1 flex flex-col justify-center space-y-3 sm:space-y-4 mt-3 sm:mt-4">
-                {[...watches.slice(0, 2), ...accessories.slice(0, 2)].map((product, idx) => {
+                {(isMobile 
+                  ? [...watches.slice(0, 1), ...accessories.slice(0, 1)]
+                  : [...watches.slice(0, 2), ...accessories.slice(0, 2)]
+                ).map((product, idx) => {
                   // Handle images - support array, object, or string formats
                   let imageUrl = null;
                   if (product.images) {
@@ -886,8 +896,10 @@ const Home = () => {
                   }
                   
                   return (
-                    <div key={product.id || product._id || idx} className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 border" style={{ backgroundColor: '#fefcfb', borderColor: '#120e0f' }}>
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 flex-shrink-0 overflow-hidden flex items-center justify-center" style={{ border: '1px solid #120e0f' }}>
+                    <div key={product.id || product._id || idx} className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border-2 relative" style={{ backgroundColor: '#fefcfb', borderColor: '#120e0f' }}>
+                      {/* Red accent line */}
+                      <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: '#8B4513' }}></div>
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 flex-shrink-0 overflow-hidden flex items-center justify-center border-2" style={{ borderColor: '#120e0f' }}>
                         {imageUrl ? (
                           <img
                             src={imageUrl}
@@ -899,15 +911,15 @@ const Home = () => {
                             }}
                           />
                         ) : null}
-                        <div className="w-full h-full flex items-center justify-center text-[10px]" style={{ display: imageUrl ? 'none' : 'flex', backgroundColor: '#fefcfb', color: '#120e0f' }}>
+                        <div className="w-full h-full flex items-center justify-center text-xs" style={{ display: imageUrl ? 'none' : 'flex', backgroundColor: '#fefcfb', color: '#120e0f' }}>
                           No Image
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[10px] sm:text-xs md:text-sm font-semibold truncate" style={{ color: '#120e0f' }}>
+                        <p className="text-sm sm:text-base md:text-lg font-bold mb-1 line-clamp-2" style={{ color: '#120e0f' }}>
                           {product.name || product.productName || 'Product'}
                         </p>
-                        <p className="text-[10px] sm:text-xs" style={{ color: '#bb3435' }}>
+                        <p className="text-base sm:text-lg md:text-xl font-bold" style={{ color: '#8B4513' }}>
                           ₹{product.finalPrice || product.price || '0'}
                         </p>
                       </div>
@@ -938,7 +950,7 @@ const Home = () => {
 
           {/* Skincare Products Grid */}
           {skincareProducts.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3 lg:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4 lg:gap-5">
               {skincareProducts.slice(0, 12).map((product, index) => {
                 // Group products by brand for better display
                 const brandName = product.brand || 'Skincare';
@@ -966,38 +978,38 @@ const Home = () => {
                   <Link
                     key={product.id || product._id || index}
                     to={`/skincare/${product.id || product._id}`}
-                    className="group relative overflow-hidden rounded-lg bg-white shadow-lg"
+                    className="group relative overflow-hidden rounded-lg bg-white shadow-lg border-2 border-[#120e0f]"
                   >
                     {/* Card Background with Gradient */}
-                    <div className={`relative h-48 sm:h-56 md:h-64 lg:h-80 ${bgStyle} p-3 sm:p-4 flex flex-col justify-between`}>
+                    <div className={`relative min-h-[280px] sm:min-h-[320px] md:min-h-[360px] lg:min-h-[400px] ${bgStyle} p-3 sm:p-4 md:p-5 flex flex-col justify-between`}>
                       {/* Brand Badge */}
-                      <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-white/95 backdrop-blur-sm px-2 sm:px-2.5 py-0.5 sm:py-1 rounded text-[8px] sm:text-[10px] lg:text-xs font-bold text-text uppercase tracking-wide z-10">
-                        {brandName.length > 12 ? brandName.substring(0, 12) + '...' : brandName}
+                      <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-white/95 backdrop-blur-sm px-2 sm:px-2.5 py-0.5 sm:py-1 rounded text-[9px] sm:text-[10px] md:text-xs lg:text-sm font-bold text-text uppercase tracking-wide z-10">
+                        {brandName.length > 15 ? brandName.substring(0, 15) + '...' : brandName}
                   </div>
 
                       {/* Product Image */}
-                      <div className="flex-1 flex items-center justify-center mt-4 sm:mt-6">
+                      <div className="flex-1 flex items-center justify-center mt-6 sm:mt-8 md:mt-10">
                         <img
                           src={product.image || product.imageUrl || product.images?.[0]}
                           alt={product.name || product.productName}
-                          className="max-w-full max-h-28 sm:max-h-32 md:max-h-40 lg:max-h-48 object-contain"
+                          className="max-w-full max-h-32 sm:max-h-36 md:max-h-44 lg:max-h-52 object-contain"
                           onError={(e) => handleImageError(e, 300, 300)}
                         />
                 </div>
 
                       {/* Offer Text */}
-                      <div className="mt-auto pt-2 sm:pt-3">
-                        <p className="text-[10px] sm:text-xs lg:text-sm font-semibold text-text mb-1 line-clamp-2">
+                      <div className="mt-auto pt-3 sm:pt-4 space-y-1">
+                        <p className="text-xs sm:text-sm md:text-base font-bold text-text line-clamp-2 min-h-[2.5em]">
                           {product.name || product.productName}
                         </p>
-                        <p className="text-[8px] sm:text-[10px] lg:text-xs font-bold text-cta uppercase tracking-wide">
+                        <p className="text-[9px] sm:text-[10px] md:text-xs lg:text-sm font-bold text-cta uppercase tracking-wide">
                           {offerText}
                         </p>
                         {product.price && (
-                          <p className="text-[10px] sm:text-xs text-text-muted mt-1">
+                          <p className="text-xs sm:text-sm md:text-base text-text-muted mt-1">
                             ₹{product.finalPrice || product.price}
                             {product.mrp && product.mrp > (product.finalPrice || product.price) && (
-                              <span className="line-through ml-2">₹{product.mrp}</span>
+                              <span className="line-through ml-2 text-[10px] sm:text-xs">₹{product.mrp}</span>
                             )}
                           </p>
                         )}

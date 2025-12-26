@@ -137,9 +137,10 @@ const Cart = () => {
               </div>
 
               <div className="divide-y-2 divide-[#120e0f]">
-                {cart.map((item) => {
+                {                cart.map((item, index) => {
                   const product = item.product || item;
-                  const itemId = item._id || item.id;
+                  // Get the cart item ID (MongoDB _id of the cart item, not the product)
+                  const itemId = item._id || item.id || `temp-${index}`;
                   
                   // Normalize image - handle both images array and single image
                   const productImage = product.images?.length 
@@ -187,7 +188,11 @@ const Cart = () => {
                         <div className="sm:col-span-3 flex justify-start sm:justify-center">
                             <div className="flex items-center border border-gray-300 rounded-md h-9 w-28">
                                 <button 
-                                    onClick={() => updateQuantity(itemId, item.quantity - 1)}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      updateQuantity(itemId, item.quantity - 1);
+                                    }}
                                     disabled={item.quantity <= 1}
                                     className="w-9 h-full flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors border-r border-gray-300"
                                 >
@@ -195,7 +200,11 @@ const Cart = () => {
                                 </button>
                                 <span className="flex-1 text-center text-sm font-semibold text-gray-900">{item.quantity}</span>
                                 <button 
-                                    onClick={() => updateQuantity(itemId, item.quantity + 1)}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      updateQuantity(itemId, item.quantity + 1);
+                                    }}
                                     className="w-9 h-full flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors border-l border-gray-300"
                                 >
                                     <IconPlus className="w-3.5 h-3.5" />
