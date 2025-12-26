@@ -174,7 +174,7 @@ const Navbar = () => {
                 <img 
                   src="https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766755411/White_and_Beige_Neutral_Clean_Women_Bags_Instagram_Post_1_xytoa9.png"
                   alt="Shopzy Logo"
-                  className="h-5 sm:h-7 lg:h-8 w-auto object-contain"
+                  className="h-7 sm:h-8 lg:h-10 w-auto object-contain lg:ml-4 sm:pl-6"
                   style={{ backgroundColor: 'transparent', background: 'transparent' }}
                 />
               </Link>
