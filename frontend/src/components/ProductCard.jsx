@@ -83,17 +83,13 @@ const ProductCard = ({ product }) => {
     }
   }
 
-  const handleAddClick = (e) => {
+  const handleAddClick = async (e) => {
     e.preventDefault();
-    e.stopPropagation(); 
-    if (sizes.length > 0) {
-      setShowSizes(true);
-    } else {
-      handleAddToCart(null);
-    }
-  };
-
-  const handleAddToCart = async (selectedSize) => {
+    e.stopPropagation();
+    
+    // If product has sizes, use first available size or empty string
+    const selectedSize = sizes.length > 0 ? sizes[0] : '';
+    
     if (!isAuthenticated) {
       setShowLoginModal(true);
       return;
@@ -106,12 +102,10 @@ const ProductCard = ({ product }) => {
         productName: product.name || product.productName,
         selectedSize
       });
-      await addToCart(product, 1, selectedSize || '', '');
+      await addToCart(product, 1, selectedSize, '');
       success('Product added to cart');
-      setTimeout(() => {
-        setIsAdding(false);
-        setShowSizes(false);
-      }, 1000);
+      setIsAdding(false);
+      setShowSizes(false);
     } catch (err) {
       setIsAdding(false);
       setShowSizes(false);
@@ -139,31 +133,33 @@ const ProductCard = ({ product }) => {
           }
         }}
       >
-        <Link to={`/product/${productId}`} className="block bg-[#fefcfb] border-2 border-[#120e0f] p-4">
+        <Link to={`/product/${productId}`} className="block bg-[#FAF8F5] border border-[#3D2817]/30 p-4 luxury-shadow rounded hover:shadow-lg transition-shadow">
           
           {/* IMAGE AREA */}
-          <div className="relative w-full aspect-square overflow-hidden bg-[#fefcfb] mb-4 border border-[#120e0f]">
+          <div className="relative w-full aspect-square overflow-hidden bg-white mb-4 border border-[#3D2817]/20 rounded">
             
             {/* Bestseller Badge - Yellow with black border */}
             {isBestseller && (
-              <span className="absolute top-2 left-2 z-20 bg-yellow-400 text-[#120e0f] text-[10px] font-bold px-2 py-1 border border-[#120e0f] uppercase tracking-wide">
+              <span className="absolute top-2 left-2 z-20 bg-[#D4AF37] text-[#3D2817] text-[10px] font-bold px-2 py-1 border border-[#3D2817]/30 rounded uppercase tracking-wide">
                 Bestseller
               </span>
             )}
 
             {/* Discount Tag (if not bestseller) */}
             {!isBestseller && hasDiscount && (
-               <span className="absolute top-2 left-2 z-20 bg-[#fefcfb] text-[#120e0f] text-[10px] font-bold px-2 py-1 border border-[#120e0f] uppercase tracking-wide">
+               <span className="absolute top-2 left-2 z-20 bg-white text-[#3D2817] text-[10px] font-bold px-2 py-1 border border-[#3D2817]/30 rounded uppercase tracking-wide">
                  Sale
                </span>
             )}
 
             {/* Add to Cart Button - Top Right Corner */}
             <button
+              type="button"
               onClick={handleAddClick}
               disabled={isAdding || isSoldOut}
-              className="absolute top-2 right-2 z-20 w-8 h-8 flex items-center justify-center bg-[#fefcfb] border-2 border-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="absolute top-2 right-2 z-30 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur-sm border border-[#3D2817]/30 hover:bg-[#3D2817] hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded luxury-shadow"
               title="Add to cart"
+              aria-label="Add to cart"
             >
               {isAdding ? (
                 <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -222,18 +218,18 @@ const ProductCard = ({ product }) => {
           {/* PRODUCT DETAILS */}
           <div className="space-y-3">
             {/* Product Name - Bold, uppercase, minimal */}
-            <h3 className="text-sm font-bold text-[#120e0f] leading-tight line-clamp-2 uppercase tracking-tight">
+            <h3 className="text-sm font-bold text-[#3D2817] leading-tight line-clamp-2 uppercase tracking-tight">
               {(product.name || product.productName || 'Product').toUpperCase()}
             </h3>
 
             {/* Reviews and Availability - Orange for sales info */}
             {!isSkincare && (
-              <div className="flex items-center gap-1.5 text-xs text-[#120e0f]">
+              <div className="flex items-center gap-1.5 text-xs text-[#3D2817]">
                 {reviewsCount > 0 && (
                   <span className="font-medium">{reviewsCount.toLocaleString()} Reviews</span>
                 )}
                 {reviewsCount > 0 && (isSoldOut || soldCount > 0) && (
-                  <span className="text-[#120e0f]/40">|</span>
+                  <span className="text-[#3D2817]/40">|</span>
                 )}
                 {isSoldOut ? (
                   <span className="text-orange-600 font-semibold">
@@ -247,29 +243,29 @@ const ProductCard = ({ product }) => {
               </div>
             )}
             {isSkincare && reviewsCount > 0 && (
-              <div className="flex items-center gap-1.5 text-xs text-[#120e0f]">
+              <div className="flex items-center gap-1.5 text-xs text-[#3D2817]">
                 <span className="font-medium">{reviewsCount.toLocaleString()} Reviews</span>
               </div>
             )}
 
             {/* Description Snippet - Muted black/gray */}
             {descriptionSnippet && (
-              <p className="text-xs text-[#120e0f]/60 line-clamp-2 leading-relaxed">
+              <p className="text-xs text-[#3D2817]/60 line-clamp-2 leading-relaxed">
                 {descriptionSnippet}
               </p>
             )}
 
             {/* Divider Line - Thin black line */}
-            <div className="border-t border-[#120e0f]"></div>
+            <div className="border-t border-[#3D2817]/30"></div>
 
             {/* Pricing Section - Minimal, clean */}
             <div className="flex items-baseline gap-2 pt-1">
               {hasDiscount && originalPrice > 0 && (
-                <span className="text-xs text-[#120e0f]/50 line-through">
+                <span className="text-xs text-[#3D2817]/50 line-through">
                   Rs. {originalPrice.toLocaleString()}
                 </span>
               )}
-              <span className="text-base font-bold text-[#120e0f]">
+              <span className="text-base font-bold text-[#3D2817]">
                 Rs. {finalPrice > 0 ? finalPrice.toLocaleString() : '0'}
               </span>
               {hasDiscount && discountPercent > 0 && (

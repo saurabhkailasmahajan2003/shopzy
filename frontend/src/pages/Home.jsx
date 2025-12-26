@@ -371,7 +371,7 @@ const Home = () => {
     <div className="min-h-screen font-sans text-gray-800">
       
       {/* --- HERO SECTION (Desktop: Text Left, Banners Right | Mobile: Banners Only) --- */}
-      <div className="relative w-full bg-[#fefcfb]">
+      <div className="relative w-full bg-[#FAF8F5]">
         
         {/* Desktop Hero Layout */}
         <div className="hidden md:block relative w-full pb-8 lg:pb-12 xl:pb-16">
@@ -382,24 +382,24 @@ const Home = () => {
               <div className="lg:col-span-6 text-left space-y-4 md:space-y-5 lg:space-y-6 xl:space-y-8 px-4 sm:px-6 lg:px-8 xl:px-12 flex flex-col justify-center pt-3 lg:pt-4 pb-8 lg:pb-12">
                 {/* NEW COLLECTION Label */}
                 <div>
-                  <span className="inline-block px-5 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-[0.15em] border-2 border-[#120e0f]" style={{ backgroundColor: '#bb3435', color: '#fefcfb' }}>
+                  <span className="inline-block px-5 py-2.5 text-xs sm:text-sm font-bold uppercase tracking-[0.15em] border border-[#3D2817]/30" style={{ backgroundColor: '#8B4513', color: '#FAF8F5' }}>
                     NEW COLLECTION
                   </span>
                 </div>
                 
                 {/* Main Headline */}
                 <div className="space-y-1 md:space-y-2">
-                  <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-serif font-bold leading-[1.05] tracking-tight" style={{ color: '#120e0f' }}>
+                  <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-serif font-bold leading-[1.05] tracking-tight" style={{ color: '#3D2817' }}>
                     Discover
                   </h1>
-                  <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-serif font-bold leading-[1.05] tracking-tight" style={{ color: '#bb3435' }}>
+                  <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-serif font-bold leading-[1.05] tracking-tight" style={{ color: '#8B4513' }}>
                     Your Style
                   </h1>
                 </div>
                 
                 {/* Subtitle */}
                 <div>
-                  <p className="text-sm md:text-base lg:text-lg xl:text-xl 2xl:text-2xl leading-relaxed max-w-lg" style={{ color: '#120e0f', opacity: 0.85 }}>
+                  <p className="text-sm md:text-base lg:text-lg xl:text-xl 2xl:text-2xl leading-relaxed max-w-lg" style={{ color: '#3D2817', opacity: 0.85 }}>
                     Curated fashion, beauty essentials, and lifestyle products that reflect your unique personality
                   </p>
                 </div>
@@ -408,28 +408,28 @@ const Home = () => {
                 <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-1 md:pt-2">
                   <Link
                     to="/women"
-                    className="inline-flex items-center justify-center px-6 md:px-8 lg:px-10 py-2.5 md:py-3 lg:py-3.5 text-xs md:text-sm lg:text-base font-semibold text-center border-2 border-[#120e0f] transition-colors"
-                    style={{ backgroundColor: '#bb3435', color: '#fefcfb' }}
+                    className="inline-flex items-center justify-center px-6 md:px-8 lg:px-10 py-2.5 md:py-3 lg:py-3.5 text-xs md:text-sm lg:text-base font-semibold text-center border border-[#3D2817]/30 transition-colors luxury-shadow rounded"
+                    style={{ backgroundColor: '#8B4513', color: '#FAF8F5' }}
                     onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = '#120e0f';
+                      e.target.style.backgroundColor = '#3D2817';
                     }}
                     onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = '#bb3435';
+                      e.target.style.backgroundColor = '#8B4513';
                     }}
                   >
                     Shop Now
                   </Link>
                   <Link
                     to="/sale"
-                    className="inline-flex items-center justify-center px-6 md:px-8 lg:px-10 py-2.5 md:py-3 lg:py-3.5 text-xs md:text-sm lg:text-base font-semibold text-center border-2 border-[#120e0f] transition-colors"
-                    style={{ backgroundColor: '#fefcfb', color: '#120e0f' }}
+                    className="inline-flex items-center justify-center px-6 md:px-8 lg:px-10 py-2.5 md:py-3 lg:py-3.5 text-xs md:text-sm lg:text-base font-semibold text-center border border-[#3D2817]/30 transition-colors luxury-shadow rounded"
+                    style={{ backgroundColor: '#FAF8F5', color: '#3D2817' }}
                     onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = '#120e0f';
-                      e.target.style.color = '#fefcfb';
+                      e.target.style.backgroundColor = '#3D2817';
+                      e.target.style.color = '#FAF8F5';
                     }}
                     onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = '#fefcfb';
-                      e.target.style.color = '#120e0f';
+                      e.target.style.backgroundColor = '#FAF8F5';
+                      e.target.style.color = '#3D2817';
                     }}
                   >
                     View Sale
@@ -472,15 +472,15 @@ const Home = () => {
                 </div>
 
                 {/* Carousel Indicators */}
-                <div className="absolute bottom-2 md:bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10 bg-[#fefcfb]/80 backdrop-blur-sm px-2 md:px-3 py-1 md:py-1.5 rounded-full border border-[#120e0f]/20">
+                <div className="absolute bottom-2 md:bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10 bg-[#FAF8F5]/80 backdrop-blur-sm px-2 md:px-3 py-1 md:py-1.5 rounded-full border border-[#3D2817]/30/20">
                   {[0, 1, 2, 3].map((index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentPromoBannerIndex(index)}
                       className={`h-1.5 md:h-2 transition-all rounded-full ${
                         index === currentPromoBannerIndex 
-                          ? 'w-6 md:w-8 bg-[#120e0f]' 
-                          : 'w-1.5 md:w-2 bg-[#120e0f]/30 hover:bg-[#120e0f]/50'
+                          ? 'w-6 md:w-8 bg-[#3D2817]' 
+                          : 'w-1.5 md:w-2 bg-[#3D2817]/30 hover:bg-[#3D2817]/50'
                       }`}
                       aria-label={`Go to banner ${index + 1}`}
                     />
@@ -493,9 +493,9 @@ const Home = () => {
         </div>
 
         {/* Mobile Hero Layout: Banners First, Then Text */}
-        <div className="md:hidden relative w-full bg-[#fefcfb]">
+        <div className="md:hidden relative w-full bg-[#FAF8F5]">
           {/* Mobile Promotional Banners Carousel - Above Text */}
-          <div className="relative w-full overflow-hidden bg-[#fefcfb] border-b-2 border-[#120e0f]">
+          <div className="relative w-full overflow-hidden bg-[#FAF8F5] border-b border-[#3D2817]/30">
             <div 
               ref={mobilePromoBannerCarouselRef}
               className="flex overflow-x-hidden scroll-smooth scrollbar-hide"
@@ -530,15 +530,15 @@ const Home = () => {
             </div>
 
             {/* Carousel Indicators */}
-            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-2 z-10 bg-[#fefcfb]/80 backdrop-blur-sm px-2 py-1 rounded-full border border-[#120e0f]/20">
+            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-2 z-10 bg-[#FAF8F5]/80 backdrop-blur-sm px-2 py-1 rounded-full border border-[#3D2817]/30/20">
               {[0, 1, 2, 3].map((index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentMobilePromoBannerIndex(index)}
                   className={`h-1.5 transition-all rounded-full ${
                     index === currentMobilePromoBannerIndex 
-                      ? 'w-6 bg-[#120e0f]' 
-                      : 'w-1.5 bg-[#120e0f]/30'
+                      ? 'w-6 bg-[#3D2817]' 
+                      : 'w-1.5 bg-[#3D2817]/30'
                   }`}
                   aria-label={`Go to banner ${index + 1}`}
                 />
@@ -551,24 +551,24 @@ const Home = () => {
           <div className="px-4 py-6 space-y-4">
             {/* NEW COLLECTION Label */}
             <div>
-              <span className="inline-block px-4 py-2 text-xs font-bold uppercase tracking-[0.15em] border-2 border-[#120e0f]" style={{ backgroundColor: '#bb3435', color: '#fefcfb' }}>
+              <span className="inline-block px-4 py-2 text-xs font-bold uppercase tracking-[0.15em] border border-[#3D2817]/30" style={{ backgroundColor: '#8B4513', color: '#FAF8F5' }}>
                 NEW COLLECTION
               </span>
             </div>
             
             {/* Main Headline */}
             <div className="space-y-1">
-              <h1 className="text-2xl sm:text-3xl font-serif font-bold leading-tight tracking-tight" style={{ color: '#120e0f' }}>
+              <h1 className="text-2xl sm:text-3xl font-serif font-bold leading-tight tracking-tight" style={{ color: '#3D2817' }}>
                 Discover
               </h1>
-              <h1 className="text-2xl sm:text-3xl font-serif font-bold leading-tight tracking-tight" style={{ color: '#bb3435' }}>
+              <h1 className="text-2xl sm:text-3xl font-serif font-bold leading-tight tracking-tight" style={{ color: '#8B4513' }}>
                 Your Style
               </h1>
             </div>
             
             {/* Subtitle */}
             <div>
-              <p className="text-sm leading-relaxed" style={{ color: '#120e0f', opacity: 0.85 }}>
+              <p className="text-sm leading-relaxed" style={{ color: '#3D2817', opacity: 0.85 }}>
                 Curated fashion, beauty essentials, and lifestyle products that reflect your unique personality
               </p>
             </div>
@@ -577,15 +577,15 @@ const Home = () => {
             <div className="flex flex-row gap-3 pt-2">
               <Link
                 to="/women"
-                className="flex-1 inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-center border-2 border-[#120e0f]"
-                style={{ backgroundColor: '#bb3435', color: '#fefcfb' }}
+                className="flex-1 inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-center border border-[#3D2817]/30"
+                style={{ backgroundColor: '#8B4513', color: '#FAF8F5' }}
               >
                 Shop Now
               </Link>
               <Link
                 to="/sale"
-                className="flex-1 inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-center border-2 border-[#120e0f]"
-                style={{ backgroundColor: '#fefcfb', color: '#120e0f' }}
+                className="flex-1 inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-center border border-[#3D2817]/30"
+                style={{ backgroundColor: '#FAF8F5', color: '#3D2817' }}
               >
                 View Sale
               </Link>
@@ -595,13 +595,13 @@ const Home = () => {
       </div>
 
       {/* --- NEW FASHION SALE PROMOTIONAL BANNER --- */}
-      <div className="relative w-full bg-[#fefcfb] border-t-2 border-[#120e0f] overflow-hidden">
+      <div className="relative w-full bg-[#FAF8F5] border-t border-[#3D2817]/30 overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-6 sm:py-8 lg:py-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 items-center">
             
             {/* Left Model Section */}
             <div className="relative">
-              <div className="relative h-full sm:h-64 md:h-80 lg:h-96 bg-[#fefcfb] border-2 border-[#120e0f] overflow-hidden">
+              <div className="relative h-full sm:h-64 md:h-80 lg:h-96 bg-[#FAF8F5] border border-[#3D2817]/30 overflow-hidden">
                 <img
                   src="https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766657960/White_and_Beige_Neutral_Clean_Women_Bags_Instagram_Post_ymve41.png"
                   alt="Women Bags Promo"
@@ -612,7 +612,7 @@ const Home = () => {
 
             {/* Central Promotional Section */}
             <div className="relative col-span-1 md:col-span-1">
-              <div className="relative bg-[#fefcfb] p-4 sm:p-6 md:p-8 lg:p-10 border-2 border-[#120e0f] min-h-[250px] sm:min-h-[300px] md:min-h-[400px] flex flex-col items-center justify-center">
+              <div className="relative bg-[#FAF8F5] p-4 sm:p-6 md:p-8 lg:p-10 border border-[#3D2817]/30 min-h-[250px] sm:min-h-[300px] md:min-h-[400px] flex flex-col items-center justify-center">
                 
                 {/* Abstract Brown Blob Shapes */}
                 <div className="absolute top-4 left-4 w-12 h-12 sm:w-16 sm:h-16 bg-[#a06a4e]/20 rounded-full blur-xl"></div>
@@ -621,24 +621,24 @@ const Home = () => {
                 
                 {/* Black Dotted Patterns */}
                 <div className="absolute top-4 left-4 sm:top-6 sm:left-6 flex gap-1">
-                  <div className="w-1 h-1 bg-[#120e0f] rounded-full"></div>
-                  <div className="w-1 h-1 bg-[#120e0f] rounded-full"></div>
-                  <div className="w-1 h-1 bg-[#120e0f] rounded-full"></div>
+                  <div className="w-1 h-1 bg-[#3D2817] rounded-full"></div>
+                  <div className="w-1 h-1 bg-[#3D2817] rounded-full"></div>
+                  <div className="w-1 h-1 bg-[#3D2817] rounded-full"></div>
                 </div>
                 <div className="absolute bottom-8 right-6 sm:bottom-10 sm:right-8 flex gap-1">
-                  <div className="w-1 h-1 bg-[#120e0f] rounded-full"></div>
-                  <div className="w-1 h-1 bg-[#120e0f] rounded-full"></div>
-                  <div className="w-1 h-1 bg-[#120e0f] rounded-full"></div>
+                  <div className="w-1 h-1 bg-[#3D2817] rounded-full"></div>
+                  <div className="w-1 h-1 bg-[#3D2817] rounded-full"></div>
+                  <div className="w-1 h-1 bg-[#3D2817] rounded-full"></div>
                 </div>
                 
                 {/* Black Starburst Icons */}
                 <div className="absolute top-6 right-6 sm:top-8 sm:right-8">
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-[#120e0f]" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-[#3D2817]" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2L14.5 8.5L21 11L14.5 13.5L12 20L9.5 13.5L3 11L9.5 8.5L12 2Z"/>
                   </svg>
                 </div>
                 <div className="absolute bottom-10 left-8 sm:bottom-12 sm:left-10">
-                  <svg className="w-3 h-3 sm:w-4 sm:h-4 text-[#120e0f]" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 sm:w-4 sm:h-4 text-[#3D2817]" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2L14.5 8.5L21 11L14.5 13.5L12 20L9.5 13.5L3 11L9.5 8.5L12 2Z"/>
                   </svg>
                 </div>
@@ -653,7 +653,7 @@ const Home = () => {
                   </p>
                   <Link
                     to="/sale"
-                    className="inline-block px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 text-xs sm:text-sm md:text-base font-semibold border-2 border-[#120e0f] bg-[#120e0f] text-[#fefcfb] hover:bg-[#fefcfb] hover:text-[#120e0f] transition-colors"
+                    className="inline-block px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 text-xs sm:text-sm md:text-base font-semibold border border-[#3D2817]/30 bg-[#3D2817] text-white hover:bg-[#FAF8F5] hover:text-[#3D2817] transition-colors"
                   >
                     Shop Now
                   </Link>
@@ -661,15 +661,15 @@ const Home = () => {
                 
                 {/* Pagination Dots */}
                 <div className="absolute bottom-3 sm:bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
-                  <div className="w-2 h-2 bg-[#120e0f]"></div>
-                  <div className="w-2 h-2 bg-[#120e0f]/30"></div>
+                  <div className="w-2 h-2 bg-[#3D2817]"></div>
+                  <div className="w-2 h-2 bg-[#3D2817]/30"></div>
                 </div>
               </div>
             </div>
 
             {/* Right Model Section */}
             <div className="relative">
-              <div className="relative h-full sm:h-64 md:h-80 lg:h-96 bg-[#fefcfb] border-2 border-[#120e0f] overflow-hidden">
+              <div className="relative h-full sm:h-64 md:h-80 lg:h-96 bg-[#FAF8F5] border border-[#3D2817]/30 overflow-hidden">
                 <img
                   src="https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766658151/Beige_Modern_Minimalist_Fashion_Clothing_Sale_Promotional_Instagram_Post_q8geu5.png"
                   alt="Fashion Sale Promo"
@@ -683,7 +683,7 @@ const Home = () => {
       </div>
 
       {/* --- THREE BANNERS CAROUSEL (Visible on all devices) --- */}
-      <div className="relative w-full bg-[#fefcfb] border-t-2 border-[#120e0f] overflow-hidden">
+      <div className="relative w-full bg-[#FAF8F5] border-t border-[#3D2817]/30 overflow-hidden">
         <div className="relative w-full">
           <div 
             ref={bannerCarouselRef}
@@ -720,7 +720,7 @@ const Home = () => {
             </div>
             
             {/* Content */}
-            <div className="relative z-10 p-4 sm:p-6 md:p-8 flex flex-col h-full bg-[#fefcfb]">
+            <div className="relative z-10 p-4 sm:p-6 md:p-8 flex flex-col h-full bg-[#FAF8F5]">
               {/* Brand/Logo */}
               <div className="mb-3 sm:mb-4">
                 <div className="inline-block bg-purple-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-2" style={{ fontFamily: "'Dancing Script', cursive" }}>
@@ -750,10 +750,10 @@ const Home = () => {
                   }
                   
                   return (
-                    <div key={product.id || product._id || idx} className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border-2 relative" style={{ backgroundColor: '#fefcfb', borderColor: '#120e0f' }}>
+                    <div key={product.id || product._id || idx} className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border relative" style={{ backgroundColor: '#FAF8F5', borderColor: '#3D2817' }}>
                       {/* Red accent line */}
                       <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: '#8B4513' }}></div>
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 flex-shrink-0 overflow-hidden flex items-center justify-center border-2" style={{ borderColor: '#120e0f' }}>
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 flex-shrink-0 overflow-hidden flex items-center justify-center border" style={{ borderColor: '#3D2817' }}>
                         {imageUrl ? (
                           <img
                             src={imageUrl}
@@ -765,12 +765,12 @@ const Home = () => {
                             }}
                           />
                         ) : null}
-                        <div className="w-full h-full flex items-center justify-center text-xs" style={{ display: imageUrl ? 'none' : 'flex', backgroundColor: '#fefcfb', color: '#120e0f' }}>
+                        <div className="w-full h-full flex items-center justify-center text-xs" style={{ display: imageUrl ? 'none' : 'flex', backgroundColor: '#FAF8F5', color: '#3D2817' }}>
                           No Image
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm sm:text-base md:text-lg font-bold mb-1 line-clamp-2" style={{ color: '#120e0f' }}>
+                        <p className="text-sm sm:text-base md:text-lg font-bold mb-1 line-clamp-2" style={{ color: '#3D2817' }}>
                           {product.name || product.productName || 'Product'}
                         </p>
                         <p className="text-base sm:text-lg md:text-xl font-bold" style={{ color: '#8B4513' }}>
@@ -815,10 +815,10 @@ const Home = () => {
               {/* Products Display */}
               <div className="flex-1 flex flex-col justify-center space-y-3 sm:space-y-4 mt-3 sm:mt-4">
                 {skincareProducts.slice(0, isMobile ? 2 : 4).map((product, idx) => (
-                  <div key={product.id || product._id || idx} className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border-2 relative" style={{ backgroundColor: '#fefcfb', borderColor: '#120e0f' }}>
+                  <div key={product.id || product._id || idx} className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border relative" style={{ backgroundColor: '#FAF8F5', borderColor: '#3D2817' }}>
                     {/* Red accent line */}
                     <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: '#8B4513' }}></div>
-                    <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 flex-shrink-0 overflow-hidden flex items-center justify-center border-2" style={{ borderColor: '#120e0f' }}>
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 flex-shrink-0 overflow-hidden flex items-center justify-center border" style={{ borderColor: '#3D2817' }}>
                       <img
                         src={product.image || product.imageUrl || 'https://via.placeholder.com/80'}
                         alt={product.name || product.productName || 'Product'}
@@ -828,12 +828,12 @@ const Home = () => {
                           e.target.nextSibling.style.display = 'flex';
                         }}
                       />
-                      <div className="w-full h-full flex items-center justify-center text-xs" style={{ display: 'none', backgroundColor: '#fefcfb', color: '#120e0f' }}>
+                      <div className="w-full h-full flex items-center justify-center text-xs" style={{ display: 'none', backgroundColor: '#FAF8F5', color: '#3D2817' }}>
                         No Image
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm sm:text-base md:text-lg font-bold mb-1 line-clamp-2" style={{ color: '#120e0f' }}>
+                      <p className="text-sm sm:text-base md:text-lg font-bold mb-1 line-clamp-2" style={{ color: '#3D2817' }}>
                         {product.name || product.productName || 'Product'}
                       </p>
                       <p className="text-base sm:text-lg md:text-xl font-bold" style={{ color: '#8B4513' }}>
@@ -862,7 +862,7 @@ const Home = () => {
         </div>
             
             {/* Content */}
-            <div className="relative z-10 p-4 sm:p-6 md:p-8 flex flex-col h-full bg-[#fefcfb]">
+            <div className="relative z-10 p-4 sm:p-6 md:p-8 flex flex-col h-full bg-[#FAF8F5]">
               {/* Brand/Logo */}
               <div className="mb-3 sm:mb-4">
                 <div className="inline-block bg-pink-600 text-white px-2 sm:px-3 py-1 sm:py-1.5 rounded text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-2" style={{ fontFamily: "'Dancing Script', cursive" }}>
@@ -896,10 +896,10 @@ const Home = () => {
                   }
                   
                   return (
-                    <div key={product.id || product._id || idx} className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border-2 relative" style={{ backgroundColor: '#fefcfb', borderColor: '#120e0f' }}>
+                    <div key={product.id || product._id || idx} className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border relative" style={{ backgroundColor: '#FAF8F5', borderColor: '#3D2817' }}>
                       {/* Red accent line */}
                       <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: '#8B4513' }}></div>
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 flex-shrink-0 overflow-hidden flex items-center justify-center border-2" style={{ borderColor: '#120e0f' }}>
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 flex-shrink-0 overflow-hidden flex items-center justify-center border" style={{ borderColor: '#3D2817' }}>
                         {imageUrl ? (
                           <img
                             src={imageUrl}
@@ -911,12 +911,12 @@ const Home = () => {
                             }}
                           />
                         ) : null}
-                        <div className="w-full h-full flex items-center justify-center text-xs" style={{ display: imageUrl ? 'none' : 'flex', backgroundColor: '#fefcfb', color: '#120e0f' }}>
+                        <div className="w-full h-full flex items-center justify-center text-xs" style={{ display: imageUrl ? 'none' : 'flex', backgroundColor: '#FAF8F5', color: '#3D2817' }}>
                           No Image
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm sm:text-base md:text-lg font-bold mb-1 line-clamp-2" style={{ color: '#120e0f' }}>
+                        <p className="text-sm sm:text-base md:text-lg font-bold mb-1 line-clamp-2" style={{ color: '#3D2817' }}>
                           {product.name || product.productName || 'Product'}
                         </p>
                         <p className="text-base sm:text-lg md:text-xl font-bold" style={{ color: '#8B4513' }}>
@@ -978,7 +978,7 @@ const Home = () => {
                   <Link
                     key={product.id || product._id || index}
                     to={`/skincare/${product.id || product._id}`}
-                    className="group relative overflow-hidden rounded-lg bg-white shadow-lg border-2 border-[#120e0f]"
+                    className="group relative overflow-hidden rounded-lg bg-white shadow-lg border border-[#3D2817]/30"
                   >
                     {/* Card Background with Gradient */}
                     <div className={`relative min-h-[280px] sm:min-h-[320px] md:min-h-[360px] lg:min-h-[400px] ${bgStyle} p-3 sm:p-4 md:p-5 flex flex-col justify-between`}>
@@ -1191,28 +1191,28 @@ const Home = () => {
       
 
       {/* --- THREE SECTION BANNER (Skincare Legends, Hot Sellers, Greatest Combos) --- */}
-      <section className="py-8 sm:py-12 bg-[#fefcfb]">
+      <section className="py-8 sm:py-12 bg-[#FAF8F5]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             
             {/* Left Section: SKINCARE LEGENDS */}
-            <div className="relative bg-gradient-to-b from-[#d4c5b8] to-[#c4b5a8] border-2 border-[#120e0f] p-6 sm:p-8 min-h-[500px] sm:min-h-[600px] flex flex-col">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6" style={{ color: '#120e0f' }}>
+            <div className="relative bg-gradient-to-b from-[#d4c5b8] to-[#c4b5a8] border border-[#3D2817]/30 p-6 sm:p-8 min-h-[500px] sm:min-h-[600px] flex flex-col">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6" style={{ color: '#3D2817' }}>
                 Introducing the SKINCARE LEGENDS!
               </h2>
               
               {/* Category Buttons */}
               <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-6 sm:mb-8">
-                <Link to="/skincare?category=serum" className="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors text-center">
+                <Link to="/skincare?category=serum" className="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#3D2817] hover:text-white transition-colors text-center">
                   Skin Brightening Star
                 </Link>
-                <Link to="/skincare?category=serum" className="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors text-center">
+                <Link to="/skincare?category=serum" className="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#3D2817] hover:text-white transition-colors text-center">
                   De-tan Professional
                 </Link>
-                <Link to="/skincare?category=serum" className="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors text-center">
+                <Link to="/skincare?category=serum" className="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#3D2817] hover:text-white transition-colors text-center">
                   Pigmentation Specialist
                 </Link>
-                <Link to="/skincare?category=serum" className="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors text-center">
+                <Link to="/skincare?category=serum" className="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#3D2817] hover:text-white transition-colors text-center">
                   Acne Fighter
                 </Link>
               </div>
@@ -1221,7 +1221,7 @@ const Home = () => {
               <div className="mb-4 sm:mb-6">
                 <Link 
                   to="/skincare?category=moisturizer"
-                  className="block w-full px-4 sm:px-5 py-3 sm:py-3.5 text-sm sm:text-base font-bold border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors text-center"
+                  className="block w-full px-4 sm:px-5 py-3 sm:py-3.5 text-sm sm:text-base font-bold border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#3D2817] hover:text-white transition-colors text-center"
                 >
                   Moisturizer - Skincare
                 </Link>
@@ -1230,7 +1230,7 @@ const Home = () => {
               {/* Skincare Products */}
               <div className="flex-1 flex items-center justify-center mb-6">
                 <div className="text-center w-full">
-                  <p className="text-sm sm:text-base text-[#120e0f]/70 mb-4">Premium Skincare Serums</p>
+                  <p className="text-sm sm:text-base text-[#3D2817]/70 mb-4">Premium Skincare Serums</p>
                   <div className="grid grid-cols-2 gap-3">
                     {skincareProducts.slice(0, 4).map((product, idx) => {
                       const imageUrl = product.image || product.imageUrl || product.images?.[0];
@@ -1238,7 +1238,7 @@ const Home = () => {
                         <Link
                           key={product._id || product.id || idx}
                           to={`/skincare/${product._id || product.id}`}
-                          className="w-full h-20 sm:h-24 bg-[#fefcfb] border-2 border-[#120e0f] overflow-hidden flex items-center justify-center hover:border-[#bb3435] transition-colors"
+                          className="w-full h-20 sm:h-24 bg-[#FAF8F5] border border-[#3D2817]/30 overflow-hidden flex items-center justify-center hover:border-[#8B4513] transition-colors"
                         >
                           {imageUrl ? (
                             <img
@@ -1251,7 +1251,7 @@ const Home = () => {
                               }}
                             />
                           ) : null}
-                          <div className="w-full h-full flex items-center justify-center text-[8px] sm:text-[10px] text-[#120e0f] p-1" style={{ display: imageUrl ? 'none' : 'flex' }}>
+                          <div className="w-full h-full flex items-center justify-center text-[8px] sm:text-[10px] text-[#3D2817] p-1" style={{ display: imageUrl ? 'none' : 'flex' }}>
                             {product.name || product.productName || 'Product'}
                           </div>
                         </Link>
@@ -1264,25 +1264,25 @@ const Home = () => {
               {/* CTA Button */}
               <Link
                 to="/skincare"
-                className="w-full py-3 sm:py-3.5 text-sm sm:text-base font-bold text-center border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors"
+                className="w-full py-3 sm:py-3.5 text-sm sm:text-base font-bold text-center border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#3D2817] hover:text-white transition-colors"
               >
                 NEW LAUNCH
               </Link>
             </div>
 
             {/* Middle Section: HOT SELLERS */}
-            <div className="relative bg-[#e8e8e8] border-2 border-[#120e0f] p-6 sm:p-8 min-h-[500px] sm:min-h-[600px] flex flex-col">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3" style={{ color: '#120e0f' }}>
+            <div className="relative bg-[#e8e8e8] border border-[#3D2817]/30 p-6 sm:p-8 min-h-[500px] sm:min-h-[600px] flex flex-col">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3" style={{ color: '#3D2817' }}>
                 HOT SELLERS
               </h2>
-              <p className="text-sm sm:text-base mb-4 sm:mb-6" style={{ color: '#120e0f' }}>
+              <p className="text-sm sm:text-base mb-4 sm:mb-6" style={{ color: '#3D2817' }}>
                 High In Demand Secure Yours Now!
               </p>
               
               {/* Hot Sellers Skincare Products */}
               <div className="flex-1 flex items-center justify-center mb-6">
                 <div className="text-center w-full">
-                  <p className="text-sm sm:text-base text-[#120e0f]/70 mb-4">Best Selling Products</p>
+                  <p className="text-sm sm:text-base text-[#3D2817]/70 mb-4">Best Selling Products</p>
                   <div className="grid grid-cols-2 gap-3">
                     {skincareProducts.slice(4, 9).map((product, idx) => {
                       const imageUrl = product.image || product.imageUrl || product.images?.[0];
@@ -1290,7 +1290,7 @@ const Home = () => {
                         <Link
                           key={product._id || product.id || idx}
                           to={`/skincare/${product._id || product.id}`}
-                          className="w-full h-20 sm:h-24 bg-[#fefcfb] border-2 border-[#120e0f] overflow-hidden flex items-center justify-center hover:border-[#bb3435] transition-colors"
+                          className="w-full h-20 sm:h-24 bg-[#FAF8F5] border border-[#3D2817]/30 overflow-hidden flex items-center justify-center hover:border-[#8B4513] transition-colors"
                         >
                           {imageUrl ? (
                             <img
@@ -1303,7 +1303,7 @@ const Home = () => {
                               }}
                             />
                           ) : null}
-                          <div className="w-full h-full flex items-center justify-center text-[8px] sm:text-[10px] text-[#120e0f] p-1" style={{ display: imageUrl ? 'none' : 'flex' }}>
+                          <div className="w-full h-full flex items-center justify-center text-[8px] sm:text-[10px] text-[#3D2817] p-1" style={{ display: imageUrl ? 'none' : 'flex' }}>
                             {product.name || product.productName || 'Product'}
                           </div>
                         </Link>
@@ -1316,28 +1316,28 @@ const Home = () => {
               {/* CTA Button */}
               <Link
                 to="/sale"
-                className="w-full py-3 sm:py-3.5 text-sm sm:text-base font-bold text-center border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors"
+                className="w-full py-3 sm:py-3.5 text-sm sm:text-base font-bold text-center border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#3D2817] hover:text-white transition-colors"
               >
                 Hot Sellers
               </Link>
             </div>
 
             {/* Right Section: Greatest Combos */}
-            <div className="relative bg-gradient-to-b from-[#d4c5b8] to-[#c4b5a8] border-2 border-[#120e0f] p-6 sm:p-8 min-h-[500px] sm:min-h-[600px] flex flex-col">
+            <div className="relative bg-gradient-to-b from-[#d4c5b8] to-[#c4b5a8] border border-[#3D2817]/30 p-6 sm:p-8 min-h-[500px] sm:min-h-[600px] flex flex-col">
               <div className="relative mb-4 sm:mb-6">
-                <div className="absolute -left-2 -top-2 bg-[#bb3435] border-2 border-[#120e0f] px-3 sm:px-4 py-2 sm:py-2.5 transform rotate-[-12deg] z-10">
-                  <span className="text-xs sm:text-sm font-bold text-[#fefcfb]">UP TO 60% OFF</span>
+                <div className="absolute -left-2 -top-2 bg-[#8B4513] border border-[#3D2817]/30 px-3 sm:px-4 py-2 sm:py-2.5 transform rotate-[-12deg] z-10">
+                  <span className="text-xs sm:text-sm font-bold text-white">UP TO 60% OFF</span>
                 </div>
               </div>
               
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6" style={{ color: '#120e0f' }}>
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6" style={{ color: '#3D2817' }}>
                 Grab your Biggest Savings with our Greatest Combos!
               </h2>
               
               {/* Combo Skincare Products */}
               <div className="flex-1 flex items-center justify-center mb-6">
                 <div className="text-center w-full">
-                  <p className="text-sm sm:text-base text-[#120e0f]/70 mb-4">Combo Products</p>
+                  <p className="text-sm sm:text-base text-[#3D2817]/70 mb-4">Combo Products</p>
                   <div className="grid grid-cols-2 gap-3">
                     {skincareProducts.slice(0, 8).map((product, idx) => {
                       const imageUrl = product.image || product.imageUrl || product.images?.[0];
@@ -1345,7 +1345,7 @@ const Home = () => {
                         <Link
                           key={product._id || product.id || idx}
                           to={`/skincare/${product._id || product.id}`}
-                          className="w-full h-16 sm:h-20 bg-[#fefcfb] border-2 border-[#120e0f] overflow-hidden flex items-center justify-center hover:border-[#bb3435] transition-colors"
+                          className="w-full h-16 sm:h-20 bg-[#FAF8F5] border border-[#3D2817]/30 overflow-hidden flex items-center justify-center hover:border-[#8B4513] transition-colors"
                         >
                           {imageUrl ? (
                             <img
@@ -1358,7 +1358,7 @@ const Home = () => {
                               }}
                             />
                           ) : null}
-                          <div className="w-full h-full flex items-center justify-center text-[8px] sm:text-[10px] text-[#120e0f] p-1" style={{ display: imageUrl ? 'none' : 'flex' }}>
+                          <div className="w-full h-full flex items-center justify-center text-[8px] sm:text-[10px] text-[#3D2817] p-1" style={{ display: imageUrl ? 'none' : 'flex' }}>
                             {product.name || product.productName || 'Product'}
                           </div>
                         </Link>
@@ -1371,7 +1371,7 @@ const Home = () => {
               {/* CTA Button */}
               <Link
                 to="/sale"
-                className="w-full py-3 sm:py-3.5 text-sm sm:text-base font-bold text-center border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors"
+                className="w-full py-3 sm:py-3.5 text-sm sm:text-base font-bold text-center border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#3D2817] hover:text-white transition-colors"
               >
                 Combos
               </Link>
@@ -1441,13 +1441,13 @@ const Home = () => {
           </div>
             {/* Content under the images */}
             <div className="mt-6 sm:mt-8 text-center">
-              <p className="text-xs sm:text-sm mb-4" style={{ color: '#120e0f', opacity: 0.8 }}>
+              <p className="text-xs sm:text-sm mb-4" style={{ color: '#3D2817', opacity: 0.8 }}>
                 Discover our curated collection of women's fashion, designed to elevate your style
               </p>
               <Link
                 to="/women"
                 className="inline-block px-6 py-2.5 text-xs sm:text-sm font-semibold transition-colors border"
-                style={{ backgroundColor: '#bb3435', color: '#fefcfb', borderColor: '#bb3435' }}
+                style={{ backgroundColor: '#8B4513', color: '#FAF8F5', borderColor: '#bb3435' }}
                 onMouseEnter={(e) => {
                   e.target.style.backgroundColor = '#120e0f';
                   e.target.style.borderColor = '#120e0f';

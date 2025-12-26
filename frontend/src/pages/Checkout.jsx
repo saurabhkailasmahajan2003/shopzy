@@ -305,7 +305,7 @@ const Checkout = () => {
 
   return (
     <div 
-      className="min-h-screen bg-[#fefcfb] transition-opacity duration-300"
+      className="min-h-screen bg-[#FAF8F5] transition-opacity duration-300"
       style={{
         opacity: showSuccessModal ? 0.3 : 1,
         pointerEvents: showSuccessModal ? 'none' : 'auto',
@@ -313,15 +313,15 @@ const Checkout = () => {
       }}
     >
       {/* Professional Header */}
-      <div className="bg-[#fefcfb] border-b-2 border-[#120e0f] sticky top-0 z-20">
+      <div className="bg-[#FAF8F5] border-b-2 border-[#3D2817]/30 sticky top-0 z-20">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 h-12 sm:h-14 flex items-center justify-between">
           <div>
-            <h1 className="text-base sm:text-lg font-semibold text-[#120e0f]">Checkout</h1>
-            <p className="text-[10px] sm:text-xs text-[#120e0f]/60 mt-0.5">{cart.length} {cart.length === 1 ? 'item' : 'items'}</p>
+            <h1 className="text-base sm:text-lg font-semibold text-[#3D2817]">Checkout</h1>
+            <p className="text-[10px] sm:text-xs text-[#3D2817]/60 mt-0.5">{cart.length} {cart.length === 1 ? 'item' : 'items'}</p>
           </div>
           <button
             onClick={() => navigate('/cart')}
-            className="text-xs sm:text-sm text-[#120e0f] hover:opacity-70 font-medium transition-opacity"
+            className="text-xs sm:text-sm text-[#3D2817] hover:opacity-70 font-medium transition-opacity"
           >
             <span className="hidden sm:inline">← Back to Cart</span>
             <span className="sm:hidden">← Back</span>

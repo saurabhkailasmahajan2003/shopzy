@@ -29,11 +29,22 @@ const CategoryPage = () => {
   });
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [showFilters, setShowFilters] = useState(true); // Desktop filter visibility
+  const [isMobile, setIsMobile] = useState(false);
 
   const pathSegments = pathname.split('/').filter(Boolean);
   const genderFromPath = pathSegments[0] === 'women' ? 'women' : null;
   const derivedGender = (gender ? gender.toLowerCase() : null) || genderFromPath;
   const derivedCategory = category || pathSegments[1] || null;
+
+  // Detect mobile viewport
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // 1. Initial Data Fetch
   useEffect(() => {
@@ -138,8 +149,8 @@ const CategoryPage = () => {
     setPage(1);
   }, [showFilters]);
 
-  // Calculate items per page based on filter visibility
-  const itemsPerPage = showFilters ? 21 : 28;
+  // Calculate items per page based on device and filter visibility
+  const itemsPerPage = isMobile ? 22 : (showFilters ? 21 : 28);
 
   // 3. Pagination Logic (Updates visible products)
   useEffect(() => {
@@ -347,7 +358,7 @@ const CategoryPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#fefcfb] py-4 sm:py-6 lg:py-8">
+    <div className="min-h-screen bg-[#FAF8F5] py-4 sm:py-6 lg:py-8">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
         
         {/* Header Row - Breadcrumb, Title, and Product Count */}
@@ -357,24 +368,24 @@ const CategoryPage = () => {
               {/* Breadcrumb Navigation */}
               {(derivedGender || pathname === '/women') && (
                 <nav className="text-xs sm:text-sm">
-                  <ol className="flex items-center space-x-1 sm:space-x-2 text-[#120e0f]/60">
+                  <ol className="flex items-center space-x-1 sm:space-x-2 text-[#3D2817]/60">
                     <li>
-                      <Link to="/" className="hover:text-[#120e0f] transition-colors">
+                      <Link to="/" className="hover:text-[#3D2817] transition-colors">
                         Home
                       </Link>
                     </li>
-                    <li className="text-[#120e0f]/40">/</li>
+                    <li className="text-[#3D2817]/40">/</li>
                     {derivedGender && (
                       <>
                         <li>
-                          <Link to={`/${derivedGender}`} className="hover:text-[#120e0f] transition-colors capitalize">
+                          <Link to={`/${derivedGender}`} className="hover:text-[#3D2817] transition-colors capitalize">
                             {derivedGender}
                           </Link>
                         </li>
                         {category && (
                           <>
-                            <li className="text-[#120e0f]/40">/</li>
-                            <li className="text-[#120e0f] capitalize">
+                            <li className="text-[#3D2817]/40">/</li>
+                            <li className="text-[#3D2817] capitalize">
                               {category === 'tshirt' ? 'T-Shirt' : category}
                             </li>
                           </>
@@ -382,7 +393,7 @@ const CategoryPage = () => {
                       </>
                     )}
                     {!derivedGender && pathname === '/women' && (
-                      <li className="text-[#120e0f] capitalize">
+                      <li className="text-[#3D2817] capitalize">
                         {pathname.replace('/', '')}
                       </li>
                     )}
@@ -391,7 +402,7 @@ const CategoryPage = () => {
               )}
               
               {/* Title */}
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#120e0f]">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#3D2817]">
                 {isLoading && !pageTitle ? 'Loading...' : pageTitle}
               </h1>
             </div>
@@ -399,7 +410,7 @@ const CategoryPage = () => {
             <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
               {/* Product Count */}
               {!isLoading && filteredList.length > 0 && (
-                <p className="text-xs sm:text-sm text-[#120e0f]/60 whitespace-nowrap">
+                <p className="text-xs sm:text-sm text-[#3D2817]/60 whitespace-nowrap">
                   Showing {((page - 1) * itemsPerPage) + 1} - {Math.min(page * itemsPerPage, filteredList.length)} of {filteredList.length} products
                 </p>
               )}
@@ -413,7 +424,7 @@ const CategoryPage = () => {
                     setShowMobileFilters(!showMobileFilters);
                   }
                 }}
-                className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-[#fefcfb] border-2 border-[#120e0f] text-xs sm:text-sm font-medium text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors whitespace-nowrap"
+                className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-[#FAF8F5] border-2 border-[#3D2817]/30 text-xs sm:text-sm font-medium text-[#3D2817] hover:bg-[#3D2817] hover:text-[#fefcfb] transition-colors whitespace-nowrap"
                 disabled={isLoading}
               >
                 <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -439,12 +450,12 @@ const CategoryPage = () => {
               ? 'lg:translate-x-0 lg:pointer-events-auto' 
               : 'lg:-translate-x-full lg:pointer-events-none lg:absolute lg:left-0 lg:overflow-hidden'
             }
-            ${showMobileFilters ? 'fixed inset-0 z-50 bg-[#fefcfb] p-4 sm:p-6 overflow-y-auto lg:relative lg:z-auto lg:bg-transparent lg:p-0' : ''}
+            ${showMobileFilters ? 'fixed inset-0 z-50 bg-[#FAF8F5] p-4 sm:p-6 overflow-y-auto lg:relative lg:z-auto lg:bg-transparent lg:p-0' : ''}
           `}>
              {showMobileFilters && (
                <div className="lg:hidden flex items-center justify-between mb-4 sm:mb-6">
-                 <h2 className="text-lg sm:text-xl font-bold text-[#120e0f]">Filters</h2>
-                 <button onClick={() => setShowMobileFilters(false)} className="text-[#120e0f] hover:opacity-70 transition-opacity">
+                 <h2 className="text-lg sm:text-xl font-bold text-[#3D2817]">Filters</h2>
+                 <button onClick={() => setShowMobileFilters(false)} className="text-[#3D2817] hover:opacity-70 transition-opacity">
                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                    </svg>
@@ -455,14 +466,14 @@ const CategoryPage = () => {
              {/* Mobile Chips */}
              {derivedGender && (
                <div className="lg:hidden mb-4 sm:mb-6 space-y-2">
-                 <p className="text-xs uppercase tracking-wide text-[#120e0f]/60">Subcategories</p>
+                 <p className="text-xs uppercase tracking-wide text-[#3D2817]/60">Subcategories</p>
                  <div className="flex flex-wrap gap-2">
                    {['shirt', 'tshirt', 'trousers', 'saree', 'shoes', 'accessories'].map((sub) => (
                      <Link
                        key={sub}
                        to={`/${derivedGender}/${sub}`}
                        className={`px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-semibold border-2 ${
-                         derivedCategory === sub ? 'bg-[#120e0f] text-[#fefcfb] border-[#120e0f]' : 'text-[#120e0f] border-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb]'
+                         derivedCategory === sub ? 'bg-[#3D2817] text-[#fefcfb] border-[#3D2817]/30' : 'text-[#3D2817] border-[#3D2817]/30 hover:bg-[#3D2817] hover:text-[#fefcfb]'
                        } transition-colors`}
                        onClick={() => setShowMobileFilters(false)}
                      >
@@ -513,7 +524,7 @@ const CategoryPage = () => {
                         <button
                           onClick={() => handlePageChange(page - 1)}
                           disabled={page === 1}
-                          className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-[#120e0f] bg-[#fefcfb] border-2 border-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#fefcfb] disabled:hover:text-[#120e0f] transition-all"
+                          className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-[#3D2817] bg-[#FAF8F5] border-2 border-[#3D2817]/30 hover:bg-[#3D2817] hover:text-[#fefcfb] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#FAF8F5] disabled:hover:text-[#3D2817] transition-all"
                         >
                           <span className="flex items-center gap-1">
                             <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -528,7 +539,7 @@ const CategoryPage = () => {
                         {getPageNumbers().map((pageNum, index) => {
                           if (pageNum === '...') {
                             return (
-                              <span key={`ellipsis-${index}`} className="px-1 sm:px-2 text-[#120e0f]/60 text-xs sm:text-sm">
+                              <span key={`ellipsis-${index}`} className="px-1 sm:px-2 text-[#3D2817]/60 text-xs sm:text-sm">
                                 ...
                               </span>
                             );
@@ -539,8 +550,8 @@ const CategoryPage = () => {
                               onClick={() => handlePageChange(pageNum)}
                               className={`min-w-[32px] sm:min-w-[40px] px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold border-2 transition-all ${
                                 page === pageNum
-                                  ? 'bg-[#120e0f] text-[#fefcfb] border-[#120e0f]'
-                                  : 'text-[#120e0f] bg-[#fefcfb] border-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb]'
+                                  ? 'bg-[#3D2817] text-[#fefcfb] border-[#3D2817]/30'
+                                  : 'text-[#3D2817] bg-[#FAF8F5] border-[#3D2817]/30 hover:bg-[#3D2817] hover:text-[#fefcfb]'
                               }`}
                             >
                               {pageNum}
@@ -552,7 +563,7 @@ const CategoryPage = () => {
                         <button
                           onClick={() => handlePageChange(page + 1)}
                           disabled={page === totalPages}
-                          className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-[#120e0f] bg-[#fefcfb] border-2 border-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#fefcfb] disabled:hover:text-[#120e0f] transition-all"
+                          className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-[#3D2817] bg-[#FAF8F5] border-2 border-[#3D2817]/30 hover:bg-[#3D2817] hover:text-[#fefcfb] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#FAF8F5] disabled:hover:text-[#3D2817] transition-all"
                         >
                           <span className="flex items-center gap-1">
                             <span className="hidden sm:inline">Next</span>
@@ -565,7 +576,7 @@ const CategoryPage = () => {
                       </div>
 
                       {/* Page Info */}
-                      <p className="text-xs sm:text-sm text-[#120e0f]/60">
+                      <p className="text-xs sm:text-sm text-[#3D2817]/60">
                         Page {page} of {totalPages}
                       </p>
                     </div>
@@ -581,12 +592,12 @@ const CategoryPage = () => {
                     >
                       Clear filters to see all products
                     </button>
-                  ) : (derivedGender || pathname === '/men' || pathname === '/women') ? (
+                  ) : (derivedGender || pathname === '/women') ? (
                     <Link
-                      to={`/${derivedGender || pathname.replace('/', '')}`}
+                      to={`/${derivedGender || 'women'}`}
                       className="text-blue-600 hover:text-blue-800 font-medium"
                     >
-                      ← Back to {derivedGender ? `${derivedGender.charAt(0).toUpperCase() + derivedGender.slice(1)}'s Collection` : 'Collection'}
+                      ← Back to {derivedGender ? `${derivedGender.charAt(0).toUpperCase() + derivedGender.slice(1)}'s Collection` : "Women's Collection"}
                     </Link>
                   ) : null}
                 </div>

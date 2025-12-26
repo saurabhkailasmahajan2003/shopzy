@@ -12,6 +12,7 @@ import lensRoutes from './routes/product/lens.routes.js';
 import accessoryRoutes from './routes/product/accessory.routes.js';
 import womenRoutes from './routes/product/women.routes.js';
 import skincareRoutes from './routes/product/skincare.routes.js';
+import productRoutes from './routes/product/product.routes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
@@ -49,6 +50,7 @@ mongoose
 
 // Routes
 app.use('/api/auth', authRoutes);
+// Specific category routes (must be before generic route to avoid conflicts)
 app.use('/api/products/watches', watchRoutes);
 app.use('/api/products/watch-new', watchNewRoutes);
 app.use('/api/products/lens', lensRoutes);
@@ -61,6 +63,8 @@ try {
   console.error('❌ CRITICAL: Failed to register skincare routes:', error);
   console.error('   This will cause 404 errors for /api/products/skincare');
 }
+// Generic product route (must be after specific category routes)
+app.use('/api/products', productRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);

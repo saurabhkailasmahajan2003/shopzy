@@ -8,7 +8,7 @@ import CartSidebar from './CartSidebar';
 const NAV_LINKS = [
   { 
     id: 'women', 
-    label: 'Women', 
+    label: 'Fashion', 
     path: '/women', 
     subItems: [
       { name: 'Shirts', path: '/women/shirt' },
@@ -23,7 +23,7 @@ const NAV_LINKS = [
     label: 'Watches', 
     path: '/watches', 
     subItems: [
-      { name: "Women's Watches", path: '/watches?gender=women' },
+      { name: 'Classic Watches', path: '/watches?gender=women' },
       { name: 'Smart Watches', path: '/watches?type=smart' },
     ] 
   },
@@ -32,7 +32,7 @@ const NAV_LINKS = [
     label: 'Eyewear', 
     path: '/lenses', 
     subItems: [
-      { name: "Women's Eyewear", path: '/lenses?gender=women' },
+      { name: 'Eyewear Collection', path: '/lenses?gender=women' },
       { name: 'Sunglasses', path: '/lenses?type=sun' },
     ] 
   },
@@ -41,7 +41,7 @@ const NAV_LINKS = [
     label: 'Accessories', 
     path: '/accessories', 
     subItems: [
-      { name: "Women's Accessories", path: '/accessories?gender=women' },
+      { name: 'Accessories Collection', path: '/accessories?gender=women' },
       { name: 'Wallets & Belts', path: '/accessories?type=general' },
     ] 
   },
@@ -162,16 +162,17 @@ const Navbar = () => {
                MAIN NAVBAR (Dribbble Style)
           ======================= */}
       <nav 
-        className={`sticky top-0 left-0 right-0 z-50 transition-all duration-300 transform bg-[#fefcfb] border-b-2 border-[#120e0f]
+        className={`sticky top-0 left-0 right-0 z-50 transition-all duration-300 transform glass-effect luxury-shadow
         ${isNavHidden ? '-translate-y-full' : 'translate-y-0'}`}
+        style={{ backgroundColor: 'rgba(250, 248, 245, 0.85)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
       >
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
           <div className="flex items-center justify-between h-14 sm:h-16 lg:h-18 gap-3 sm:gap-4 lg:gap-6">
 
-            {/* LEFT: Logo - Reddish color */}
+            {/* LEFT: Logo - Luxury styling */}
             <div className="flex-shrink-0">
-              <Link to="/" className="flex items-center">
-                <span className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight" style={{ color: '#c41e3a', fontFamily: "'Dancing Script', cursive" }}>
+              <Link to="/" className="flex items-center gap-2">
+                <span className="text-xl sm:text-2xl lg:text-3xl font-serif font-bold tracking-wide" style={{ color: '#3D2817' }}>
                   Shopzy
                 </span>
               </Link>
@@ -182,11 +183,11 @@ const Navbar = () => {
                 <form 
                   onSubmit={handleSearch} 
                 ref={searchInputRef}
-                className="flex items-center w-full bg-[#fefcfb] border-2 border-[#120e0f] rounded-full overflow-hidden focus-within:border-[#bb3435] transition-colors"
+                className="flex items-center w-full bg-white/60 backdrop-blur-sm border border-[#3D2817]/20 rounded-full overflow-hidden focus-within:border-[#8B4513] focus-within:ring-2 focus-within:ring-[#8B4513]/20 transition-all luxury-shadow"
                 >
                   <button 
                     type="submit" 
-                    className="p-2 sm:p-2.5 text-[#120e0f] hover:opacity-70 transition-opacity flex-shrink-0"
+                    className="p-2 sm:p-2.5 text-[#3D2817] hover:text-[#8B4513] transition-colors flex-shrink-0"
                   >
                     <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -194,7 +195,7 @@ const Navbar = () => {
                   </button>
                   <input 
                     type="text" 
-                  className="flex-1 bg-transparent border-none outline-none px-2 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm text-[#120e0f] placeholder-[#120e0f]/40"
+                  className="flex-1 bg-transparent border-none outline-none px-2 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm text-[#3D2817] placeholder-[#3D2817]/50"
                   placeholder="Search products..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -208,7 +209,7 @@ const Navbar = () => {
               {/* Mobile Search Button - Before Cart */}
               <button
                 onClick={() => setIsSearchOpen(true)}
-                className="sm:hidden p-1.5 text-[#120e0f] hover:opacity-70 transition-opacity"
+                className="sm:hidden p-1.5 text-[#3D2817] hover:text-[#8B4513] transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -217,13 +218,13 @@ const Navbar = () => {
 
               {/* User Icon - Hidden on mobile, shown on desktop */}
                 {isAuthenticated ? (
-                <Link to="/profile" className="hidden sm:block relative p-1 sm:p-1.5 text-[#120e0f] hover:opacity-70 transition-opacity">
+                <Link to="/profile" className="hidden sm:block relative p-1 sm:p-1.5 text-[#3D2817] hover:text-[#8B4513] transition-colors">
                   <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                   </Link>
                 ) : (
-                <Link to="/login" className="hidden sm:block relative p-1 sm:p-1.5 text-[#120e0f] hover:opacity-70 transition-opacity">
+                <Link to="/login" className="hidden sm:block relative p-1 sm:p-1.5 text-[#3D2817] hover:text-[#8B4513] transition-colors">
                   <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
@@ -233,13 +234,13 @@ const Navbar = () => {
               {/* Shopping Bag Icon */}
               <button 
                 onClick={() => setIsCartSidebarOpen(true)}
-                className="relative p-1 sm:p-1.5 text-[#120e0f] hover:opacity-70 transition-opacity"
+                className="relative p-1 sm:p-1.5 text-[#3D2817] hover:text-[#8B4513] transition-colors"
               >
                 <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
                  {getCartItemsCount() > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 bg-[#bb3435] text-[#fefcfb] text-[8px] sm:text-[10px] w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center font-bold border-2 border-[#120e0f]">
+                  <span className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 bg-[#8B4513] text-white text-[8px] sm:text-[10px] w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center font-bold rounded-full luxury-shadow">
                      {getCartItemsCount()}
                    </span>
                  )}
@@ -248,7 +249,7 @@ const Navbar = () => {
               {/* Hamburger Menu - After Cart */}
               <button 
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="p-1 sm:p-1.5 text-[#120e0f] hover:opacity-70 transition-opacity"
+                className="p-1 sm:p-1.5 text-[#3D2817] hover:text-[#8B4513] transition-colors"
               >
                 <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -276,18 +277,18 @@ const Navbar = () => {
 
       {/* Drawer - Opens from right like cart sidebar */}
       <div 
-        className={`fixed top-0 right-0 h-full w-full sm:w-[420px] bg-[#fefcfb] z-[61] flex flex-col border-l-2 border-[#120e0f] overflow-hidden transition-transform duration-300 ease-out ${
+        className={`fixed top-0 right-0 h-full w-full sm:w-[420px] bg-[#FAF8F5] z-[61] flex flex-col border-l border-[#3D2817]/20 overflow-hidden transition-transform duration-300 ease-out luxury-shadow-lg ${
           isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b-2 border-[#120e0f] bg-[#fefcfb]">
-          <h2 className="text-lg font-bold text-[#120e0f]">
+        <div className="flex items-center justify-between p-4 border-b border-[#3D2817]/20 bg-white/60 backdrop-blur-sm">
+          <h2 className="text-lg font-serif font-bold text-[#3D2817]">
             MENU
           </h2>
           <button 
             onClick={() => setIsMobileMenuOpen(false)}
-            className="p-1 text-[#120e0f] hover:opacity-70 transition-opacity"
+            className="p-1 text-[#3D2817] hover:text-[#8B4513] transition-colors"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -299,26 +300,26 @@ const Navbar = () => {
         <div className="flex-1 overflow-y-auto">
           {/* User Info */}
           {isAuthenticated && (
-            <div className="p-4 border-b-2 border-[#120e0f]">
-              <p className="text-sm text-[#120e0f]/70">Hello, <span className="font-bold text-[#120e0f]">{user?.name}</span></p>
+            <div className="p-4 border-b border-[#3D2817]/20">
+              <p className="text-sm text-[#3D2817]/70">Hello, <span className="font-bold text-[#3D2817]">{user?.name}</span></p>
             </div>
           )}
 
           {/* Auth quick actions */}
-          <div className="p-4 flex items-center gap-3 border-b-2 border-[#120e0f]">
+          <div className="p-4 flex items-center gap-3 border-b border-[#3D2817]/20">
             {isAuthenticated ? (
               <>
                 <Link
                   to="/profile"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 sm:py-3 text-sm font-bold text-[#fefcfb] bg-[#120e0f] hover:opacity-90 transition-opacity"
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 sm:py-3 text-sm font-bold text-white bg-[#3D2817] hover:bg-[#8B4513] transition-colors luxury-shadow rounded"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                   Profile
                 </Link>
                 <button
                   onClick={() => { logout(); setIsMobileMenuOpen(false); }}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 sm:py-3 text-sm font-bold text-[#120e0f] border-2 border-[#120e0f] bg-[#fefcfb] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 sm:py-3 text-sm font-bold text-[#3D2817] border border-[#3D2817]/30 bg-white/60 hover:bg-[#3D2817] hover:text-white transition-colors rounded"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                   Logout
@@ -329,14 +330,14 @@ const Navbar = () => {
                 <Link
                   to="/login"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex-1 py-2.5 sm:py-3 text-center text-sm font-bold text-[#120e0f] bg-[#fefcfb] border-2 border-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors"
+                  className="flex-1 py-2.5 sm:py-3 text-center text-sm font-bold text-[#3D2817] bg-white/60 border border-[#3D2817]/30 hover:bg-[#3D2817] hover:text-white transition-colors rounded"
                 >
                   Login
                 </Link>
                 <Link
                   to="/signup"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex-1 py-2.5 sm:py-3 text-center text-sm font-bold text-[#fefcfb] bg-[#120e0f] hover:opacity-90 transition-opacity"
+                  className="flex-1 py-2.5 sm:py-3 text-center text-sm font-bold text-white bg-[#3D2817] hover:bg-[#8B4513] transition-colors rounded luxury-shadow"
                 >
                   Sign Up
                 </Link>
@@ -346,15 +347,15 @@ const Navbar = () => {
 
           {/* Categories */}
           <div className="p-4 space-y-1">
-            <p className="text-xs font-bold text-[#120e0f]/70 uppercase tracking-widest mb-3">Categories</p>
-            <Link to="/" className="block py-3 text-sm font-bold text-[#120e0f] border-b-2 border-[#120e0f]" onClick={() => setIsMobileMenuOpen(false)}>
+            <p className="text-xs font-bold text-[#3D2817]/70 uppercase tracking-widest mb-3">Categories</p>
+            <Link to="/" className="block py-3 text-sm font-bold text-[#3D2817] border-b border-[#3D2817]/20 hover:text-[#8B4513] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
               Home
             </Link>
             {NAV_LINKS.map((link) => (
-              <div key={link.id} className="border-b-2 border-[#120e0f] last:border-0">
+              <div key={link.id} className="border-b border-[#3D2817]/20 last:border-0">
                 <button 
                   onClick={() => toggleMobileAccordion(link.id)}
-                  className="w-full flex items-center justify-between py-3 text-sm font-bold text-[#120e0f]"
+                  className="w-full flex items-center justify-between py-3 text-sm font-bold text-[#3D2817] hover:text-[#8B4513] transition-colors"
                 >
                   <span>{link.label}</span>
                   <svg className={`w-4 h-4 transition-transform duration-300 ${expandedMobileCategory === link.id ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -369,28 +370,28 @@ const Navbar = () => {
                         key={idx} 
                         to={sub.path} 
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="block text-xs text-[#120e0f]/70 hover:text-[#120e0f] font-medium"
+                        className="block text-xs text-[#3D2817]/70 hover:text-[#8B4513] font-medium transition-colors"
                       >
                         {sub.name}
                       </Link>
                     ))}
-                    <Link to={link.path} onClick={() => setIsMobileMenuOpen(false)} className="block text-xs font-bold text-[#120e0f] pt-2">Shop All</Link>
+                    <Link to={link.path} onClick={() => setIsMobileMenuOpen(false)} className="block text-xs font-bold text-[#3D2817] hover:text-[#8B4513] pt-2 transition-colors">Shop All</Link>
                   </div>
                 </div>
               </div>
             ))}
-            <Link to="/sale" className="block py-3 text-sm font-bold text-[#bb3435] border-b-2 border-[#120e0f]" onClick={() => setIsMobileMenuOpen(false)}>
+            <Link to="/sale" className="block py-3 text-sm font-bold text-[#8B4513] border-b border-[#3D2817]/20 hover:text-[#A0522D] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
               Sale
             </Link>
           </div>
         </div>
 
         {/* Footer Actions */}
-        <div className="border-t-2 border-[#120e0f] bg-[#fefcfb] p-4">
+        <div className="border-t border-[#3D2817]/20 bg-white/60 backdrop-blur-sm p-4">
           {isAuthenticated ? (
-            <button 
-              onClick={() => { logout(); setIsMobileMenuOpen(false); }} 
-              className="w-full py-3 text-sm font-bold text-[#120e0f] border-2 border-[#120e0f] bg-[#fefcfb] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors"
+            <button
+              onClick={() => { logout(); setIsMobileMenuOpen(false); }}
+              className="w-full py-3 text-sm font-bold text-[#3D2817] border border-[#3D2817]/30 bg-white/60 hover:bg-[#3D2817] hover:text-white transition-colors rounded"
             >
               Sign Out
             </button>
@@ -399,7 +400,7 @@ const Navbar = () => {
               <Link 
                 to="/login" 
                 onClick={() => setIsMobileMenuOpen(false)} 
-                className="py-3 text-center text-sm font-bold text-[#120e0f] bg-[#fefcfb] border-2 border-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors"
+                className="py-3 text-center text-sm font-bold text-[#3D2817] bg-white/60 border border-[#3D2817]/30 hover:bg-[#3D2817] hover:text-white transition-colors rounded"
               >
                 Login
               </Link>
@@ -425,7 +426,7 @@ const Navbar = () => {
           />
           
           {/* Search Modal */}
-          <div className="fixed top-0 left-0 right-0 z-[61] bg-[#fefcfb] border-b-2 border-[#120e0f] p-4">
+          <div className="fixed top-0 left-0 right-0 z-[61] bg-white/95 backdrop-blur-sm border-b border-[#3D2817]/20 p-4 luxury-shadow">
             <form 
               onSubmit={(e) => {
                 handleSearch(e);
@@ -435,7 +436,7 @@ const Navbar = () => {
             >
               <input 
                 type="text" 
-                className="flex-1 bg-[#fefcfb] border-2 border-[#120e0f] rounded-full px-4 py-2.5 text-sm text-[#120e0f] placeholder-gray-400 focus:outline-none focus:border-[#bb3435]"
+                className="flex-1 bg-white/60 border border-[#3D2817]/20 rounded-full px-4 py-2.5 text-sm text-[#3D2817] placeholder-[#3D2817]/50 focus:outline-none focus:border-[#8B4513] focus:ring-2 focus:ring-[#8B4513]/20"
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -443,7 +444,7 @@ const Navbar = () => {
               />
               <button 
                 type="submit"
-                className="p-2.5 text-[#120e0f] hover:opacity-70 transition-opacity"
+                className="p-2.5 text-[#3D2817] hover:text-[#8B4513] transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -452,7 +453,7 @@ const Navbar = () => {
               <button
                 type="button"
                 onClick={() => setIsSearchOpen(false)}
-                className="p-2.5 text-[#120e0f] hover:opacity-70 transition-opacity"
+                className="p-2.5 text-[#3D2817] hover:text-[#8B4513] transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

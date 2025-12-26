@@ -60,36 +60,60 @@ export const CartProvider = ({ children }) => {
       throw new Error('Product ID is required');
     }
 
+    // Normalize product data to ensure all required fields are present
+    const normalizedProduct = {
+      _id: product._id || product.id,
+      id: product.id || product._id,
+      name: product.name || product.productName || 'Product',
+      productName: product.productName || product.name || 'Product',
+      price: product.price || product.finalPrice || product.mrp || 0,
+      finalPrice: product.finalPrice || product.price || product.mrp || 0,
+      mrp: product.mrp || product.originalPrice || product.price || 0,
+      originalPrice: product.originalPrice || product.mrp || product.price || 0,
+      image: product.image || product.thumbnail || product.images?.[0] || '',
+      images: product.images || (product.image ? [product.image] : []),
+      thumbnail: product.thumbnail || product.image || product.images?.[0] || '',
+      category: product.category || '',
+      brand: product.brand || '',
+      description: product.description || '',
+      stock: product.stock || product.quantity || 0,
+      quantity: product.quantity || product.stock || 0,
+      inStock: product.inStock !== undefined ? product.inStock : (product.stock > 0 || product.quantity > 0),
+      ...product // Include all other product fields
+    };
+
     try {
       console.log('Adding to cart:', { 
-        productId, 
-        productName: product.name || product.productName,
+        productId: normalizedProduct._id || normalizedProduct.id, 
+        productName: normalizedProduct.name || normalizedProduct.productName,
         quantity, 
         size, 
         color 
       });
       
-      const response = await cartAPI.addToCart(product, quantity, size, color);
+      const response = await cartAPI.addToCart(normalizedProduct, quantity, size, color);
       console.log('Add to cart response:', response);
       
       if (response && response.success) {
         const items = response.data?.cart?.items || [];
         console.log('Setting cart items:', items.length, 'items');
         setCart(items);
-        // Reload cart to ensure sync
-        await loadCart();
         return response;
       } else {
         const errorMsg = response?.message || 'Failed to add to cart';
         console.error('Add to cart failed:', errorMsg);
-        // Try to reload cart anyway
+        // Reload cart to sync with backend
         await loadCart();
         throw new Error(errorMsg);
       }
     } catch (error) {
       console.error('Error in addToCart:', error);
-      // Reload cart to sync with backend
-      await loadCart();
+      // Reload cart to sync with backend in case of error
+      try {
+        await loadCart();
+      } catch (reloadError) {
+        console.error('Error reloading cart:', reloadError);
+      }
       const errorMessage = error.message || 'Failed to add product to cart';
       throw new Error(errorMessage);
     }

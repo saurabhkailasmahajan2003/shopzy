@@ -2,6 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Luxury Color Palette */
+:root {
+  /* Luxury Neutrals */
+  --luxe-cream: #FAF8F5;
+  --luxe-beige: #F5F1EB;
+  --luxe-warm-beige: #E8E0D6;
+  --luxe-taupe: #D4C4B0;
+  --luxe-sand: #C9B8A3;
+  
+  /* Luxury Dark Browns */
+  --luxe-dark-brown: #3D2817;
+  --luxe-charcoal: #2C1F14;
+  --luxe-black: #1A1209;
+  
+  /* Luxury Accents */
+  --luxe-terracotta: #8B4513;
+  --luxe-sienna: #A0522D;
+  --luxe-burgundy: #722F37;
+  
+  /* Luxury Gold */
+  --luxe-gold: #D4AF37;
+  --luxe-gold-light: #E8D5A3;
+  
+  /* Glass Effects */
+  --glass-bg: rgba(250, 248, 245, 0.85);
+  --glass-border: rgba(61, 40, 23, 0.2);
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -9,12 +37,29 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fefcfb;
-  color: #120e0f;
+  background-color: var(--luxe-cream);
+  color: var(--luxe-dark-brown);
 }
 
 .font-serif {
   font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+/* Luxury Glass Effect */
+.glass-effect {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+}
+
+/* Luxury Shadow */
+.luxury-shadow {
+  box-shadow: 0 4px 20px rgba(61, 40, 23, 0.08), 0 2px 8px rgba(61, 40, 23, 0.04);
+}
+
+.luxury-shadow-lg {
+  box-shadow: 0 8px 30px rgba(61, 40, 23, 0.12), 0 4px 12px rgba(61, 40, 23, 0.06);
 }
 
 html {

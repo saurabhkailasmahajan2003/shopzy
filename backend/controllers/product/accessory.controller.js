@@ -1,5 +1,4 @@
 import Accessory from '../../models/product/accessory.model.js';
-import Shoes from '../../models/product/shoes.model.js';
 
 // Helper function to normalize old schema to common format
 const normalizeOldAccessory = (product) => {
@@ -41,76 +40,27 @@ const normalizeOldAccessory = (product) => {
   };
 };
 
-// Helper function to normalize new schema shoes to common format
-const normalizeNewShoes = (product) => {
-  const normalized = product.toObject ? product.toObject() : product;
-  
-  // Convert images object to array format
-  let imagesArray = [];
-  if (normalized.images && typeof normalized.images === 'object' && !Array.isArray(normalized.images)) {
-    const imageKeys = Object.keys(normalized.images).sort((a, b) => {
-      const numA = parseInt(a.replace('image', '')) || 0;
-      const numB = parseInt(b.replace('image', '')) || 0;
-      return numA - numB;
-    });
-    imagesArray = imageKeys
-      .map(key => normalized.images[key])
-      .filter(img => img && typeof img === 'string' && img.trim() !== '');
-  } else if (Array.isArray(normalized.images)) {
-    imagesArray = normalized.images.filter(img => img && typeof img === 'string' && img.trim() !== '');
-  }
-
-  if (imagesArray.length === 0) {
-    if (normalized.thumbnail) {
-      imagesArray = [normalized.thumbnail];
-    } else if (normalized.image) {
-      imagesArray = [normalized.image];
-    } else if (normalized.images && typeof normalized.images === 'object') {
-      const firstImage = Object.values(normalized.images).find(img => img && typeof img === 'string' && img.trim() !== '');
-      if (firstImage) {
-        imagesArray = [firstImage];
-      }
-    }
-  }
-
-  const firstImage = imagesArray.length > 0 ? imagesArray[0] : null;
-
-  // Calculate prices
-  const mrp = normalized.mrp || normalized.price || 0;
-  const discountPercent = normalized.discountPercent || 0;
-  const finalPrice = discountPercent > 0 ? mrp - (mrp * discountPercent / 100) : mrp;
-  const originalPrice = mrp;
-
-  // Extract sizes from product_info.availableSizes or use sizes field
-  const sizes = normalized.product_info?.availableSizes || normalized.sizes || [];
-
-  return {
-    ...normalized,
-    name: normalized.title || normalized.name,
-    price: mrp,
-    originalPrice: originalPrice,
-    finalPrice: finalPrice,
-    discountPercent: discountPercent,
-    images: imagesArray,
-    image: firstImage,
-    thumbnail: firstImage,
-    subCategory: 'shoes', // Map to subCategory for frontend compatibility
-    sizes: sizes,
-    imagesObject: normalized.images,
-    _schemaType: 'new-shoes'
-  };
-};
-
 // Helper function to build query for old schema
 const buildOldAccessoryQuery = (reqQuery) => {
   const query = {};
 
+  // Exclude men's products - only show women's or unisex
+  query.gender = { $in: ['women', 'female', 'unisex'] };
+
   if (reqQuery.gender) {
-    query.gender = reqQuery.gender.toLowerCase();
+    const requestedGender = reqQuery.gender.toLowerCase();
+    // Only allow women/female/unisex, filter out men/male
+    if (['women', 'female', 'unisex'].includes(requestedGender)) {
+      query.gender = requestedGender;
+    }
   }
 
-  if (reqQuery.subCategory) {
+  // Exclude shoes subcategory - always exclude regardless of request
+  if (reqQuery.subCategory && reqQuery.subCategory.toLowerCase() !== 'shoes') {
     query.subCategory = reqQuery.subCategory;
+  } else {
+    // If no subCategory specified or if shoes is requested, exclude shoes
+    query.subCategory = { $ne: 'shoes' };
   }
 
   if (reqQuery.isNewArrival === 'true') {
@@ -132,40 +82,7 @@ const buildOldAccessoryQuery = (reqQuery) => {
   return query;
 };
 
-// Helper function to build query for new schema shoes
-const buildNewShoesQuery = (reqQuery) => {
-  const query = {};
-
-  // Always include shoe products from new schema
-  query.category = { 
-    $regex: /^shoe/i  // Matches Shoes, Shoe, shoes, SHOES, etc.
-  };
-
-  if (reqQuery.category) {
-    const cat = reqQuery.category.toString().toLowerCase();
-    if (!cat.includes('shoe')) {
-      query._id = null; // Return no results for non-shoe categories
-    }
-  }
-
-  if (reqQuery.categoryId) {
-    query.categoryId = reqQuery.categoryId;
-  }
-
-  if (reqQuery.isNewArrival === 'true') {
-    query.isNewArrival = true;
-  }
-
-  if (reqQuery.onSale === 'true') {
-    query.onSale = true;
-  }
-
-  if (reqQuery.search) {
-    query.$text = { $search: reqQuery.search };
-  }
-
-  return query;
-};
+// Removed buildNewShoesQuery - shoes are no longer included in accessories
 
 // @desc    Get all accessories from both collections
 // @route   GET /api/products/accessories
@@ -190,22 +107,36 @@ export const getAccessories = async (req, res) => {
     const pageNum = parseInt(page);
     const limitNum = parseInt(limit);
 
-    // Build queries for both schemas
+    // Build query for accessories only (no shoes, no men's products)
     const oldQuery = buildOldAccessoryQuery({ gender, subCategory, isNewArrival, onSale, isFeatured, search });
-    const newQuery = buildNewShoesQuery({ category, categoryId, isNewArrival, onSale, search });
 
-    // Always fetch from both collections (similar to watches)
-    const [oldProducts, newProducts] = await Promise.all([
-      Accessory.find(oldQuery).lean(),
-      Shoes.find(newQuery).lean()
-    ]);
+    // Only fetch from Accessory collection (no shoes)
+    const oldProducts = await Accessory.find(oldQuery).lean();
 
-    // Normalize both schemas to common format
+    // Normalize to common format
     const normalizedOld = oldProducts.map(normalizeOldAccessory);
-    const normalizedNew = newProducts.map(normalizeNewShoes);
+
+    // Filter out any men's products and shoes that might have slipped through
+    const filteredProducts = normalizedOld.filter(product => {
+      const productGender = (product.gender || '').toLowerCase();
+      const productSubCategory = (product.subCategory || '').toLowerCase();
+      const productCategory = (product.category || '').toLowerCase();
+      
+      // Exclude men's products
+      if (['men', 'male', 'm'].includes(productGender)) {
+        return false;
+      }
+      
+      // Exclude shoes
+      if (productSubCategory === 'shoes' || productCategory.includes('shoe')) {
+        return false;
+      }
+      
+      return true;
+    });
 
     // Combine and sort all products
-    let allProducts = [...normalizedOld, ...normalizedNew];
+    let allProducts = [...filteredProducts];
 
     // Sort combined results
     const sortOrder = order === 'asc' ? 1 : -1;
@@ -272,25 +203,28 @@ export const getAccessories = async (req, res) => {
 // @access  Public
 export const getAccessoryById = async (req, res) => {
   try {
-    // Try to find in both collections
-    const [oldProduct, newProduct] = await Promise.all([
-      Accessory.findById(req.params.id).lean(),
-      Shoes.findById(req.params.id).lean()
-    ]);
+    // Only search in Accessory collection (no shoes)
+    const oldProduct = await Accessory.findById(req.params.id).lean();
 
-    let product = null;
-    if (oldProduct) {
-      product = normalizeOldAccessory(oldProduct);
-    } else if (newProduct) {
-      product = normalizeNewShoes(newProduct);
-    }
-
-    if (!product) {
+    if (!oldProduct) {
       return res.status(404).json({
         success: false,
         message: 'Accessory not found',
       });
     }
+
+    // Check if it's a men's product or shoes - exclude it
+    const productGender = (oldProduct.gender || '').toLowerCase();
+    const productSubCategory = (oldProduct.subCategory || '').toLowerCase();
+    
+    if (['men', 'male', 'm'].includes(productGender) || productSubCategory === 'shoes') {
+      return res.status(404).json({
+        success: false,
+        message: 'Accessory not found',
+      });
+    }
+
+    const product = normalizeOldAccessory(oldProduct);
 
     res.status(200).json({
       success: true,

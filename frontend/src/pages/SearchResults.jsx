@@ -21,7 +21,19 @@ const SearchResults = () => {
   });
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [page, setPage] = useState(1);
-  const ITEMS_PER_PAGE = 12;
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Detect mobile viewport
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
+  const ITEMS_PER_PAGE = isMobile ? 22 : 12;
 
   useEffect(() => {
     if (query) {

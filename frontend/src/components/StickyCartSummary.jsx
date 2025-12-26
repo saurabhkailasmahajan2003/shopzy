@@ -92,7 +92,7 @@ const StickyCartSummary = () => {
       {/* Sticky Cart Summary */}
       <div
         ref={containerRef}
-        className={`bg-[#fefcfb] border-t-2 border-[#120e0f] transition-all duration-300 ${
+        className={`bg-[#FAF8F5] border-t-2 border-[#3D2817]/30 transition-all duration-300 ${
           shouldStick ? 'fixed bottom-0 z-20 left-0 right-0' : 'relative'
         }`}
       >
@@ -110,7 +110,7 @@ const StickyCartSummary = () => {
               {/* Close Button */}
               <button
                 onClick={() => setIsVisible(false)}
-                className="w-8 h-8 flex items-center justify-center border-2 border-[#120e0f] bg-[#fefcfb] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors"
+                className="w-8 h-8 flex items-center justify-center border border-[#3D2817]/30 bg-[#FAF8F5] hover:bg-[#3D2817] hover:text-white transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
@@ -119,7 +119,7 @@ const StickyCartSummary = () => {
 
               {/* Subtotal & Savings */}
               <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-[#120e0f]">Subtotal</span>
+                <span className="text-sm font-medium text-[#3D2817]">Subtotal</span>
                 {savings > 0 && (
                   <span className="bg-green-600 text-white text-xs font-bold px-2 py-1">
                     Save: ₹{savings.toLocaleString()}
@@ -127,11 +127,11 @@ const StickyCartSummary = () => {
                 )}
                 <div className="flex items-center gap-2">
                   {originalTotal > cartTotal && (
-                    <span className="text-sm text-[#120e0f]/50 line-through">
+                    <span className="text-sm text-[#3D2817]/50 line-through">
                       ₹{originalTotal.toLocaleString()}
                     </span>
                   )}
-                  <span className="text-base font-bold text-[#120e0f]">
+                  <span className="text-base font-bold text-[#3D2817]">
                     ₹{cartTotal.toLocaleString()}
                   </span>
                 </div>
@@ -146,7 +146,7 @@ const StickyCartSummary = () => {
                 return (
                   <div
                     key={item._id || item.id || idx}
-                    className="w-12 h-12 border-2 border-[#120e0f] bg-[#fefcfb] overflow-hidden flex items-center justify-center"
+                    className="w-12 h-12 border border-[#3D2817]/30 bg-[#FAF8F5] overflow-hidden flex items-center justify-center"
                   >
                     {imageUrl ? (
                       <img
@@ -156,7 +156,7 @@ const StickyCartSummary = () => {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <svg className="w-6 h-6 text-[#120e0f]/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-6 h-6 text-[#3D2817]/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                         </svg>
                       </div>
@@ -168,9 +168,9 @@ const StickyCartSummary = () => {
               {Array.from({ length: Math.max(0, 3 - Math.min(cart.length, 3)) }).map((_, idx) => (
                 <div
                   key={`placeholder-${idx}`}
-                  className="w-12 h-12 border-2 border-[#120e0f] bg-[#fefcfb] flex items-center justify-center"
+                  className="w-12 h-12 border border-[#3D2817]/30 bg-[#FAF8F5] flex items-center justify-center"
                 >
-                  <svg className="w-5 h-5 text-[#120e0f]/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-[#3D2817]/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
                 </div>
@@ -182,14 +182,14 @@ const StickyCartSummary = () => {
               {itemsNeeded > 0 ? (
                 <button
                   onClick={handleViewCart}
-                  className="px-4 py-2 border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] font-medium text-sm hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors whitespace-nowrap"
+                  className="px-4 py-2 border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] font-medium text-sm hover:bg-[#3D2817] hover:text-white transition-colors whitespace-nowrap"
                 >
                   Add {itemsNeeded} More Item{itemsNeeded > 1 ? '(s)' : ''}
                 </button>
               ) : (
                 <button
                   onClick={handleViewCart}
-                  className="px-4 py-2 border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] font-medium text-sm hover:bg-[#120e0f] hover:text-[#fefcfb] transition-colors whitespace-nowrap"
+                  className="px-4 py-2 border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] font-medium text-sm hover:bg-[#3D2817] hover:text-white transition-colors whitespace-nowrap"
                 >
                   View Cart ({cartCount})
                 </button>

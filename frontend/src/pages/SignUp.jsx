@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 
 // Helper for left-side static icons
 const LeftIcon = ({ children }) => (
-  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#120e0f]/40">
+  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#3D2817]/40">
     {children}
   </div>
 );
@@ -82,10 +82,10 @@ const SignUp = () => {
   };
 
   // Cart Theme Input Class
-  const inputClass = "block w-full pl-10 pr-10 py-2.5 sm:py-3 border-2 border-[#120e0f] bg-[#fefcfb] text-[#120e0f] placeholder-[#120e0f]/40 focus:outline-none focus:border-[#bb3435] sm:text-sm transition-colors duration-150";
+  const inputClass = "block w-full pl-10 pr-10 py-2.5 sm:py-3 border-2 border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] placeholder-[#120e0f]/40 focus:outline-none focus:border-[#bb3435] sm:text-sm transition-colors duration-150";
 
   return (
-    <div className="fixed inset-0 z-50 flex min-h-screen font-sans bg-[#fefcfb]">
+    <div className="fixed inset-0 z-50 flex min-h-screen font-sans bg-[#FAF8F5]">
       
       {/* LEFT SIDE: Branding */}
       <div 
@@ -116,11 +116,11 @@ const SignUp = () => {
       </div>
 
       {/* RIGHT SIDE: Form */}
-      <div className="w-full lg:w-[55%] flex flex-col justify-center items-center p-4 sm:p-6 md:p-8 lg:p-12 xl:p-16 overflow-y-auto bg-[#fefcfb]">
+      <div className="w-full lg:w-[55%] flex flex-col justify-center items-center p-4 sm:p-6 md:p-8 lg:p-12 xl:p-16 overflow-y-auto bg-[#FAF8F5]">
         <div className="w-full max-w-md space-y-4 sm:space-y-6 lg:space-y-8">
           <div className="text-center lg:text-left">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#120e0f] tracking-tight">Create an account</h2>
-            <p className="mt-2 text-xs sm:text-sm text-[#120e0f]/60">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#3D2817] tracking-tight">Create an account</h2>
+            <p className="mt-2 text-xs sm:text-sm text-[#3D2817]/60">
               Already have an account?{' '}
               <Link to="/login" className="font-medium text-[#bb3435] hover:underline underline-offset-2 transition-colors">
                 Sign in
@@ -130,7 +130,7 @@ const SignUp = () => {
 
           <form className="mt-6 sm:mt-8 space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
             {error && (
-              <div className="bg-[#fefcfb] border-2 border-[#bb3435] p-3 sm:p-4 text-xs sm:text-sm text-[#bb3435]">
+              <div className="bg-[#FAF8F5] border-2 border-[#bb3435] p-3 sm:p-4 text-xs sm:text-sm text-[#bb3435]">
                 <p>{error}</p>
               </div>
             )}
@@ -176,7 +176,7 @@ const SignUp = () => {
                   </svg>
                 </LeftIcon>
                 <input id="password" name="password" type={showPassword ? "text" : "password"} autoComplete="new-password" required value={formData.password} onChange={handleChange} className={inputClass} placeholder="Password" />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#120e0f]/40 hover:text-[#120e0f] focus:outline-none transition-colors">
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#3D2817]/40 hover:text-[#3D2817] focus:outline-none transition-colors">
                   {showPassword ? (
                     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
                   ) : (
@@ -199,7 +199,7 @@ const SignUp = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-2.5 sm:py-3 px-4 border-2 border-[#120e0f] bg-[#120e0f] text-[#fefcfb] text-xs sm:text-sm font-semibold uppercase tracking-tight hover:bg-[#120e0f]/90 focus:outline-none transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center py-2.5 sm:py-3 px-4 border-2 border-[#3D2817]/30 bg-[#3D2817] text-[#fefcfb] text-xs sm:text-sm font-semibold uppercase tracking-tight hover:bg-[#3D2817]/90 focus:outline-none transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Creating account...' : 'Sign up'}
             </button>
@@ -213,7 +213,7 @@ const SignUp = () => {
             <button
               type="button"
               onClick={handleOTPLogin}
-              className="flex w-full items-center justify-center gap-2 sm:gap-3 border-2 border-[#120e0f] bg-[#fefcfb] px-3 py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-[#120e0f] hover:bg-[#120e0f] hover:text-[#fefcfb] transition-all focus:outline-none"
+              className="flex w-full items-center justify-center gap-2 sm:gap-3 border-2 border-[#3D2817]/30 bg-[#FAF8F5] px-3 py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-[#3D2817] hover:bg-[#3D2817] hover:text-[#fefcfb] transition-all focus:outline-none"
             >
               <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
@@ -224,7 +224,7 @@ const SignUp = () => {
           </div>
 
           <div className="mt-4 sm:mt-6 text-center">
-            <Link to="/" className="text-xs sm:text-sm text-[#120e0f]/60 hover:text-[#120e0f] transition-colors">
+            <Link to="/" className="text-xs sm:text-sm text-[#3D2817]/60 hover:text-[#3D2817] transition-colors">
               ← Return to Home
             </Link>
           </div>

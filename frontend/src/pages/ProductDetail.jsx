@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../components/ToastContainer';
 import LoginModal from '../components/LoginModal';
 import ProductCard from '../components/ProductCard';
 import { handleImageError } from '../utils/imageFallback';
@@ -14,6 +15,7 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
+  const { success, error: showError } = useToast();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -68,43 +70,61 @@ const ProductDetail = () => {
   const fetchProduct = async () => {
     setLoading(true);
     try {
-      const validCategories = ['women', 'watches', 'lens', 'accessories', 'skincare'];
-      const categoryMap = {
-        'watches': 'watches', 'watch': 'watches',
-        'lens': 'lens', 'lenses': 'lens',
-        'accessories': 'accessories',
-        'women': 'women', 'womens': 'women',
-        'skincare': 'skincare', 'skin-care': 'skincare',
-      };
-
       let foundData = null;
 
-      if (category && category !== 'undefined') {
-        const apiCategory = categoryMap[category] || category;
-        try {
-          const res = await fetch(`${API_BASE_URL}/products/${apiCategory}/${id}`);
-          if (res.ok) {
-            const data = await res.json();
-            if (data.success) foundData = data;
+      // First, try the generic product endpoint (searches all categories)
+      try {
+        const res = await fetch(`${API_BASE_URL}/products/${id}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success) {
+            foundData = data;
           }
-        } catch (err) {
-          console.warn("Direct category fetch failed, trying fallback...");
         }
+      } catch (err) {
+        console.warn("Generic product endpoint failed, trying category-specific endpoints...");
       }
 
+      // Fallback to category-specific endpoints if generic endpoint didn't work
       if (!foundData) {
-        for (const cat of validCategories) {
+        const validCategories = ['women', 'watches', 'lens', 'accessories', 'skincare'];
+        const categoryMap = {
+          'watches': 'watches', 'watch': 'watches',
+          'lens': 'lens', 'lenses': 'lens',
+          'accessories': 'accessories',
+          'women': 'women', 'womens': 'women',
+          'skincare': 'skincare', 'skin-care': 'skincare',
+        };
+
+        // Try category from URL first
+        if (category && category !== 'undefined') {
+          const apiCategory = categoryMap[category] || category;
           try {
-            const res = await fetch(`${API_BASE_URL}/products/${cat}/${id}`);
+            const res = await fetch(`${API_BASE_URL}/products/${apiCategory}/${id}`);
             if (res.ok) {
               const data = await res.json();
-              if (data.success) {
-                foundData = data;
-                break;
-              }
+              if (data.success) foundData = data;
             }
-          } catch (e) {
-            // continue
+          } catch (err) {
+            // continue to try other categories
+          }
+        }
+
+        // Try all categories if still not found
+        if (!foundData) {
+          for (const cat of validCategories) {
+            try {
+              const res = await fetch(`${API_BASE_URL}/products/${cat}/${id}`);
+              if (res.ok) {
+                const data = await res.json();
+                if (data.success) {
+                  foundData = data;
+                  break;
+                }
+              }
+            } catch (e) {
+              // continue
+            }
           }
         }
       }
@@ -517,11 +537,35 @@ const ProductDetail = () => {
   };
 
   const handleAddToCart = async () => {
-    if (!isAuthenticated) return setShowLoginModal(true);
+    if (!isAuthenticated) {
+      setShowLoginModal(true);
+      return;
+    }
+    
+    if (!product) {
+      console.error('Product is not loaded');
+      showError('Product is not loaded. Please refresh the page.');
+      return;
+    }
+    
     try {
+      console.log('ProductDetail: Adding product to cart', {
+        productId: product._id || product.id,
+        productName: product.name || product.productName,
+        selectedSize,
+        selectedColor
+      });
       await addToCart(product, 1, selectedSize, selectedColor);
+      console.log('ProductDetail: Successfully added to cart');
+      success('Product added to cart successfully!');
     } catch (error) {
-      if (error.message.includes('login')) setShowLoginModal(true);
+      console.error('ProductDetail: Error adding to cart:', error);
+      const errorMessage = error.message || 'Failed to add product to cart';
+      if (errorMessage.toLowerCase().includes('login')) {
+        setShowLoginModal(true);
+      } else {
+        showError(errorMessage);
+      }
     }
   };
 
@@ -624,13 +668,13 @@ const ProductDetail = () => {
     <>
       <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
 
-      <div className="min-h-screen bg-[#fefcfb]">
+      <div className="min-h-screen bg-[#FAF8F5]">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
 
           {/* Back Button */}
           <button
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 text-sm text-[#120e0f] hover:text-[#120e0f]/70 mb-6 transition-colors border-2 border-[#120e0f] px-3 py-1.5 hover:bg-[#120e0f]/5"
+            className="inline-flex items-center gap-2 text-sm text-[#3D2817] hover:text-[#8B4513] mb-6 transition-colors border border-[#3D2817]/30 px-3 py-1.5 hover:bg-[#3D2817]/5 rounded luxury-shadow"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -644,9 +688,9 @@ const ProductDetail = () => {
             <div className="relative lg:sticky lg:top-8 h-fit order-first lg:order-first">
 
               {/* Main Product Image */}
-              <div className="relative aspect-square bg-[#fefcfb] border-2 border-[#120e0f] overflow-hidden mb-4 sm:mb-6 max-w-md mx-auto lg:max-w-full">
+              <div className="relative aspect-square bg-white border border-[#3D2817]/20 overflow-hidden mb-4 sm:mb-6 max-w-md mx-auto lg:max-w-full rounded luxury-shadow">
                 {/* Best Seller Badge */}
-                <div className="absolute top-3 left-3 z-10 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full text-[10px] font-semibold text-gray-900 shadow-sm">
+                <div className="absolute top-3 left-3 z-10 bg-[#D4AF37]/90 backdrop-blur-sm px-2.5 py-1 rounded-full text-[10px] font-semibold text-[#3D2817] luxury-shadow">
                   best seller
                 </div>
 
@@ -655,19 +699,19 @@ const ProductDetail = () => {
                   <div className="absolute bottom-3 right-3 z-10 flex gap-1.5">
                     <button
                       onClick={handlePrevImage}
-                      className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all shadow-sm"
+                      className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all luxury-shadow"
                       aria-label="Previous image"
                     >
-                      <svg className="w-4 h-4 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                       </svg>
                     </button>
                     <button
                       onClick={handleNextImage}
-                      className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all shadow-sm"
+                      className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all luxury-shadow"
                       aria-label="Next image"
                     >
-                      <svg className="w-4 h-4 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </button>
@@ -685,8 +729,8 @@ const ProductDetail = () => {
                 {product.color && (
                   <div className="absolute top-1/4 right-4 sm:right-8">
                     <div className="relative">
-                      <div className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-gray-500 rounded-full z-10"></div>
-                      <div className="bg-gray-800/90 backdrop-blur-sm text-white text-[10px] font-medium px-2 py-1 rounded-full whitespace-nowrap">
+                      <div className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-[#8B4513] rounded-full z-10"></div>
+                      <div className="bg-[#3D2817]/90 backdrop-blur-sm text-white text-[10px] font-medium px-2 py-1 rounded-full whitespace-nowrap luxury-shadow">
                         {product.color}
                       </div>
                     </div>
@@ -695,8 +739,8 @@ const ProductDetail = () => {
                 {product.brand && (
                   <div className="absolute bottom-1/3 left-4 sm:left-8">
                     <div className="relative">
-                      <div className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-gray-500 rounded-full z-10"></div>
-                      <div className="bg-gray-800/90 backdrop-blur-sm text-white text-[10px] font-medium px-2 py-1 rounded-full whitespace-nowrap">
+                      <div className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-[#8B4513] rounded-full z-10"></div>
+                      <div className="bg-[#3D2817]/90 backdrop-blur-sm text-white text-[10px] font-medium px-2 py-1 rounded-full whitespace-nowrap luxury-shadow">
                         {product.brand}
                       </div>
                     </div>
@@ -707,7 +751,7 @@ const ProductDetail = () => {
               {/* Size Selection */}
               {product.sizes && product.sizes.length > 0 && (
                 <div className="mb-4">
-                  <label className="block text-xs font-semibold text-[#120e0f] uppercase tracking-wide mb-2">Select Size</label>
+                  <label className="block text-xs font-semibold text-[#3D2817] uppercase tracking-wide mb-2">Select Size</label>
                   <div className="flex flex-wrap gap-2">
                     {product.sizes.map((size) => {
                       const isSelected = selectedSize === size;
@@ -715,10 +759,10 @@ const ProductDetail = () => {
                         <button
                           key={size}
                           onClick={() => setSelectedSize(size)}
-                          className={`px-3 py-2 border-2 transition-all flex items-center gap-1.5 ${
+                          className={`px-3 py-2 border transition-all flex items-center gap-1.5 rounded ${
                             isSelected
-                            ? 'border-[#120e0f] bg-[#120e0f] text-[#fefcfb]'
-                            : 'border-[#120e0f] bg-[#fefcfb] text-[#120e0f] hover:bg-[#120e0f]/5'
+                            ? 'border-[#3D2817] bg-[#3D2817] text-white luxury-shadow'
+                            : 'border-[#3D2817]/30 bg-white text-[#3D2817] hover:bg-[#3D2817]/5 hover:border-[#8B4513]'
                             }`}
                         >
                           <span className="text-xs font-medium">{size}</span>
@@ -737,7 +781,7 @@ const ProductDetail = () => {
               {/* Color Swatches */}
               {(product.colors?.length > 0 || product.color) && (
                 <div>
-                  <label className="block text-xs font-semibold text-[#120e0f] uppercase tracking-wide mb-2">Select Color</label>
+                  <label className="block text-xs font-semibold text-[#3D2817] uppercase tracking-wide mb-2">Select Color</label>
                   <div className="flex items-center gap-2 flex-wrap">
                     {(product.colors || [product.color || '#000000']).slice(0, 6).map((color, idx) => {
                       const isSelected = selectedColor === color || (!selectedColor && idx === 0);
@@ -745,15 +789,15 @@ const ProductDetail = () => {
                         <button
                           key={idx}
                           onClick={() => setSelectedColor(color)}
-                          className={`relative w-10 h-10 rounded-full border-2 transition-all ${
-                            isSelected ? 'border-[#120e0f] scale-110' : 'border-[#120e0f]/30 hover:border-[#120e0f]'
+                          className={`relative w-10 h-10 rounded-full border-2 transition-all luxury-shadow ${
+                            isSelected ? 'border-[#8B4513] scale-110' : 'border-[#3D2817]/30 hover:border-[#8B4513]'
                             }`}
                           style={{ backgroundColor: color }}
                           aria-label={`Select color ${color}`}
                         >
                           {isSelected && (
                             <div className="absolute inset-0 flex items-center justify-center">
-                              <svg className="w-5 h-5 text-[#120e0f] drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                              <svg className="w-5 h-5 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                               </svg>
                             </div>
@@ -772,11 +816,11 @@ const ProductDetail = () => {
               {/* Product Title & Brand */}
               <div className="space-y-3">
                 {product.brand && (
-                  <div className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
+                  <div className="text-sm font-semibold text-[#3D2817]/70 uppercase tracking-wide font-serif">
                     {product.brand}
                   </div>
                 )}
-                <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-[#120e0f] leading-tight">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-serif font-bold text-[#3D2817] leading-tight">
                   {nameWords.map((word, idx) => {
                     const shouldHighlight = highlightWords.some(hw => word.toLowerCase().includes(hw.toLowerCase()));
                     return (
@@ -784,7 +828,7 @@ const ProductDetail = () => {
                         {shouldHighlight ? (
                           <span className="relative inline-block">
                             <span className="relative z-10">{word}</span>
-                            <span className="absolute inset-0 bg-gray-200/40 rounded-lg blur-sm transform -rotate-1 -z-0"></span>
+                            <span className="absolute inset-0 bg-[#8B4513]/20 rounded-lg blur-sm transform -rotate-1 -z-0"></span>
                           </span>
                         ) : (
                           <span>{word}</span>
@@ -796,12 +840,12 @@ const ProductDetail = () => {
               </div>
 
               {/* Price Section */}
-              <div className="flex items-baseline gap-3 pb-4 border-b-2 border-[#120e0f]">
-                <span className="text-3xl lg:text-4xl font-bold text-[#120e0f]">₹{finalPrice.toLocaleString()}</span>
+              <div className="flex items-baseline gap-3 pb-4 border-b border-[#3D2817]/30">
+                <span className="text-3xl lg:text-4xl font-serif font-bold text-[#8B4513]">₹{finalPrice.toLocaleString()}</span>
                 {originalPrice > finalPrice && (
                   <>
-                    <span className="text-lg text-[#120e0f]/40 line-through">₹{originalPrice.toLocaleString()}</span>
-                    <span className="text-sm font-semibold text-[#120e0f] bg-[#120e0f]/10 border-2 border-[#120e0f] px-2 py-1">
+                    <span className="text-lg text-[#3D2817]/40 line-through">₹{originalPrice.toLocaleString()}</span>
+                    <span className="text-sm font-semibold text-[#8B4513] bg-[#8B4513]/10 border border-[#8B4513]/30 px-2 py-1 rounded">
                       {Math.round(((originalPrice - finalPrice) / originalPrice) * 100)}% OFF
                     </span>
                   </>
@@ -812,7 +856,7 @@ const ProductDetail = () => {
               <div className="flex flex-row gap-3">
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 flex items-center justify-center gap-2 bg-[#120e0f] hover:bg-[#120e0f]/90 text-[#fefcfb] font-semibold px-6 py-3.5 border-2 border-[#120e0f] transition-all active:scale-[0.98] text-base"
+                  className="flex-1 flex items-center justify-center gap-2 bg-[#3D2817] hover:bg-[#8B4513] text-white font-semibold px-6 py-3.5 border border-[#3D2817]/30 transition-all active:scale-[0.98] text-base rounded luxury-shadow"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -821,7 +865,7 @@ const ProductDetail = () => {
                 </button>
                 <button
                   onClick={handleBuyNow}
-                  className="flex-1 flex items-center justify-center gap-2 bg-[#fefcfb] hover:bg-[#120e0f]/5 text-[#120e0f] font-semibold px-6 py-3.5 border-2 border-[#120e0f] transition-all active:scale-[0.98] text-base"
+                  className="flex-1 flex items-center justify-center gap-2 bg-white hover:bg-[#3D2817]/5 text-[#3D2817] font-semibold px-6 py-3.5 border border-[#3D2817]/30 transition-all active:scale-[0.98] text-base rounded luxury-shadow hover:border-[#8B4513]"
                 >
                   <span>Buy Now</span>
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -832,39 +876,39 @@ const ProductDetail = () => {
 
               {/* Quick Info Cards */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-[#fefcfb] border-2 border-[#120e0f] p-4">
+                <div className="bg-white/60 backdrop-blur-sm border border-[#3D2817]/30 p-4 rounded luxury-shadow">
                   <div className="flex items-center gap-2 mb-1">
-                    <svg className="w-5 h-5 text-[#120e0f]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    <span className="text-xs font-semibold text-[#120e0f] uppercase">Free Shipping</span>
+                    <span className="text-xs font-semibold text-[#3D2817] uppercase">Free Shipping</span>
                   </div>
-                  <p className="text-xs text-[#120e0f]/60">On orders over ₹1,000</p>
+                  <p className="text-xs text-[#3D2817]/60">On orders over ₹1,000</p>
                 </div>
-                <div className="bg-[#fefcfb] border-2 border-[#120e0f] p-4">
+                <div className="bg-white/60 backdrop-blur-sm border border-[#3D2817]/30 p-4 rounded luxury-shadow">
                   <div className="flex items-center gap-2 mb-1">
-                    <svg className="w-5 h-5 text-[#120e0f]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
-                    <span className="text-xs font-semibold text-[#120e0f] uppercase">Easy Returns</span>
+                    <span className="text-xs font-semibold text-[#3D2817] uppercase">Easy Returns</span>
                   </div>
-                  <p className="text-xs text-[#120e0f]/60">30 days return policy</p>
+                  <p className="text-xs text-[#3D2817]/60">30 days return policy</p>
                 </div>
               </div>
 
               {/* Reviews Summary */}
               {reviewStats && reviewStats.averageRating && (
-                <div className="bg-[#fefcfb] border-2 border-[#120e0f] p-4 sm:p-5">
+                <div className="bg-white/60 backdrop-blur-sm border border-[#3D2817]/30 p-4 sm:p-5 rounded luxury-shadow">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="text-center">
-                      <div className="text-3xl font-bold text-[#120e0f]">{reviewStats.averageRating.toFixed(1)}</div>
+                      <div className="text-3xl font-bold text-[#3D2817]">{reviewStats.averageRating.toFixed(1)}</div>
                       <div className="flex items-center gap-0.5 mt-1">
                         {[1, 2, 3, 4, 5].map((star) => (
                           <svg
                             key={star}
                             className={`w-4 h-4 ${star <= Math.round(reviewStats.averageRating)
-                              ? 'text-[#120e0f] fill-current'
-                              : 'text-[#120e0f]/20'
+                              ? 'text-[#3D2817] fill-current'
+                              : 'text-[#3D2817]/20'
                               }`}
                             fill="currentColor"
                             viewBox="0 0 20 20"
@@ -875,8 +919,8 @@ const ProductDetail = () => {
                       </div>
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm text-[#120e0f]/60 mb-2">
-                        Based on <span className="font-semibold text-[#120e0f]">{reviewStats.totalReviews}</span> reviews
+                      <p className="text-sm text-[#3D2817]/60 mb-2">
+                        Based on <span className="font-semibold text-[#3D2817]">{reviewStats.totalReviews}</span> reviews
                       </p>
                       {reviewStats.ratingDistribution && (
                         <div className="space-y-1.5">
@@ -887,14 +931,14 @@ const ProductDetail = () => {
                               : 0;
                             return (
                               <div key={rating} className="flex items-center gap-2">
-                                <span className="text-xs text-[#120e0f]/60 w-6">{rating}★</span>
-                                <div className="flex-1 h-1.5 bg-[#120e0f]/10 rounded-full overflow-hidden border border-[#120e0f]/20">
+                                <span className="text-xs text-[#3D2817]/60 w-6">{rating}★</span>
+                                <div className="flex-1 h-1.5 bg-[#3D2817]/10 rounded-full overflow-hidden border border-[#3D2817]/20">
                                   <div
-                                    className="h-full bg-[#120e0f] transition-all duration-300"
+                                    className="h-full bg-[#8B4513] transition-all duration-300"
                                     style={{ width: `${percentage}%` }}
                                   />
                                 </div>
-                                <span className="text-xs text-[#120e0f]/60 w-8 text-right">{count}</span>
+                                <span className="text-xs text-[#3D2817]/60 w-8 text-right">{count}</span>
                               </div>
                             );
                           })}
@@ -903,25 +947,25 @@ const ProductDetail = () => {
                     </div>
                   </div>
                   {reviews.length > 0 && (
-                    <div className="pt-4 border-t-2 border-[#120e0f]">
+                    <div className="pt-4 border-t border-[#3D2817]/30">
                       <div className="space-y-3">
                         {reviews.slice(0, 2).map((review) => (
                           <div key={review._id} className="flex items-start gap-3">
-                            <div className="flex-shrink-0 w-8 h-8 bg-[#120e0f] text-[#fefcfb] rounded-full flex items-center justify-center border-2 border-[#120e0f]">
+                            <div className="flex-shrink-0 w-8 h-8 bg-[#3D2817] text-white rounded-full flex items-center justify-center border border-[#3D2817]/30 luxury-shadow">
                               <span className="text-xs font-semibold">
                                 {(review.userName || 'A')[0].toUpperCase()}
                               </span>
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-1">
-                                <span className="text-sm font-medium text-[#120e0f]">{review.userName || 'Anonymous'}</span>
+                                <span className="text-sm font-medium text-[#3D2817]">{review.userName || 'Anonymous'}</span>
                                 <div className="flex items-center gap-0.5">
                                   {[1, 2, 3, 4, 5].map((star) => (
                                     <svg
                                       key={star}
                                       className={`w-3 h-3 ${star <= review.rating
-                                        ? 'text-[#120e0f] fill-current'
-                                        : 'text-[#120e0f]/20'
+                                        ? 'text-[#3D2817] fill-current'
+                                        : 'text-[#3D2817]/20'
                                         }`}
                                       fill="currentColor"
                                       viewBox="0 0 20 20"
@@ -931,8 +975,8 @@ const ProductDetail = () => {
                                   ))}
                                 </div>
                               </div>
-                              <p className="text-sm font-medium text-[#120e0f] mb-1 line-clamp-1">{review.title}</p>
-                              <p className="text-xs text-[#120e0f]/60 line-clamp-2">{review.comment}</p>
+                              <p className="text-sm font-medium text-[#3D2817] mb-1 line-clamp-1">{review.title}</p>
+                              <p className="text-xs text-[#3D2817]/60 line-clamp-2">{review.comment}</p>
                             </div>
                           </div>
                         ))}
@@ -943,29 +987,29 @@ const ProductDetail = () => {
               )}
 
               {/* Product Details */}
-              <div className="bg-[#fefcfb] border-2 border-[#120e0f] p-4 sm:p-5">
-                <h3 className="text-lg font-semibold text-[#120e0f] mb-4">Product Details</h3>
-                <div className="space-y-3 text-sm text-[#120e0f]/80">
+              <div className="bg-white/60 backdrop-blur-sm border border-[#3D2817]/30 p-4 sm:p-5 rounded luxury-shadow">
+                <h3 className="text-lg font-serif font-semibold text-[#3D2817] mb-4">Product Details</h3>
+                <div className="space-y-3 text-sm text-[#3D2817]/80">
                   <p className="leading-relaxed">
                     {product.description || product.productDetails?.description || 'Premium quality product designed for comfort and style.'}
                   </p>
-                  <div className="pt-3 border-t-2 border-[#120e0f] space-y-2">
+                  <div className="pt-3 border-t border-[#3D2817]/30 space-y-2">
                     {product.brand && (
                       <div className="flex justify-between">
-                        <span className="font-medium text-[#120e0f]">Brand:</span>
-                        <span className="text-[#120e0f]/60">{product.brand}</span>
+                        <span className="font-medium text-[#3D2817]">Brand:</span>
+                        <span className="text-[#3D2817]/60">{product.brand}</span>
                       </div>
                     )}
                     {product.productDetails?.fabric && (
                       <div className="flex justify-between">
-                        <span className="font-medium text-[#120e0f]">Fabric:</span>
-                        <span className="text-[#120e0f]/60">{product.productDetails.fabric}</span>
+                        <span className="font-medium text-[#3D2817]">Fabric:</span>
+                        <span className="text-[#3D2817]/60">{product.productDetails.fabric}</span>
                       </div>
                     )}
                     {product.color && (
                       <div className="flex justify-between">
-                        <span className="font-medium text-[#120e0f]">Color:</span>
-                        <span className="capitalize text-[#120e0f]/60">{product.color}</span>
+                        <span className="font-medium text-[#3D2817]">Color:</span>
+                        <span className="capitalize text-[#3D2817]/60">{product.color}</span>
                       </div>
                     )}
                   </div>
@@ -973,34 +1017,34 @@ const ProductDetail = () => {
               </div>
 
               {/* Delivery & Returns Info */}
-              <div className="bg-[#fefcfb] border-2 border-[#120e0f] p-4 sm:p-5">
-                <h3 className="text-lg font-semibold text-[#120e0f] mb-4">Shipping & Returns</h3>
+              <div className="bg-white/60 backdrop-blur-sm border border-[#3D2817]/30 p-4 sm:p-5 rounded luxury-shadow">
+                <h3 className="text-lg font-serif font-semibold text-[#3D2817] mb-4">Shipping & Returns</h3>
                 <div className="space-y-3 text-sm">
                   <div className="flex items-start gap-3">
-                    <svg className="w-5 h-5 text-[#120e0f] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-[#3D2817] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     <div>
-                      <p className="font-medium text-[#120e0f]">Free Shipping</p>
-                      <p className="text-[#120e0f]/60">On orders over ₹1,000. Standard delivery in 5-7 business days.</p>
+                      <p className="font-medium text-[#3D2817]">Free Shipping</p>
+                      <p className="text-[#3D2817]/60">On orders over ₹1,000. Standard delivery in 5-7 business days.</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <svg className="w-5 h-5 text-[#120e0f] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-[#3D2817] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
                     <div>
-                      <p className="font-medium text-[#120e0f]">5-Day Returns</p>
-                      <p className="text-[#120e0f]/60">Easy returns within 30 days of purchase. No questions asked.</p>
+                      <p className="font-medium text-[#3D2817]">5-Day Returns</p>
+                      <p className="text-[#3D2817]/60">Easy returns within 30 days of purchase. No questions asked.</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <svg className="w-5 h-5 text-[#120e0f] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-[#3D2817] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
                     <div>
-                      <p className="font-medium text-[#120e0f]">Secure Payment</p>
-                      <p className="text-[#120e0f]/60">Your payment information is safe and encrypted.</p>
+                      <p className="font-medium text-[#3D2817]">Secure Payment</p>
+                      <p className="text-[#3D2817]/60">Your payment information is safe and encrypted.</p>
                     </div>
                   </div>
                 </div>
@@ -1009,23 +1053,23 @@ const ProductDetail = () => {
           </div>
 
           {/* Trending Now Section - All Product Recommendations */}
-          <div className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-gray-200 mb-12 sm:mb-20">
+          <div className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-[#3D2817]/30 mb-12 sm:mb-20">
             <div className="mb-6 sm:mb-8">
-              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1">Trending Now</h2>
-              <p className="text-xs sm:text-sm text-gray-600">Popular picks across all categories</p>
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-serif font-bold text-[#3D2817] mb-1">Trending Now</h2>
+              <p className="text-xs sm:text-sm text-[#3D2817]/70">Popular picks across all categories</p>
             </div>
 
             {/* You may also like - Related products */}
             {(recommendedProducts.length > 0 || loadingRecommendations) && (
               <div className="mb-8 sm:mb-12">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">You may also like</h3>
+                <h3 className="text-base sm:text-lg font-serif font-semibold text-[#3D2817] mb-3 sm:mb-4">You may also like</h3>
                 {loadingRecommendations ? (
                   <div className="flex gap-4 overflow-x-auto pb-4">
                     {[...Array(4)].map((_, i) => (
                       <div key={i} className="flex-shrink-0 w-56 sm:w-64 animate-pulse">
-                        <div className="aspect-[4/5] bg-gray-200 rounded-lg mb-2"></div>
-                        <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                        <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                        <div className="aspect-[4/5] bg-[#E8E0D6] rounded-lg mb-2"></div>
+                        <div className="h-4 bg-[#E8E0D6] rounded mb-2"></div>
+                        <div className="h-4 bg-[#E8E0D6] rounded w-2/3"></div>
                       </div>
                     ))}
                   </div>
@@ -1035,10 +1079,10 @@ const ProductDetail = () => {
                     {scrollStates.recommended.canScrollLeft && (
                       <button
                         onClick={() => scrollSection(recommendedScrollRef, 'left')}
-                        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2.5 hover:bg-gray-50 transition-all"
+                        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm luxury-shadow rounded-full p-2.5 hover:bg-white transition-all"
                         aria-label="Scroll left"
                       >
-                        <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                         </svg>
                       </button>
@@ -1047,10 +1091,10 @@ const ProductDetail = () => {
                     {scrollStates.recommended.canScrollRight && (
                       <button
                         onClick={() => scrollSection(recommendedScrollRef, 'right')}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2.5 hover:bg-gray-50 transition-all"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm luxury-shadow rounded-full p-2.5 hover:bg-white transition-all"
                         aria-label="Scroll right"
                       >
-                        <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </button>
@@ -1079,14 +1123,14 @@ const ProductDetail = () => {
             {/* On Sale Section */}
             {(saleProducts.length > 0 || loadingSale) && (
               <div className="mb-8 sm:mb-12">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">On Sale</h3>
+                <h3 className="text-base sm:text-lg font-serif font-semibold text-[#3D2817] mb-3 sm:mb-4">On Sale</h3>
                 {loadingSale ? (
                   <div className="flex gap-4 overflow-x-auto pb-4">
                     {[...Array(4)].map((_, i) => (
                       <div key={i} className="flex-shrink-0 w-56 sm:w-64 animate-pulse">
-                        <div className="aspect-[4/5] bg-gray-200 rounded-lg mb-2"></div>
-                        <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                        <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                        <div className="aspect-[4/5] bg-[#E8E0D6] rounded-lg mb-2"></div>
+                        <div className="h-4 bg-[#E8E0D6] rounded mb-2"></div>
+                        <div className="h-4 bg-[#E8E0D6] rounded w-2/3"></div>
                       </div>
                     ))}
                   </div>
@@ -1096,10 +1140,10 @@ const ProductDetail = () => {
                     {scrollStates.sale.canScrollLeft && (
                       <button
                         onClick={() => scrollSection(saleScrollRef, 'left')}
-                        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2.5 hover:bg-gray-50 transition-all"
+                        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm luxury-shadow rounded-full p-2.5 hover:bg-white transition-all"
                         aria-label="Scroll left"
                       >
-                        <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                         </svg>
                       </button>
@@ -1108,10 +1152,10 @@ const ProductDetail = () => {
                     {scrollStates.sale.canScrollRight && (
                       <button
                         onClick={() => scrollSection(saleScrollRef, 'right')}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2.5 hover:bg-gray-50 transition-all"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm luxury-shadow rounded-full p-2.5 hover:bg-white transition-all"
                         aria-label="Scroll right"
                       >
-                        <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </button>
@@ -1140,14 +1184,14 @@ const ProductDetail = () => {
             {/* More from [Brand] Section */}
             {product?.brand && (recommendedProducts.length > 0 || loadingRecommendations) && (
               <div className="mb-8 sm:mb-12">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">More from {product.brand}</h3>
+                <h3 className="text-base sm:text-lg font-serif font-semibold text-[#3D2817] mb-3 sm:mb-4">More from {product.brand}</h3>
                 {loadingRecommendations ? (
                   <div className="flex gap-4 overflow-x-auto pb-4">
                     {[...Array(4)].map((_, i) => (
                       <div key={i} className="flex-shrink-0 w-56 sm:w-64 animate-pulse">
-                        <div className="aspect-[4/5] bg-gray-200 rounded-lg mb-2"></div>
-                        <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                        <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                        <div className="aspect-[4/5] bg-[#E8E0D6] rounded-lg mb-2"></div>
+                        <div className="h-4 bg-[#E8E0D6] rounded mb-2"></div>
+                        <div className="h-4 bg-[#E8E0D6] rounded w-2/3"></div>
                       </div>
                     ))}
                   </div>
@@ -1157,10 +1201,10 @@ const ProductDetail = () => {
                     {scrollStates.brand.canScrollLeft && (
                       <button
                         onClick={() => scrollSection(brandScrollRef, 'left')}
-                        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2.5 hover:bg-gray-50 transition-all"
+                        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm luxury-shadow rounded-full p-2.5 hover:bg-white transition-all"
                         aria-label="Scroll left"
                       >
-                        <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                         </svg>
                       </button>
@@ -1169,10 +1213,10 @@ const ProductDetail = () => {
                     {scrollStates.brand.canScrollRight && (
                       <button
                         onClick={() => scrollSection(brandScrollRef, 'right')}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2.5 hover:bg-gray-50 transition-all"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm luxury-shadow rounded-full p-2.5 hover:bg-white transition-all"
                         aria-label="Scroll right"
                       >
-                        <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </button>
@@ -1208,9 +1252,9 @@ const ProductDetail = () => {
                   <div className="flex gap-4 overflow-x-auto pb-4">
                     {[...Array(4)].map((_, i) => (
                       <div key={i} className="flex-shrink-0 w-56 sm:w-64 animate-pulse">
-                        <div className="aspect-[4/5] bg-gray-200 rounded-lg mb-2"></div>
-                        <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                        <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                        <div className="aspect-[4/5] bg-[#E8E0D6] rounded-lg mb-2"></div>
+                        <div className="h-4 bg-[#E8E0D6] rounded mb-2"></div>
+                        <div className="h-4 bg-[#E8E0D6] rounded w-2/3"></div>
                       </div>
                     ))}
                   </div>
@@ -1220,10 +1264,10 @@ const ProductDetail = () => {
                     {scrollStates.trending.canScrollLeft && (
                       <button
                         onClick={() => scrollSection(trendingScrollRef, 'left')}
-                        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2.5 hover:bg-gray-50 transition-all"
+                        className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm luxury-shadow rounded-full p-2.5 hover:bg-white transition-all"
                         aria-label="Scroll left"
                       >
-                        <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                         </svg>
                       </button>
@@ -1232,10 +1276,10 @@ const ProductDetail = () => {
                     {scrollStates.trending.canScrollRight && (
                       <button
                         onClick={() => scrollSection(trendingScrollRef, 'right')}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2.5 hover:bg-gray-50 transition-all"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm luxury-shadow rounded-full p-2.5 hover:bg-white transition-all"
                         aria-label="Scroll right"
                       >
-                        <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </button>
@@ -1263,17 +1307,17 @@ const ProductDetail = () => {
           </div>
 
           {/* Reviews Section */}
-          <div className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-gray-200 mb-12 sm:mb-20">
+          <div className="mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-[#3D2817]/30 mb-12 sm:mb-20">
             {/* Header with Title and Actions */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 border-b border-gray-200 pb-4 sm:pb-5 mb-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 border-b border-[#3D2817]/30 pb-4 sm:pb-5 mb-6">
               <div className="flex items-center gap-4 flex-wrap">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900">
+                <h3 className="text-base sm:text-lg font-serif font-semibold text-[#3D2817]">
                   Customer Reviews {reviews.length > 0 && `(${reviews.length})`}
                 </h3>
                 {isAuthenticated && !showReviewForm && (
                   <button
                     onClick={() => setShowReviewForm(true)}
-                    className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-all shadow-md hover:shadow-lg active:scale-95"
+                    className="px-4 py-2 bg-[#3D2817] text-white text-sm font-medium rounded-lg hover:bg-[#8B4513] transition-all luxury-shadow hover:shadow-lg active:scale-95"
                   >
                     Write a Review
                   </button>
@@ -1281,7 +1325,7 @@ const ProductDetail = () => {
                 {!isAuthenticated && (
                   <button
                     onClick={() => setShowLoginModal(true)}
-                    className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-all shadow-md hover:shadow-lg active:scale-95"
+                    className="px-4 py-2 bg-[#3D2817] text-white text-sm font-medium rounded-lg hover:bg-[#8B4513] transition-all luxury-shadow hover:shadow-lg active:scale-95"
                   >
                     Login to Write a Review
                   </button>
@@ -1291,7 +1335,7 @@ const ProductDetail = () => {
                 <select
                   value={reviewSort}
                   onChange={(e) => handleReviewSortChange(e.target.value)}
-                  className="w-full sm:w-auto text-sm border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-gray-900 focus:border-transparent bg-white"
+                  className="w-full sm:w-auto text-sm border border-[#3D2817]/30 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#8B4513]/20 focus:border-[#8B4513] bg-white"
                 >
                   <option value="newest">Newest First</option>
                   <option value="oldest">Oldest First</option>
@@ -1304,12 +1348,12 @@ const ProductDetail = () => {
 
             {/* Review Form */}
             {showReviewForm && (
-              <div className="border border-gray-200 rounded-lg p-4 sm:p-6 lg:p-8 bg-gray-50 mb-6">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Write a Review</h3>
+              <div className="border border-[#3D2817]/30 rounded-lg p-4 sm:p-6 lg:p-8 bg-white/60 backdrop-blur-sm mb-6 luxury-shadow">
+                <h3 className="text-base sm:text-lg font-serif font-semibold text-[#3D2817] mb-4 sm:mb-6">Write a Review</h3>
                 <form onSubmit={handleReviewSubmit} className="space-y-4 sm:space-y-5">
                   {/* Star Rating */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#3D2817] mb-2">
                       Rating *
                     </label>
                     <div className="flex gap-1">
@@ -1319,9 +1363,9 @@ const ProductDetail = () => {
                           type="button"
                           onClick={() => setReviewForm({ ...reviewForm, rating: star })}
                           className={`w-8 h-8 ${star <= reviewForm.rating
-                            ? 'text-yellow-400'
-                            : 'text-gray-300'
-                            } hover:text-yellow-400 transition-colors`}
+                            ? 'text-[#D4AF37]'
+                            : 'text-[#3D2817]/20'
+                            } hover:text-[#D4AF37] transition-colors`}
                         >
                           <svg fill="currentColor" viewBox="0 0 20 20">
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -1333,7 +1377,7 @@ const ProductDetail = () => {
 
                   {/* Review Title */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#3D2817] mb-2">
                       Review Title *
                     </label>
                     <input
@@ -1341,7 +1385,7 @@ const ProductDetail = () => {
                       value={reviewForm.title}
                       onChange={(e) => setReviewForm({ ...reviewForm, title: e.target.value })}
                       placeholder="Give your review a title"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm"
+                      className="w-full px-4 py-2 border border-[#3D2817]/30 rounded-lg focus:ring-2 focus:ring-[#8B4513]/20 focus:border-[#8B4513] text-sm bg-white"
                       maxLength={200}
                       required
                     />
@@ -1349,7 +1393,7 @@ const ProductDetail = () => {
 
                   {/* Review Comment */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#3D2817] mb-2">
                       Your Review *
                     </label>
                     <textarea
@@ -1361,7 +1405,7 @@ const ProductDetail = () => {
                       maxLength={2000}
                       required
                     />
-                    <div className="text-xs text-gray-500 mt-1 text-right">
+                    <div className="text-xs text-[#3D2817]/60 mt-1 text-right">
                       {reviewForm.comment.length}/2000
                     </div>
                   </div>
@@ -1371,7 +1415,7 @@ const ProductDetail = () => {
                     <button
                       type="submit"
                       disabled={submittingReview}
-                      className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-gray-900 text-white text-sm sm:text-base font-semibold rounded-lg hover:bg-gray-800 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
+                      className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-[#3D2817] text-white text-sm sm:text-base font-semibold rounded-lg hover:bg-[#8B4513] transition-all luxury-shadow hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
                     >
                       {submittingReview ? 'Submitting...' : 'Submit Review'}
                     </button>
@@ -1381,7 +1425,7 @@ const ProductDetail = () => {
                         setShowReviewForm(false);
                         setReviewForm({ rating: 0, title: '', comment: '' });
                       }}
-                      className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-white text-gray-700 text-sm sm:text-base font-semibold rounded-lg border border-gray-300 hover:bg-gray-50 transition-all active:scale-95"
+                      className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-white text-[#3D2817] text-sm sm:text-base font-semibold rounded-lg border border-[#3D2817]/30 hover:bg-[#3D2817]/5 transition-all active:scale-95 luxury-shadow"
                     >
                       Cancel
                     </button>
@@ -1395,24 +1439,24 @@ const ProductDetail = () => {
               <div className="space-y-4">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="animate-pulse">
-                    <div className="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                    <div className="h-20 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-[#E8E0D6] rounded w-1/4 mb-2"></div>
+                    <div className="h-4 bg-[#E8E0D6] rounded w-1/2 mb-2"></div>
+                    <div className="h-20 bg-[#E8E0D6] rounded"></div>
                   </div>
                 ))}
               </div>
             ) : reviews.length > 0 ? (
               <div className="space-y-6 sm:space-y-8">
                 {reviews.map((review) => (
-                  <div key={review._id} className="border-b border-gray-200 pb-6 sm:pb-8 last:border-0">
+                  <div key={review._id} className="border-b border-[#3D2817]/30 pb-6 sm:pb-8 last:border-0">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 mb-3">
                       <div className="flex-1 w-full">
                         <div className="flex flex-wrap items-center gap-2 mb-2">
-                          <div className="font-semibold text-sm sm:text-base text-gray-900">
+                          <div className="font-semibold text-sm sm:text-base text-[#3D2817]">
                             {review.userName || 'Anonymous'}
                           </div>
                           {review.verifiedPurchase && (
-                            <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded font-medium">
+                            <span className="text-xs bg-[#8B4513]/10 text-[#8B4513] px-2 py-1 rounded font-medium border border-[#8B4513]/30">
                               Verified Purchase
                             </span>
                           )}
@@ -1423,8 +1467,8 @@ const ProductDetail = () => {
                               <svg
                                 key={star}
                                 className={`w-4 h-4 sm:w-5 sm:h-5 ${star <= review.rating
-                                  ? 'text-yellow-400 fill-current'
-                                  : 'text-gray-300'
+                                  ? 'text-[#D4AF37] fill-current'
+                                  : 'text-[#3D2817]/20'
                                   }`}
                                 fill="currentColor"
                                 viewBox="0 0 20 20"
@@ -1433,7 +1477,7 @@ const ProductDetail = () => {
                               </svg>
                             ))}
                           </div>
-                          <span className="text-xs sm:text-sm text-gray-500">
+                          <span className="text-xs sm:text-sm text-[#3D2817]/60">
                             {new Date(review.createdAt).toLocaleDateString('en-US', {
                               year: 'numeric',
                               month: 'long',
@@ -1444,18 +1488,18 @@ const ProductDetail = () => {
                       </div>
                     </div>
 
-                    <h4 className="font-semibold text-sm sm:text-base text-gray-900 mb-2 sm:mb-3">
+                    <h4 className="font-semibold text-sm sm:text-base text-[#3D2817] mb-2 sm:mb-3">
                       {review.title}
                     </h4>
 
-                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4 sm:mb-5 whitespace-pre-wrap">
+                    <p className="text-sm sm:text-base text-[#3D2817]/80 leading-relaxed mb-4 sm:mb-5 whitespace-pre-wrap">
                       {review.comment}
                     </p>
 
                     {/* Helpful Button */}
                     <button
                       onClick={() => handleMarkHelpful(review._id)}
-                      className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-600 hover:text-gray-900 transition-colors py-1"
+                      className="flex items-center gap-1.5 text-xs sm:text-sm text-[#3D2817]/70 hover:text-[#8B4513] transition-colors py-1"
                     >
                       <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
@@ -1467,7 +1511,7 @@ const ProductDetail = () => {
               </div>
             ) : !loadingReviews ? (
               <div className="text-center py-8 sm:py-12">
-                <p className="text-sm sm:text-base text-gray-500 mb-4 sm:mb-6">No reviews yet. Be the first to review this product!</p>
+                <p className="text-sm sm:text-base text-[#3D2817]/70 mb-4 sm:mb-6">No reviews yet. Be the first to review this product!</p>
               </div>
             ) : null}
           </div>
@@ -1478,19 +1522,19 @@ const ProductDetail = () => {
 };
 
 const LoadingState = () => (
-  <div className="min-h-screen flex items-center justify-center bg-gray-50">
+  <div className="min-h-screen flex items-center justify-center bg-[#FAF8F5]">
     <div className="flex flex-col items-center gap-4">
-      <div className="w-12 h-12 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin"></div>
-      <p className="text-gray-500 font-medium">Loading details...</p>
+      <div className="w-12 h-12 border-4 border-[#E8E0D6] border-t-[#8B4513] rounded-full animate-spin"></div>
+      <p className="text-[#3D2817]/70 font-medium">Loading details...</p>
     </div>
   </div>
 );
 
 const NotFoundState = () => (
-  <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 text-center">
-    <h1 className="text-2xl font-bold text-gray-900 mb-2">Product Not Found</h1>
-    <p className="text-gray-500 mb-6">The product you are looking for doesn't exist or has been removed.</p>
-    <Link to="/" className="bg-gray-900 text-white px-8 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors">
+  <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAF8F5] px-4 text-center">
+    <h1 className="text-2xl font-serif font-bold text-[#3D2817] mb-2">Product Not Found</h1>
+    <p className="text-[#3D2817]/70 mb-6">The product you are looking for doesn't exist or has been removed.</p>
+    <Link to="/" className="bg-[#3D2817] text-white px-8 py-3 rounded-lg font-medium hover:bg-[#8B4513] transition-colors luxury-shadow">
       Back to Home
     </Link>
   </div>
