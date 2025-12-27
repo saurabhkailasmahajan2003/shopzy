@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
+import bcryptjs from 'bcryptjs';
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -76,13 +76,13 @@ userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
   }
-  this.password = await bcrypt.hash(this.password, 12);
+  this.password = await bcryptjs.hash(this.password, 12);
   next();
 });
 
 // Method to compare password
 userSchema.methods.comparePassword = async function (candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
+  return await bcryptjs.compare(candidatePassword, this.password);
 };
 
 const User = mongoose.model('User', userSchema);

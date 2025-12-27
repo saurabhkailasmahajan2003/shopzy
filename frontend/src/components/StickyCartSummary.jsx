@@ -33,12 +33,13 @@ const StickyCartSummary = () => {
     setIsVisible(true);
   }, [cartCount]);
 
-  // Handle sticky positioning - stop before footer
+  // Handle sticky positioning - stick at bottom until footer appears
   useEffect(() => {
     const handleScroll = () => {
       if (!containerRef.current) return;
 
       const footer = document.querySelector('footer');
+      
       if (!footer) {
         setShouldStick(true);
         return;
@@ -50,9 +51,11 @@ const StickyCartSummary = () => {
       const windowHeight = window.innerHeight;
       const containerHeight = containerRect.height;
 
-      // If footer is visible or close to being visible, don't stick
-      // Add some padding to ensure it stops before footer
-      if (footerRect.top < windowHeight + containerHeight + 20) {
+      // Calculate distance from bottom of viewport to top of footer
+      const distanceToFooter = footerRect.top - windowHeight;
+
+      // If footer is visible or close to being visible (within container height + padding), don't stick
+      if (distanceToFooter < containerHeight + 20) {
         setShouldStick(false);
       } else {
         setShouldStick(true);
@@ -89,21 +92,19 @@ const StickyCartSummary = () => {
 
   return (
     <>
-      {/* Sticky Cart Summary */}
+      {/* Sticky Cart Summary - Fixed at bottom until footer */}
       <div
         ref={containerRef}
-        className={`bg-[#FAF8F5] border-t-2 border-[#3D2817]/30 transition-all duration-300 ${
-          shouldStick ? 'fixed bottom-0 z-20 left-0 right-0' : 'relative'
+        className={`bg-[#FAF8F5] border-t-2 border-[#3D2817]/30 transition-all duration-300 luxury-shadow-sm ${
+          shouldStick ? 'fixed bottom-0 right-0 z-20 ml-auto' : 'relative'
         }`}
+        style={{ 
+          width: shouldStick ? '75%' : '100%',
+        }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex gap-6">
-            {/* Spacer to match filter width - ensures cart doesn't overlap filter */}
-            <div className="hidden lg:block lg:w-1/4 lg:flex-shrink-0"></div>
-            
-            {/* Cart content aligned with products grid only - this is where the cart appears */}
-            <div className="flex-1 py-3">
-              <div className="flex items-center justify-between gap-4">
+        <div className="px-4 sm:px-6 lg:px-8">
+          <div className="py-3">
+            <div className="flex items-center justify-between gap-4">
             
             {/* Left: Close Button & Subtotal */}
             <div className="flex items-center gap-4 flex-1">
@@ -177,24 +178,23 @@ const StickyCartSummary = () => {
               ))}
             </div>
 
-            {/* Right: Add More Items Button */}
-            <div className="flex-shrink-0">
-              {itemsNeeded > 0 ? (
-                <button
-                  onClick={handleViewCart}
-                  className="px-4 py-2 border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] font-medium text-sm hover:bg-[#3D2817] hover:text-white transition-colors whitespace-nowrap"
-                >
-                  Add {itemsNeeded} More Item{itemsNeeded > 1 ? '(s)' : ''}
-                </button>
-              ) : (
-                <button
-                  onClick={handleViewCart}
-                  className="px-4 py-2 border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] font-medium text-sm hover:bg-[#3D2817] hover:text-white transition-colors whitespace-nowrap"
-                >
-                  View Cart ({cartCount})
-                </button>
-              )}
-            </div>
+              {/* Right: Add More Items Button */}
+              <div className="flex-shrink-0">
+                {itemsNeeded > 0 ? (
+                  <button
+                    onClick={handleViewCart}
+                    className="px-4 py-2 border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] font-medium text-sm hover:bg-[#3D2817] hover:text-white transition-colors whitespace-nowrap"
+                  >
+                    Add {itemsNeeded} More Item{itemsNeeded > 1 ? '(s)' : ''}
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleViewCart}
+                    className="px-4 py-2 border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] font-medium text-sm hover:bg-[#3D2817] hover:text-white transition-colors whitespace-nowrap"
+                  >
+                    View Cart ({cartCount})
+                  </button>
+                )}
               </div>
             </div>
           </div>

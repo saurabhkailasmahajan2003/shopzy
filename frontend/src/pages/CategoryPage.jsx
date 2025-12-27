@@ -607,7 +607,7 @@ const CategoryPage = () => {
         </div>
       </div>
       
-      {/* Sticky Cart Summary - Only on Category Pages */}
+      {/* Sticky Cart Summary - Fixed at bottom until footer */}
       <StickyCartSummary />
     </div>
   );

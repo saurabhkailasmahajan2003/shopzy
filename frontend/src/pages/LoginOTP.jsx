@@ -1,10 +1,8 @@
 // src/pages/Login-otp.jsx
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
-
-// CORRECT IMPORT: Points to src/firebase.js
-import { auth } from '../firebase'; 
+import { authAPI } from '../utils/api';
+import { useAuth } from '../context/AuthContext';
 
 const LeftIcon = ({ children }) => (
   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#3D2817]/40">
@@ -15,74 +13,105 @@ const LeftIcon = ({ children }) => (
 const LoginOTP = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [expandForm, setExpandForm] = useState(false);
-  const [confirmationResult, setConfirmationResult] = useState(null);
+  const [isNewUser, setIsNewUser] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const navigate = useNavigate();
-
-  const generateRecaptcha = () => {
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        'size': 'invisible',
-        'callback': (response) => {
-          // reCAPTCHA solved
-        }
-      });
-    }
-  };
+  const { login } = useAuth();
 
   const handleSendOtp = async (e) => {
     e.preventDefault();
     setError('');
     
-    if (phoneNumber.length < 10) {
-      setError("Please enter a valid phone number");
+    // Format phone number (remove spaces, keep only digits)
+    const formattedPhone = phoneNumber.replace(/\D/g, '');
+    
+    if (formattedPhone.length !== 10) {
+      setError("Please enter a valid 10-digit phone number");
       return;
     }
 
     setIsLoading(true);
 
     try {
-      generateRecaptcha();
-      const appVerifier = window.recaptchaVerifier;
-      // Adds +91 automatically if user didn't type it
-      const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber : `+91${phoneNumber}`;
-
-      const confirmation = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
-      setConfirmationResult(confirmation);
-      setExpandForm(true);
-      setIsLoading(false);
-    } catch (err) {
-      setIsLoading(false);
-      console.error("Error sending OTP:", err);
-      // Reset recaptcha
-      if(window.recaptchaVerifier) {
-        window.recaptchaVerifier.clear();
-        window.recaptchaVerifier = null;
+      const response = await authAPI.sendOTP(formattedPhone);
+      
+      if (response.success) {
+        setExpandForm(true);
+        setError('');
+      } else {
+        setError(response.message || 'Failed to send OTP');
       }
-      setError("Failed to send OTP. " + err.message);
+    } catch (err) {
+      console.error("Error sending OTP:", err);
+      setError(err.message || "Failed to send OTP. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
     setError('');
-    setIsLoading(true);
+    setIsVerifying(true);
 
     if (otp.length !== 6) {
       setError("Please enter the 6-digit OTP");
-      setIsLoading(false);
+      setIsVerifying(false);
+      return;
+    }
+
+    // Format phone number
+    const formattedPhone = phoneNumber.replace(/\D/g, '');
+
+    // Check if new user needs name and email
+    if (isNewUser && (!name || !email)) {
+      setError("Name and email are required for new users");
+      setIsVerifying(false);
       return;
     }
 
     try {
-      await confirmationResult.confirm(otp);
-      navigate('/'); 
+      const response = await authAPI.verifyOTP(formattedPhone, otp, name || null, email || null);
+      
+      if (response.success && response.data) {
+        // Store token
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token);
+        }
+        
+        // Update auth context
+        if (login) {
+          await login(response.data.token);
+        }
+        
+        // Navigate to home
+        navigate('/');
+      } else {
+        // Check if registration is required
+        if (response.requiresRegistration) {
+          setIsNewUser(true);
+          setError('Please provide your name and email to complete registration');
+        } else {
+          setError(response.message || 'Invalid OTP. Please check and try again.');
+        }
+      }
     } catch (err) {
-      setIsLoading(false);
-      setError("Invalid OTP. Please check and try again.");
+      console.error("Error verifying OTP:", err);
+      const errorMessage = err.message || "Invalid OTP. Please check and try again.";
+      setError(errorMessage);
+      
+      // Check if user needs to provide name and email
+      if (errorMessage.includes('Name and email are required') || errorMessage.includes('requiresRegistration')) {
+        setIsNewUser(true);
+      }
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -141,7 +170,7 @@ const LoginOTP = () => {
             )}
 
             <div className="space-y-5">
-              {!expandForm && (
+              {!expandForm ? (
                 <div className="relative">
                   <label htmlFor="phone" className="sr-only">Phone Number</label>
                   <LeftIcon>
@@ -157,42 +186,82 @@ const LoginOTP = () => {
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     className={inputClass}
-                    placeholder="Enter phone number"
+                    placeholder="Enter 10-digit phone number"
+                    maxLength={10}
                   />
                 </div>
+              ) : (
+                <>
+                  {isNewUser && (
+                    <>
+                      <div className="relative">
+                        <label htmlFor="name" className="sr-only">Full Name</label>
+                        <LeftIcon>
+                          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          </svg>
+                        </LeftIcon>
+                        <input
+                          id="name"
+                          name="name"
+                          type="text"
+                          required={isNewUser}
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          className={inputClass}
+                          placeholder="Enter your full name"
+                        />
+                      </div>
+                      <div className="relative">
+                        <label htmlFor="email" className="sr-only">Email Address</label>
+                        <LeftIcon>
+                          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                          </svg>
+                        </LeftIcon>
+                        <input
+                          id="email"
+                          name="email"
+                          type="email"
+                          required={isNewUser}
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className={inputClass}
+                          placeholder="Enter your email address"
+                        />
+                      </div>
+                    </>
+                  )}
+                  <div className="relative">
+                    <label htmlFor="otp" className="sr-only">OTP</label>
+                    <LeftIcon>
+                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                      </svg>
+                    </LeftIcon>
+                    <input
+                      id="otp"
+                      name="otp"
+                      type="number"
+                      required
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value)}
+                      className={inputClass}
+                      placeholder="Enter 6-digit OTP"
+                      maxLength={6}
+                    />
+                  </div>
+                </>
               )}
-
-              {expandForm && (
-                <div className="relative">
-                  <label htmlFor="otp" className="sr-only">OTP</label>
-                  <LeftIcon>
-                     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                  </LeftIcon>
-                  <input
-                    id="otp"
-                    name="otp"
-                    type="number"
-                    required
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    className={inputClass}
-                    placeholder="Enter 6-digit OTP"
-                  />
-                </div>
-              )}
-              
-              <div id="recaptcha-container"></div>
             </div>
 
             <div>
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || isVerifying}
                 className="group relative w-full flex justify-center py-2.5 sm:py-3 px-4 border-2 border-[#3D2817]/30 bg-[#3D2817] text-[#fefcfb] text-xs sm:text-sm font-semibold uppercase tracking-tight hover:bg-[#3D2817]/90 focus:outline-none transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? (expandForm ? "Verifying..." : "Sending OTP...") : (expandForm ? 'Verify OTP' : 'Send OTP')}
+                {isLoading ? "Sending OTP..." : isVerifying ? "Verifying..." : (expandForm ? 'Verify OTP' : 'Send OTP')}
               </button>
             </div>
           </form>

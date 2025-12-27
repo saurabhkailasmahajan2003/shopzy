@@ -68,6 +68,20 @@ export const authAPI = {
   getMe: async () => {
     return apiRequest('/auth/me');
   },
+
+  sendOTP: async (phoneNumber) => {
+    return apiRequest('/auth/send-otp', {
+      method: 'POST',
+      body: JSON.stringify({ phoneNumber }),
+    });
+  },
+
+  verifyOTP: async (phoneNumber, otp, name = null, email = null) => {
+    return apiRequest('/auth/verify-otp', {
+      method: 'POST',
+      body: JSON.stringify({ phoneNumber, otp, name, email }),
+    });
+  },
 };
 
 // Cart API calls
