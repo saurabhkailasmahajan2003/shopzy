@@ -338,7 +338,7 @@ const Profile = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
               </Link>
-              <h1 className="text-lg font-bold text-[#FAF8F5]">Profile</h1>
+              <h1 className="text-lg font-bold text-[#FAF8F5] pb-10">Profile</h1>
               <Link to="/profile/general" className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
                 <svg className="w-5 h-5 text-[#FAF8F5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -349,7 +349,7 @@ const Profile = () => {
         </div>
 
         {/* Mobile Content - White Background */}
-        <div className="bg-white rounded-t-3xl -mt-4 pt-8 pb-6">
+        <div className="bg-white rounded-t-3xl -mt-4 pt-8 pb-10">
           {/* Profile Picture & Info */}
           <div className="flex flex-col items-center mb-8">
             <div className="h-24 w-24 rounded-full bg-[#8B4513] text-[#FAF8F5] flex items-center justify-center font-bold text-3xl mb-3 border-4 border-white shadow-lg">
@@ -361,7 +361,7 @@ const Profile = () => {
 
           {/* Location Section */}
           <div className="px-4 mb-6">
-            <p className="text-xs text-[#3D2817]/60 mb-3 uppercase tracking-wider">Location</p>
+            <p className="text-xs text-[#3D2817]/60 mb-10 uppercase tracking-wider">Location</p>
             <div className="flex items-center justify-between py-3 border-b border-[#3D2817]/10">
               <div className="flex items-center gap-3">
                 <svg className="w-5 h-5 text-[#8B4513]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
