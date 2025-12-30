@@ -346,7 +346,15 @@ const Profile = () => {
               </Link>
               <h1 className="text-lg font-bold text-[#FAF8F5] pb-10">Profile</h1>
               <button 
-                onClick={() => setIsEditMode(!isEditMode)}
+                onClick={() => {
+                  setIsEditMode(!isEditMode);
+                  if (!isEditMode) {
+                    // Scroll to form after a short delay to allow state update
+                    setTimeout(() => {
+                      document.getElementById('mobile-profile-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                  }
+                }}
                 className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors"
               >
                 <svg className="w-5 h-5 text-[#FAF8F5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -368,27 +376,30 @@ const Profile = () => {
             <p className="text-sm text-[#3D2817]/60">{user?.email}</p>
           </div>
 
-          {/* Location Section */}
-          <div className="px-4 mb-6">
-            <p className="text-xs text-[#3D2817]/60 mb-10 uppercase tracking-wider">Location</p>
-            <div className="flex items-center justify-between py-3 border-b border-[#3D2817]/10">
-              <div className="flex items-center gap-3">
-                <svg className="w-5 h-5 text-[#8B4513]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0L6.343 16.657a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          {/* Location Section - Hide when in edit mode */}
+          {!isEditMode && (
+            <div className="px-4 mb-6">
+              <p className="text-xs text-[#3D2817]/60 mb-10 uppercase tracking-wider">Location</p>
+              <div className="flex items-center justify-between py-3 border-b border-[#3D2817]/10">
+                <div className="flex items-center gap-3">
+                  <svg className="w-5 h-5 text-[#8B4513]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0L6.343 16.657a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <span className="text-[#8B4513] font-medium">
+                    {user?.address?.country || user?.address?.state || 'India'}
+                  </span>
+                </div>
+                <svg className="w-4 h-4 text-[#3D2817]/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                 </svg>
-                <span className="text-[#8B4513] font-medium">
-                  {user?.address?.country || user?.address?.state || 'India'}
-                </span>
               </div>
-              <svg className="w-4 h-4 text-[#3D2817]/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-              </svg>
             </div>
-          </div>
+          )}
 
-          {/* Account Settings Section */}
-          <div className="px-4 mb-6">
+          {/* Account Settings Section - Hide when in edit mode */}
+          {!isEditMode && (
+            <div className="px-4 mb-6">
             <p className="text-xs text-[#3D2817]/60 mb-3 uppercase tracking-wider">Account Settings</p>
             {menuItems.map((item) => {
               const routeMap = {
@@ -421,10 +432,12 @@ const Profile = () => {
                 <IconChevronRight className="w-5 h-5 text-[#3D2817]/40" />
               </Link>
             )}
-          </div>
+            </div>
+          )}
 
-          {/* Quick Actions */}
-          <div className="px-4 mb-6">
+          {/* Quick Actions - Hide when in edit mode */}
+          {!isEditMode && (
+            <div className="px-4 mb-6">
             <p className="text-xs text-[#3D2817]/60 mb-3 uppercase tracking-wider">Quick Actions</p>
             <Link to="/" className="flex items-center justify-between py-4 border-b border-[#3D2817]/10 active:bg-[#3D2817]/5">
               <div className="flex items-center gap-3">
@@ -440,10 +453,12 @@ const Profile = () => {
               </div>
               <IconChevronRight className="w-5 h-5 text-[#3D2817]/40" />
             </Link>
-          </div>
+            </div>
+          )}
 
-          {/* Logout */}
-          <div className="px-4">
+          {/* Logout - Hide when in edit mode */}
+          {!isEditMode && (
+            <div className="px-4">
             <button
               onClick={logout}
               className="flex items-center justify-between w-full py-4 border-b border-[#3D2817]/10 active:bg-red-50"
@@ -456,12 +471,13 @@ const Profile = () => {
               </div>
               <IconChevronRight className="w-5 h-5 text-red-600/40" />
             </button>
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Mobile Profile Form - Only show when edit mode is enabled */}
-        {activeTab === 'profile' && isEditMode && (
-          <div className="px-4 py-6">
+        {isEditMode && (
+          <div id="mobile-profile-form" className="px-4 py-6 bg-white">
             {(error || success) && (
               <div className={`mb-6 px-4 py-3 border ${error ? 'bg-red-50/80 backdrop-blur-sm text-red-800 border-red-300' : 'bg-green-50/80 backdrop-blur-sm text-green-800 border-green-300'} text-sm flex items-center gap-2.5 rounded luxury-shadow-sm`}>
                 <span className={`w-2 h-2 rounded-full ${error ? 'bg-red-500' : 'bg-green-500'}`}></span>
