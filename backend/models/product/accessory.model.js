@@ -23,6 +23,7 @@ const accessorySchema = new mongoose.Schema({
   },
   subCategory: {
     type: String,
+    enum: ['belt', 'wallet', 'bag', 'cap', 'watch-strap', 'earrings'],
     trim: true,
   },
   gender: {

@@ -944,7 +944,7 @@ const Home = () => {
           {/* Skincare Products Grid */}
           {skincareProducts.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
-              {skincareProducts.slice(0, 10).map((product, index) => {
+              {skincareProducts.slice(0, 12).map((product, index) => {
                 // Group products by brand for better display
                 const brandName = product.brand || 'Skincare';
                 const discount = product.discountPercent || 0;

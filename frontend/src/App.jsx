@@ -14,6 +14,7 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
+import LoginOTP from './pages/LoginOTP';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
 import GeneralPage from './pages/mobile/GeneralPage';
@@ -57,6 +58,7 @@ function AppContent() {
           <Route path="/watches" element={<CategoryPage />} />
           <Route path="/lenses" element={<CategoryPage />} />
           <Route path="/accessories" element={<CategoryPage />} />
+          <Route path="/shoes" element={<CategoryPage />} />
           <Route path="/skincare" element={<CategoryPage />} />
           <Route path="/skincare/:id" element={<ProductDetail />} />
           <Route path="/women/:category" element={<CategoryPage />} />
@@ -68,6 +70,7 @@ function AppContent() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/login-otp" element={<LoginOTP />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/general" element={<GeneralPage />} />
           <Route path="/profile/orders" element={<OrdersPage />} />

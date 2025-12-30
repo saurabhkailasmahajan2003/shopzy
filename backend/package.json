@@ -9,7 +9,8 @@
     "dev": "nodemon server.js",
     "seed": "node seed.js",
     "set-admin": "node scripts/setAdmin.js",
-    "init-saree": "node initSareeCollection.js"
+    "init-saree": "node initSareeCollection.js",
+    "init-shoes": "node initWomenShoesCollection.js"
   },
   "keywords": [
     "ecommerce",

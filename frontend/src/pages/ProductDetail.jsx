@@ -87,13 +87,14 @@ const ProductDetail = () => {
 
       // Fallback to category-specific endpoints if generic endpoint didn't work
       if (!foundData) {
-        const validCategories = ['women', 'watches', 'lens', 'accessories', 'skincare'];
+        const validCategories = ['women', 'watches', 'lens', 'accessories', 'skincare', 'shoes'];
         const categoryMap = {
           'watches': 'watches', 'watch': 'watches',
           'lens': 'lens', 'lenses': 'lens',
           'accessories': 'accessories',
           'women': 'women', 'womens': 'women',
           'skincare': 'skincare', 'skin-care': 'skincare',
+          'shoes': 'shoes', 'shoe': 'shoes',
         };
 
         // Try category from URL first
@@ -163,6 +164,7 @@ const ProductDetail = () => {
         'accessories': 'accessories',
         'women': 'women',
         'skincare': 'skincare',
+        'shoes': 'shoes',
       };
 
       const productCategory = currentProduct.category?.toLowerCase() || category?.toLowerCase();
@@ -191,6 +193,9 @@ const ProductDetail = () => {
           limit: 30,
           subCategory: currentProduct.subCategory || currentProduct.category
         });
+        if (response.success) relatedProducts = response.data.products || [];
+      } else if (apiCategory === 'shoes') {
+        const response = await productAPI.getShoes({ limit: 30 });
         if (response.success) relatedProducts = response.data.products || [];
       }
 
@@ -248,7 +253,8 @@ const ProductDetail = () => {
         watches: [],
         lenses: [],
         accessories: [],
-        skincare: []
+        skincare: [],
+        shoes: []
       };
 
       // Fetch products from ALL categories
@@ -282,6 +288,12 @@ const ProductDetail = () => {
             productsByCategory.skincare = res.data.products;
           }
         }).catch(err => console.warn('Error fetching skincare products:', err)),
+
+        productAPI.getShoes({ limit: 30 }).then(res => {
+          if (res.success && res.data?.products) {
+            productsByCategory.shoes = res.data.products;
+          }
+        }).catch(err => console.warn('Error fetching shoes:', err)),
       ];
 
       await Promise.allSettled(fetchPromises);
@@ -292,7 +304,8 @@ const ProductDetail = () => {
         ...productsByCategory.watches,
         ...productsByCategory.lenses,
         ...productsByCategory.accessories,
-        ...productsByCategory.skincare
+        ...productsByCategory.skincare,
+        ...productsByCategory.shoes
       ].filter(p => (p._id || p.id) !== currentProductId);
 
       // Shuffle array to randomize (Fisher-Yates shuffle)
@@ -444,7 +457,8 @@ const ProductDetail = () => {
         watches: [],
         lenses: [],
         accessories: [],
-        skincare: []
+        skincare: [],
+        shoes: []
       };
 
       // Fetch products from ALL categories
@@ -478,6 +492,12 @@ const ProductDetail = () => {
             productsByCategory.skincare = res.data.products;
           }
         }).catch(err => console.warn('Error fetching skincare products:', err)),
+
+        productAPI.getShoes({ limit: 40 }).then(res => {
+          if (res.success && res.data?.products) {
+            productsByCategory.shoes = res.data.products;
+          }
+        }).catch(err => console.warn('Error fetching shoes:', err)),
       ];
 
       await Promise.allSettled(fetchPromises);
@@ -488,7 +508,8 @@ const ProductDetail = () => {
         ...productsByCategory.watches,
         ...productsByCategory.lenses,
         ...productsByCategory.accessories,
-        ...productsByCategory.skincare
+        ...productsByCategory.skincare,
+        ...productsByCategory.shoes
       ];
 
       // Filter products that are on sale (have discount or onSale flag)

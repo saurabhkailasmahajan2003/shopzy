@@ -217,15 +217,25 @@ export const productAPI = {
     return apiRequest(`/products/skincare/${id}`);
   },
 
+  getShoes: async (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    return apiRequest(`/products/shoes${queryString ? `?${queryString}` : ''}`);
+  },
+
+  getShoeById: async (id) => {
+    return apiRequest(`/products/shoes/${id}`);
+  },
+
   // Helper to get all products from all categories
   getAllProducts: async (params = {}) => {
     try {
-      const [watches, lenses, accessories, women, skincare] = await Promise.all([
+      const [watches, lenses, accessories, women, skincare, shoes] = await Promise.all([
         productAPI.getWatches(params),
         productAPI.getLenses(params),
         productAPI.getAccessories(params),
         productAPI.getWomenItems(params),
         productAPI.getSkincareProducts(params),
+        productAPI.getShoes(params),
       ]);
 
       const allProducts = [
@@ -234,6 +244,7 @@ export const productAPI = {
         ...(accessories.success ? accessories.data.products : []),
         ...(women.success ? women.data.products : []),
         ...(skincare.success ? skincare.data.products : []),
+        ...(shoes.success ? shoes.data.products : []),
       ];
 
       return {

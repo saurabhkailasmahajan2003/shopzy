@@ -12,6 +12,7 @@ import lensRoutes from './routes/product/lens.routes.js';
 import accessoryRoutes from './routes/product/accessory.routes.js';
 import womenRoutes from './routes/product/women.routes.js';
 import skincareRoutes from './routes/product/skincare.routes.js';
+import shoeRoutes from './routes/product/shoe.routes.js';
 import productRoutes from './routes/product/product.routes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
@@ -39,8 +40,33 @@ mongoose
     serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
     socketTimeoutMS: 45000,
   })
-  .then(() => {
+  .then(async () => {
     console.log('✅ Connected to MongoDB Atlas');
+    
+    // Automatically initialize Women's Shoes collection if it doesn't exist
+    try {
+      const WomensShoe = (await import('./models/product/shoe.model.js')).default;
+      const collectionExists = await mongoose.connection.db.listCollections({ name: 'womensshoes' }).hasNext();
+      
+      if (!collectionExists) {
+        console.log('📦 Initializing Women\'s Shoes collection...');
+        // Create collection by inserting and deleting a sample document
+        const sampleShoe = {
+          title: 'Sample Shoe - Delete This',
+          description: 'Initializing collection',
+          price: 1,
+          subCategory: 'Sneakers',
+          product_info: { brand: 'Sample', gender: 'Women' },
+          sizes_inventory: [{ size: 'US 7', quantity: 0 }],
+        };
+        const created = await WomensShoe.create(sampleShoe);
+        await WomensShoe.deleteOne({ _id: created._id });
+        console.log('✅ Women\'s Shoes collection initialized successfully!');
+      }
+    } catch (error) {
+      console.warn('⚠️  Could not auto-initialize Women\'s Shoes collection:', error.message);
+      console.log('   You can run: npm run init-shoes');
+    }
   })
   .catch((error) => {
     console.error('⚠️  MongoDB connection error (routes will still work):', error.message);
@@ -56,6 +82,7 @@ app.use('/api/products/watch-new', watchNewRoutes);
 app.use('/api/products/lens', lensRoutes);
 app.use('/api/products/accessories', accessoryRoutes);
 app.use('/api/products/women', womenRoutes);
+app.use('/api/products/shoes', shoeRoutes);
 try {
   app.use('/api/products/skincare', skincareRoutes);
   console.log('✅ Skincare routes registered at /api/products/skincare');

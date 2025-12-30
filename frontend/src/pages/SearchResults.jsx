@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import FilterSidebar from '../components/FilterSidebar';
@@ -103,6 +103,40 @@ const SearchResults = () => {
     setPage(1);
   };
 
+  const brands = useMemo(() => {
+    const brandSet = new Set();
+    products.forEach(product => {
+      if (product.brand) brandSet.add(product.brand);
+    });
+    return Array.from(brandSet).sort();
+  }, [products]);
+
+  const sizes = useMemo(() => {
+    const sizeSet = new Set();
+    products.forEach(product => {
+      if (product.sizes && Array.isArray(product.sizes)) {
+        product.sizes.forEach(size => sizeSet.add(size));
+      }
+    });
+    return Array.from(sizeSet).sort();
+  }, [products]);
+
+  const priceRange = useMemo(() => {
+    if (products.length === 0) {
+      return { min: 0, max: 5000 };
+    }
+    const prices = products.map(product => product.finalPrice || product.price || 0).filter(p => p > 0);
+    if (prices.length === 0) {
+      return { min: 0, max: 5000 };
+    }
+    const min = Math.floor(Math.min(...prices));
+    const max = Math.min(Math.ceil(Math.max(...prices)), 5000); // Cap at 5000
+    return {
+      min: Math.floor(min / 100) * 100,
+      max: Math.min(Math.ceil(max / 100) * 100, 5000)
+    };
+  }, [products]);
+
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
   const paginatedProducts = filteredProducts.slice(
     (page - 1) * ITEMS_PER_PAGE,
@@ -150,10 +184,12 @@ const SearchResults = () => {
             {/* Filters Sidebar */}
             <div className="hidden lg:block w-64 flex-shrink-0">
               <FilterSidebar
-                products={products}
                 filters={filters}
                 onFilterChange={setFilters}
                 onClearFilters={() => setFilters({ priceRange: null, brands: [], sizes: [], sortBy: null })}
+                brands={brands}
+                sizes={sizes}
+                priceRange={priceRange}
               />
             </div>
 
@@ -176,10 +212,12 @@ const SearchResults = () => {
               {showMobileFilters && (
                 <div className="lg:hidden mb-6">
                   <FilterSidebar
-                    products={products}
                     filters={filters}
                     onFilterChange={setFilters}
                     onClearFilters={() => setFilters({ priceRange: null, brands: [], sizes: [], sortBy: null })}
+                    brands={brands}
+                    sizes={sizes}
+                    priceRange={priceRange}
                   />
                 </div>
               )}

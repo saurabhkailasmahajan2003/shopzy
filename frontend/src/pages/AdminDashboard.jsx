@@ -19,7 +19,7 @@ const subCategoryOptions = {
   women: ['shirt', 'tshirt', 'jeans', 'trousers', 'saree', 'shoes'],
   watches: ['analog', 'digital', 'smartwatch', 'sports', 'luxury'],
   lens: ['reading', 'sunglasses', 'computer', 'blue-light', 'progressive'],
-  accessories: ['belt', 'wallet', 'bag', 'cap', 'watch-strap'],
+  accessories: ['belt', 'wallet', 'bag', 'cap', 'watch-strap', 'earrings'],
   skincare: ['serum', 'facewash', 'sunscreen', 'moisturizer', 'cleanser'],
 };
 

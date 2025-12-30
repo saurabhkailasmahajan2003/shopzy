@@ -89,6 +89,22 @@ const SpecialCollection = ({ type }) => {
     return Array.from(sizeSet).sort();
   }, [allProducts]);
 
+  const priceRange = useMemo(() => {
+    if (allProducts.length === 0) {
+      return { min: 0, max: 5000 };
+    }
+    const prices = allProducts.map(product => product.finalPrice || product.price || 0).filter(p => p > 0);
+    if (prices.length === 0) {
+      return { min: 0, max: 5000 };
+    }
+    const min = Math.floor(Math.min(...prices));
+    const max = Math.min(Math.ceil(Math.max(...prices)), 5000); // Cap at 5000
+    return {
+      min: Math.floor(min / 100) * 100,
+      max: Math.min(Math.ceil(max / 100) * 100, 5000)
+    };
+  }, [allProducts]);
+
   useEffect(() => {
     let filtered = [...allProducts];
 
@@ -230,6 +246,7 @@ const SpecialCollection = ({ type }) => {
               onCloseMobile={() => setShowMobileFilters(false)}
               brands={brands}
               sizes={sizes}
+              priceRange={priceRange}
             />
           </div>
 

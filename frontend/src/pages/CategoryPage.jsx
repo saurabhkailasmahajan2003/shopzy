@@ -84,8 +84,6 @@ const CategoryPage = () => {
         't-shirt': { subCategory: 'tshirt', displayName: 'T-Shirt' },
         'jeans': { subCategory: 'jeans', displayName: 'Jeans' },
         'trousers': { subCategory: 'trousers', displayName: 'Trousers' },
-        'shoes': { subCategory: 'shoes', displayName: 'Shoes' },
-        'shoe': { subCategory: 'shoes', displayName: 'Shoes' },
         'saree': { subCategory: 'saree', displayName: 'Saree' },
         'sari': { subCategory: 'saree', displayName: 'Saree' },
         'accessories': { subCategory: 'accessories', displayName: 'Accessories' },
@@ -241,9 +239,44 @@ const CategoryPage = () => {
         response = await productAPI.getLenses(params);
         setPageTitle(genderParam ? `${genderParam.charAt(0).toUpperCase() + genderParam.slice(1)}'s Lenses` : 'Lenses & Spectacles');
       } else if (pathname === '/accessories') {
-        const params = { ...(genderParam ? { gender: genderParam } : {}), limit: fetchLimit };
+        const urlParams = new URLSearchParams(location.search);
+        const subCategoryParam = urlParams.get('subCategory');
+        const params = { 
+          ...(genderParam ? { gender: genderParam } : {}), 
+          ...(subCategoryParam ? { subCategory: subCategoryParam } : {}),
+          limit: fetchLimit 
+        };
         response = await productAPI.getAccessories(params);
-        setPageTitle(genderParam ? `${genderParam.charAt(0).toUpperCase() + genderParam.slice(1)}'s Accessories` : 'Accessories');
+        if (subCategoryParam) {
+          const subCategoryName = subCategoryParam.charAt(0).toUpperCase() + subCategoryParam.slice(1);
+          setPageTitle(genderParam ? `${genderParam.charAt(0).toUpperCase() + genderParam.slice(1)}'s ${subCategoryName}` : subCategoryName);
+        } else {
+          setPageTitle(genderParam ? `${genderParam.charAt(0).toUpperCase() + genderParam.slice(1)}'s Accessories` : 'Accessories');
+        }
+      } else if (pathname === '/shoes') {
+        const urlParams = new URLSearchParams(location.search);
+        const subCategoryParam = urlParams.get('subCategory');
+        const subSubCategoryParam = urlParams.get('subSubCategory');
+        const params = { 
+          ...(genderParam ? { gender: genderParam } : {}), 
+          ...(subCategoryParam ? { subCategory: subCategoryParam } : {}),
+          ...(subSubCategoryParam ? { subSubCategory: subSubCategoryParam } : {}),
+          limit: fetchLimit 
+        };
+        response = await productAPI.getShoes(params);
+        console.log('[CategoryPage] Shoes API Response:', response);
+        if (response && response.success) {
+          console.log('[CategoryPage] Shoes products count:', response.data?.products?.length || 0);
+        }
+        if (subSubCategoryParam) {
+          const subSubCategoryName = subSubCategoryParam.charAt(0).toUpperCase() + subSubCategoryParam.slice(1);
+          setPageTitle(subSubCategoryName);
+        } else if (subCategoryParam) {
+          const subCategoryName = subCategoryParam.charAt(0).toUpperCase() + subCategoryParam.slice(1);
+          setPageTitle(subCategoryName);
+        } else {
+          setPageTitle("Women's Shoes");
+        }
       } else if (pathname === '/skincare') {
         const urlParams = new URLSearchParams(location.search);
         const categoryParam = urlParams.get('category');
@@ -265,8 +298,6 @@ const CategoryPage = () => {
         't-shirt': { subCategory: 'tshirt', displayName: 'T-Shirt' },
         'jeans': { subCategory: 'jeans', displayName: 'Jeans' },
         'trousers': { subCategory: 'trousers', displayName: 'Trousers' },
-        'shoes': { subCategory: 'shoes', displayName: 'Shoes' },
-        'shoe': { subCategory: 'shoes', displayName: 'Shoes' },
         'saree': { subCategory: 'saree', displayName: 'Saree' },
         'sari': { subCategory: 'saree', displayName: 'Saree' },
         'accessories': { subCategory: 'accessories', displayName: 'Accessories' },
@@ -342,6 +373,23 @@ const CategoryPage = () => {
       }
     });
     return Array.from(sizeSet).sort();
+  }, [allProducts]);
+
+  const priceRange = useMemo(() => {
+    if (allProducts.length === 0) {
+      return { min: 0, max: 5000 };
+    }
+    const prices = allProducts.map(product => product.finalPrice || product.price || 0).filter(p => p > 0);
+    if (prices.length === 0) {
+      return { min: 0, max: 5000 };
+    }
+    const min = Math.floor(Math.min(...prices));
+    const max = Math.min(Math.ceil(Math.max(...prices)), 5000); // Cap at 5000
+    // Round to nearest 100 for better UX
+    return {
+      min: Math.floor(min / 100) * 100,
+      max: Math.min(Math.ceil(max / 100) * 100, 5000)
+    };
   }, [allProducts]);
 
   const handleFilterChange = (newFilters) => {
@@ -468,7 +516,7 @@ const CategoryPage = () => {
                <div className="lg:hidden mb-4 sm:mb-6 space-y-2">
                  <p className="text-xs uppercase tracking-wide text-[#3D2817]/60">Subcategories</p>
                  <div className="flex flex-wrap gap-2">
-                   {['shirt', 'tshirt', 'trousers', 'saree', 'shoes', 'accessories'].map((sub) => (
+                   {['shirt', 'tshirt', 'trousers', 'saree', 'accessories'].map((sub) => (
                      <Link
                        key={sub}
                        to={`/${derivedGender}/${sub}`}
@@ -498,6 +546,7 @@ const CategoryPage = () => {
                onCloseMobile={() => setShowMobileFilters(false)}
                brands={brands}
                sizes={sizes}
+               priceRange={priceRange}
              />
           </div>
 
