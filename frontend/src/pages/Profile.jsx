@@ -210,6 +210,7 @@ const Profile = () => {
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [isEditMode, setIsEditMode] = useState(false);
 
   // Menu items config
   const menuItems = [
@@ -290,15 +291,20 @@ const Profile = () => {
 
       if (addressObj) updateData.address = addressObj;
 
+      console.log('Updating profile with data:', updateData);
       const response = await profileAPI.updateProfile(updateData);
+      console.log('Profile update response:', response);
+      
       if (response.success) {
         setSuccess('Profile updated successfully!');
         await loadProfile();
+        setIsEditMode(false);
       } else {
-        setError(response.message || 'Failed to update profile.');
+        setError(response.message || response.error || 'Failed to update profile.');
       }
     } catch (err) {
-      setError('Failed to update profile.');
+      console.error('Profile update error:', err);
+      setError(err.message || 'Failed to update profile. Please try again.');
     }
   };
 
@@ -339,11 +345,14 @@ const Profile = () => {
                 </svg>
               </Link>
               <h1 className="text-lg font-bold text-[#FAF8F5] pb-10">Profile</h1>
-              <Link to="/profile/general" className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+              <button 
+                onClick={() => setIsEditMode(!isEditMode)}
+                className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors"
+              >
                 <svg className="w-5 h-5 text-[#FAF8F5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -450,8 +459,8 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Mobile Profile Form - Only show on profile page */}
-        {activeTab === 'profile' && (
+        {/* Mobile Profile Form - Only show when edit mode is enabled */}
+        {activeTab === 'profile' && isEditMode && (
           <div className="px-4 py-6">
             {(error || success) && (
               <div className={`mb-6 px-4 py-3 border ${error ? 'bg-red-50/80 backdrop-blur-sm text-red-800 border-red-300' : 'bg-green-50/80 backdrop-blur-sm text-green-800 border-green-300'} text-sm flex items-center gap-2.5 rounded luxury-shadow-sm`}>
@@ -509,8 +518,15 @@ const Profile = () => {
                 <button type="submit" className="flex-1 px-6 py-3 bg-[#3D2817] text-[#FAF8F5] text-sm font-semibold hover:bg-[#8B4513] transition-colors border border-[#3D2817] rounded-lg luxury-shadow">
                   Save Changes
                 </button>
-                <button type="button" onClick={loadProfile} className="px-6 py-3 bg-white/60 backdrop-blur-sm text-[#3D2817] text-sm font-semibold border border-[#3D2817]/30 hover:bg-[#3D2817]/5 hover:border-[#3D2817]/50 transition-colors rounded-lg luxury-shadow-sm">
-                  Reset
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    loadProfile();
+                    setIsEditMode(false);
+                  }} 
+                  className="px-6 py-3 bg-white/60 backdrop-blur-sm text-[#3D2817] text-sm font-semibold border border-[#3D2817]/30 hover:bg-[#3D2817]/5 hover:border-[#3D2817]/50 transition-colors rounded-lg luxury-shadow-sm"
+                >
+                  Cancel
                 </button>
               </div>
             </form>
@@ -599,13 +615,26 @@ const Profile = () => {
           {/* Content Area */}
           <div className="flex-1 p-8 overflow-y-auto">
             {/* Content Header */}
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-[#3D2817]">
-                {menuItems.find(i => i.id === activeTab)?.label}
-              </h2>
-              <p className="text-sm text-[#3D2817]/70 mt-1">
-                {menuItems.find(i => i.id === activeTab)?.description}
-              </p>
+            <div className="mb-6 flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-[#3D2817]">
+                  {menuItems.find(i => i.id === activeTab)?.label}
+                </h2>
+                <p className="text-sm text-[#3D2817]/70 mt-1">
+                  {menuItems.find(i => i.id === activeTab)?.description}
+                </p>
+              </div>
+              {activeTab === 'profile' && (
+                <button
+                  onClick={() => setIsEditMode(!isEditMode)}
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#3D2817] border border-[#3D2817]/30 hover:bg-[#3D2817] hover:text-[#FAF8F5] transition-colors rounded-lg luxury-shadow-sm"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  {isEditMode ? 'Cancel' : 'Edit'}
+                </button>
+              )}
             </div>
 
             {/* Notifications & Messages */}
@@ -620,7 +649,45 @@ const Profile = () => {
               <div className="p-6">
                     {/* --- TAB: PROFILE --- */}
                     {activeTab === 'profile' && (
-                        <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
+                      <>
+                        {!isEditMode ? (
+                          <div className="max-w-2xl space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+                              <div>
+                                <label className={labelClass}>Full Name</label>
+                                <div className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-white/60 backdrop-blur-sm text-[#3D2817] rounded-lg luxury-shadow-sm">
+                                  {formData.name || 'Not provided'}
+                                </div>
+                              </div>
+                              <div>
+                                <label className={labelClass}>Phone</label>
+                                <div className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-white/60 backdrop-blur-sm text-[#3D2817] rounded-lg luxury-shadow-sm">
+                                  {formData.phone || 'Not provided'}
+                                </div>
+                              </div>
+                              <div className="md:col-span-2">
+                                <label className={labelClass}>Email Address</label>
+                                <div className="relative">
+                                  <div className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-[#3D2817]/5 text-[#3D2817]/60 rounded-lg luxury-shadow-sm">
+                                    {formData.email || 'Not provided'}
+                                  </div>
+                                  {formData.email && (
+                                    <span className="absolute right-3 top-3 text-xs font-semibold text-[#3D2817] bg-[#8B4513]/10 px-2.5 py-1 border border-[#8B4513]/30 rounded">
+                                      Verified
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="md:col-span-2">
+                                <label className={labelClass}>Delivery Address</label>
+                                <div className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-white/60 backdrop-blur-sm text-[#3D2817] rounded-lg luxury-shadow-sm min-h-[100px]">
+                                  {formData.address || 'Not provided'}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
                                 <div>
                                     <label className={labelClass}>Full Name</label>
@@ -629,7 +696,7 @@ const Profile = () => {
                                         name="name"
                                         value={formData.name}
                                         onChange={handleChange}
-                                        className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-white/60 backdrop-blur-sm text-[#3D2817] focus:outline-none focus:ring-2 focus:ring-[#8B4513]/20 focus:border-[#8B4513] transition duration-150 ease-in-out placeholder-[#3D2817]/40 luxury-shadow-sm"
+                                        className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-white/60 backdrop-blur-sm text-[#3D2817] focus:outline-none focus:ring-2 focus:ring-[#8B4513]/20 focus:border-[#8B4513] transition duration-150 ease-in-out placeholder-[#3D2817]/40 rounded-lg luxury-shadow-sm"
                                     />
                                 </div>
                                 <div>
@@ -639,7 +706,7 @@ const Profile = () => {
                                         name="phone"
                                         value={formData.phone}
                                         onChange={handleChange}
-                                        className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-white/60 backdrop-blur-sm text-[#3D2817] focus:outline-none focus:ring-2 focus:ring-[#8B4513]/20 focus:border-[#8B4513] transition duration-150 ease-in-out placeholder-[#3D2817]/40 luxury-shadow-sm"
+                                        className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-white/60 backdrop-blur-sm text-[#3D2817] focus:outline-none focus:ring-2 focus:ring-[#8B4513]/20 focus:border-[#8B4513] transition duration-150 ease-in-out placeholder-[#3D2817]/40 rounded-lg luxury-shadow-sm"
                                     />
                                 </div>
                                 <div className="md:col-span-2">
@@ -649,7 +716,7 @@ const Profile = () => {
                                             type="email"
                                             value={formData.email}
                                             disabled
-                                            className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-[#3D2817]/5 text-[#3D2817]/60 cursor-not-allowed luxury-shadow-sm"
+                                            className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-[#3D2817]/5 text-[#3D2817]/60 cursor-not-allowed rounded-lg luxury-shadow-sm"
                                         />
                                         <span className="absolute right-3 top-3 text-xs font-semibold text-[#3D2817] bg-[#8B4513]/10 px-2.5 py-1 border border-[#8B4513]/30 rounded">
                                             Verified
@@ -663,7 +730,7 @@ const Profile = () => {
                                         rows="4"
                                         value={formData.address}
                                         onChange={handleChange}
-                                        className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-white/60 backdrop-blur-sm text-[#3D2817] focus:outline-none focus:ring-2 focus:ring-[#8B4513]/20 focus:border-[#8B4513] transition duration-150 ease-in-out placeholder-[#3D2817]/40 resize-none luxury-shadow-sm"
+                                        className="block w-full px-4 py-3 border border-[#3D2817]/30 text-sm bg-white/60 backdrop-blur-sm text-[#3D2817] focus:outline-none focus:ring-2 focus:ring-[#8B4513]/20 focus:border-[#8B4513] transition duration-150 ease-in-out placeholder-[#3D2817]/40 resize-none rounded-lg luxury-shadow-sm"
                                         placeholder="Street, City, State, Zip, Country"
                                     />
                                 </div>
@@ -672,11 +739,20 @@ const Profile = () => {
                                 <button type="submit" className="px-6 py-3 bg-[#3D2817] text-[#FAF8F5] text-sm font-semibold hover:bg-[#8B4513] transition-colors border border-[#3D2817] luxury-shadow">
                                     Save Changes
                                 </button>
-                                <button type="button" onClick={loadProfile} className="px-6 py-3 bg-white/60 backdrop-blur-sm text-[#3D2817] text-sm font-semibold border border-[#3D2817]/30 hover:bg-[#3D2817]/5 hover:border-[#3D2817]/50 transition-colors luxury-shadow-sm">
-                                    Reset
+                                <button 
+                                  type="button" 
+                                  onClick={() => {
+                                    loadProfile();
+                                    setIsEditMode(false);
+                                  }} 
+                                  className="px-6 py-3 bg-white/60 backdrop-blur-sm text-[#3D2817] text-sm font-semibold border border-[#3D2817]/30 hover:bg-[#3D2817]/5 hover:border-[#3D2817]/50 transition-colors luxury-shadow-sm"
+                                >
+                                  Cancel
                                 </button>
                             </div>
-                        </form>
+                          </form>
+                        )}
+                      </>
                     )}
 
                     {/* --- TAB: ORDERS (Table View) --- */}

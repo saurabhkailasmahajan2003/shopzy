@@ -45,10 +45,19 @@ router.put('/update', protect, async (req, res) => {
     const { name, phone, address } = req.body;
 
     const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
 
-    if (name) user.name = name;
-    if (phone) user.phone = phone;
-    if (address) user.address = { ...user.address, ...address };
+    if (name !== undefined) user.name = name;
+    if (phone !== undefined) user.phone = phone;
+    if (address) {
+      user.address = user.address || {};
+      user.address = { ...user.address, ...address };
+    }
 
     await user.save();
 
