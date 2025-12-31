@@ -5,6 +5,7 @@ import { useWishlist } from '../context/WishlistContext';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../components/ToastContainer';
 import { Link } from 'react-router-dom';
+import { formatPrice } from '../utils/formatUtils';
 
 const ProductQuickView = ({ product, isOpen, onClose }) => {
   const { addToCart } = useCart();
@@ -99,10 +100,10 @@ const ProductQuickView = ({ product, isOpen, onClose }) => {
                 {product.brand && <p className="text-sm text-gray-600 mb-4">{product.brand}</p>}
 
                 <div className="flex items-baseline gap-3 mb-4">
-                  <span className="text-2xl font-bold text-gray-900">₹{price.toLocaleString()}</span>
+                  <span className="text-2xl font-bold text-gray-900">₹{formatPrice(price)}</span>
                   {discount > 0 && (
                     <>
-                      <span className="text-lg text-gray-500 line-through">₹{originalPrice.toLocaleString()}</span>
+                      <span className="text-lg text-gray-500 line-through">₹{formatPrice(originalPrice)}</span>
                       <span className="text-sm font-medium text-green-600">{discount}% OFF</span>
                     </>
                   )}

@@ -6,6 +6,7 @@ import { paymentAPI, profileAPI, orderAPI } from '../utils/api';
 import { loadScript } from '../utils/razorpay';
 import { Check, Package, FileText } from 'lucide-react';
 import Invoice from '../components/Invoice';
+import { formatPrice } from '../utils/formatUtils';
 
 const Checkout = () => {
   const { cart, getCartTotal, clearCart } = useCart();
@@ -759,7 +760,7 @@ const Checkout = () => {
                         <p className="text-sm font-medium text-gray-900 truncate">{product.name}</p>
                         <p className="text-xs text-gray-500 mt-0.5">Qty: {item.quantity}</p>
                         <p className="text-sm font-semibold text-gray-900 mt-1">
-                          ₹{(price * item.quantity).toLocaleString()}
+                          ₹{formatPrice(price * item.quantity)}
                         </p>
                       </div>
                     </div>
@@ -769,7 +770,7 @@ const Checkout = () => {
               <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 space-y-2.5">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium text-gray-900">₹{getCartTotal().toLocaleString()}</span>
+                  <span className="font-medium text-gray-900">₹{formatPrice(getCartTotal())}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Shipping</span>

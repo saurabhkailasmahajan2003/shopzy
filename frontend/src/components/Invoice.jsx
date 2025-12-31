@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { Download, Printer } from 'lucide-react';
+import { formatPrice } from '../utils/formatUtils';
 
 const Invoice = ({ order, user, onPrint, onDownload }) => {
   const invoiceRef = useRef(null);
@@ -207,21 +208,21 @@ const Invoice = ({ order, user, onPrint, onDownload }) => {
           <div className="w-full md:w-80 space-y-3">
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Subtotal</span>
-              <span className="font-medium text-gray-900">₹{subtotal.toLocaleString()}</span>
+              <span className="font-medium text-gray-900">₹{formatPrice(subtotal)}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Shipping</span>
               <span className="font-medium text-gray-900">
-                {shipping === 0 ? 'Free' : `₹${shipping.toLocaleString()}`}
+                {shipping === 0 ? 'Free' : `₹${formatPrice(shipping)}`}
               </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Tax (GST 18%)</span>
-              <span className="font-medium text-gray-900">₹{tax.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</span>
+              <span className="font-medium text-gray-900">₹{formatPrice(tax)}</span>
             </div>
             <div className="pt-3 border-t-2 border-gray-300 flex justify-between">
               <span className="text-base font-bold text-gray-900">Total</span>
-              <span className="text-base font-bold text-gray-900">₹{total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</span>
+              <span className="text-base font-bold text-gray-900">₹{formatPrice(total)}</span>
             </div>
           </div>
         </div>

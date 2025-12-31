@@ -222,16 +222,6 @@ const Navbar = () => {
 
             {/* RIGHT: Icons */}
             <div className="flex items-center gap-2 sm:gap-4 lg:gap-6">
-              {/* Mobile Search Button - Before Cart */}
-              <button
-                onClick={() => setIsSearchOpen(true)}
-                className="sm:hidden p-1.5 text-[#3D2817] hover:text-[#8B4513] transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-
               {/* User Icon - Hidden on mobile, shown on desktop */}
                 {isAuthenticated ? (
                 <Link to="/profile" className="hidden sm:block relative p-1 sm:p-1.5 text-[#3D2817] hover:text-[#8B4513] transition-colors">
@@ -240,7 +230,7 @@ const Navbar = () => {
                   </svg>
                   </Link>
                 ) : (
-                <Link to="/login" className="hidden sm:block relative p-1 sm:p-1.5 text-[#3D2817] hover:text-[#8B4513] transition-colors">
+                <Link to="/get-started" className="hidden sm:block relative p-1 sm:p-1.5 text-[#3D2817] hover:text-[#8B4513] transition-colors">
                   <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
@@ -342,22 +332,13 @@ const Navbar = () => {
                 </button>
               </>
             ) : (
-              <>
-                <Link
-                  to="/login"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex-1 py-2.5 sm:py-3 text-center text-sm font-bold text-[#3D2817] bg-white/60 border border-[#3D2817]/30 hover:bg-[#3D2817] hover:text-white transition-colors rounded"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/signup"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex-1 py-2.5 sm:py-3 text-center text-sm font-bold text-white bg-[#3D2817] hover:bg-[#8B4513] transition-colors rounded luxury-shadow"
-                >
-                  Sign Up
-                </Link>
-              </>
+              <Link
+                to="/get-started"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-full py-2.5 sm:py-3 text-center text-sm font-bold text-white bg-[#3D2817] hover:bg-[#8B4513] transition-colors rounded luxury-shadow"
+              >
+                Get Started
+              </Link>
             )}
           </div>
 
@@ -412,73 +393,16 @@ const Navbar = () => {
               Sign Out
             </button>
           ) : (
-            <div className="grid grid-cols-2 gap-3">
-              <Link 
-                to="/login" 
-                onClick={() => setIsMobileMenuOpen(false)} 
-                className="py-3 text-center text-sm font-bold text-[#3D2817] bg-white/60 border border-[#3D2817]/30 hover:bg-[#3D2817] hover:text-white transition-colors rounded"
-              >
-                Login
-              </Link>
-              <Link 
-                to="/signup" 
-                onClick={() => setIsMobileMenuOpen(false)} 
-                className="py-3 text-center text-sm font-bold text-[#fefcfb] bg-[#120e0f] hover:opacity-90 transition-opacity"
-              >
-                Sign Up
-              </Link>
-            </div>
+            <Link
+              to="/get-started" 
+              onClick={() => setIsMobileMenuOpen(false)} 
+              className="w-full py-3 text-center text-sm font-bold text-white bg-[#3D2817] hover:bg-[#8B4513] transition-colors rounded luxury-shadow"
+            >
+              Get Started
+            </Link>
           )}
         </div>
       </div>
-
-      {/* Mobile Search Modal */}
-      {isSearchOpen && (
-        <>
-          {/* Overlay */}
-          <div 
-            className="fixed inset-0 z-[60] bg-black/20 backdrop-blur-sm transition-opacity duration-300"
-            onClick={() => setIsSearchOpen(false)}
-          />
-          
-          {/* Search Modal */}
-          <div className="fixed top-0 left-0 right-0 z-[61] bg-white/95 backdrop-blur-sm border-b border-[#3D2817]/20 p-4 luxury-shadow">
-            <form 
-              onSubmit={(e) => {
-                handleSearch(e);
-                setIsSearchOpen(false);
-              }}
-              className="flex items-center gap-3"
-            >
-              <input 
-                type="text" 
-                className="flex-1 bg-white/60 border border-[#3D2817]/20 rounded-full px-4 py-2.5 text-sm text-[#3D2817] placeholder-[#3D2817]/50 focus:outline-none focus:border-[#8B4513] focus:ring-2 focus:ring-[#8B4513]/20"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                autoFocus
-              />
-              <button 
-                type="submit"
-                className="p-2.5 text-[#3D2817] hover:text-[#8B4513] transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsSearchOpen(false)}
-                className="p-2.5 text-[#3D2817] hover:text-[#8B4513] transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </form>
-          </div>
-        </>
-      )}
 
       {/* Cart Sidebar */}
       <CartSidebar 

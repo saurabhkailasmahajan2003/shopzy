@@ -4,6 +4,8 @@ import { profileAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import Invoice from '../components/Invoice';
 import { FileText } from 'lucide-react';
+import { formatPrice } from '../utils/formatUtils';
+import SecureImage from '../components/SecureImage';
 
 // --- ICONS (Minimalist / Stroke Style) ---
 const IconUser = (props) => (
@@ -90,7 +92,7 @@ const MobileOrderCard = ({ order, user }) => {
           </div>
           <div className="text-right">
             <p className="text-xs text-[#3D2817]/60 mb-1">Total</p>
-            <p className="text-lg font-bold text-[#8B4513]">₹{order.totalAmount?.toLocaleString()}</p>
+            <p className="text-lg font-bold text-[#8B4513]">₹{formatPrice(order.totalAmount || 0)}</p>
           </div>
         </div>
         <button
@@ -151,7 +153,7 @@ const OrderRow = ({ order, user }) => {
           </span>
         </td>
         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-[#8B4513] text-right font-bold">
-          ₹{order.totalAmount?.toLocaleString()}
+          ₹{formatPrice(order.totalAmount || 0)}
         </td>
         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-center">
           <button
@@ -369,9 +371,13 @@ const Profile = () => {
         <div className="bg-white rounded-t-3xl -mt-4 pt-8 pb-10">
           {/* Profile Picture & Info */}
           <div className="flex flex-col items-center mb-8">
-            <div className="h-24 w-24 rounded-full bg-[#8B4513] text-[#FAF8F5] flex items-center justify-center font-bold text-3xl mb-3 border-4 border-white shadow-lg">
-              {userInitial}
-            </div>
+            <SecureImage
+              src={user?.profilePicture}
+              alt={`${displayName}'s profile`}
+              size="w-24 h-24"
+              fallback={userInitial}
+              className="mb-3"
+            />
             <h2 className="text-2xl font-bold text-[#3D2817] mb-1">{displayName}</h2>
             <p className="text-sm text-[#3D2817]/60">{user?.email}</p>
           </div>
@@ -558,9 +564,13 @@ const Profile = () => {
           <div className="p-6 border-b border-[#3D2817]/30">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-[#3D2817] text-[#FAF8F5] flex items-center justify-center font-bold text-lg">
-                  {userInitial}
-                </div>
+                <SecureImage
+                  src={user?.profilePicture}
+                  alt={`${displayName}'s profile`}
+                  size="w-10 h-10"
+                  fallback={userInitial}
+                  className="text-lg"
+                />
                 <div>
                   <h2 className="text-lg font-bold text-[#3D2817]">Shopzy</h2>
                   <p className="text-xs text-[#3D2817]/60">Account</p>
@@ -596,9 +606,12 @@ const Profile = () => {
           {/* User Info Footer */}
           <div className="p-4 border-t border-[#3D2817]/30">
             <div className="flex items-center gap-3 mb-3">
-              <div className="h-10 w-10 rounded-full bg-[#8B4513] text-[#FAF8F5] flex items-center justify-center font-bold">
-                {userInitial}
-              </div>
+              <SecureImage
+                src={user?.profilePicture}
+                alt={`${displayName}'s profile`}
+                size="w-10 h-10"
+                fallback={userInitial}
+              />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-[#3D2817] truncate">{displayName}</p>
                 <p className="text-xs text-[#3D2817]/60 truncate">{user?.email}</p>

@@ -3,6 +3,7 @@ import { X, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../components/ToastContainer';
+import { formatPrice } from '../utils/formatUtils';
 
 const ProductComparison = () => {
   const { addToCart } = useCart();
@@ -127,9 +128,9 @@ const ProductComparison = () => {
                 {products.map((product) => (
                   <td key={product._id || product.id} className="px-3 sm:px-4 py-3">
                     <div className="text-xs sm:text-sm">
-                      <span className="font-bold text-gray-900">₹{(product.finalPrice || product.price).toLocaleString()}</span>
+                      <span className="font-bold text-gray-900">₹{formatPrice(product.finalPrice || product.price)}</span>
                       {product.originalPrice && product.originalPrice > (product.finalPrice || product.price) && (
-                        <span className="text-gray-500 line-through ml-2">₹{product.originalPrice.toLocaleString()}</span>
+                        <span className="text-gray-500 line-through ml-2">₹{formatPrice(product.originalPrice)}</span>
                       )}
                     </div>
                   </td>

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { handleImageError } from '../utils/imageFallback';
+import { formatPrice } from '../utils/formatUtils';
 
 // --- Premium Icons ---
 const IconTrash = (props) => (
@@ -111,7 +112,7 @@ const Cart = () => {
                 <div className="flex items-center justify-between mb-3">
                     <span className="text-sm font-medium text-gray-700">
                         {remainingForFreeShip > 0 
-                            ? `Add ₹${remainingForFreeShip.toLocaleString()} more for free shipping` 
+                            ? `Add ₹${formatPrice(remainingForFreeShip)} more for free shipping` 
                             : "✓ Free shipping unlocked"}
                     </span>
                     {remainingForFreeShip > 0 && (
@@ -173,7 +174,7 @@ const Cart = () => {
                             {product.brand && (
                               <p className="mt-0.5 text-xs sm:text-sm text-gray-500">{product.brand}</p>
                             )}
-                            <p className="mt-1 text-sm font-semibold text-gray-900">₹{productPrice.toLocaleString()}</p>
+                            <p className="mt-1 text-sm font-semibold text-gray-900">₹{formatPrice(productPrice)}</p>
                             {/* Mobile Only Remove */}
                             <button 
                                 onClick={() => removeFromCart(itemId)}
@@ -216,7 +217,7 @@ const Cart = () => {
                         <div className="sm:col-span-3 flex flex-row sm:flex-col justify-between sm:justify-center items-center sm:items-end gap-2">
                             <span className="text-sm sm:hidden font-medium text-gray-600">Total:</span>
                             <div className="text-right">
-                                <p className="text-base sm:text-lg font-semibold text-gray-900">₹{(productPrice * item.quantity).toLocaleString()}</p>
+                                <p className="text-base sm:text-lg font-semibold text-gray-900">₹{formatPrice(productPrice * item.quantity)}</p>
                                 <button 
                                     onClick={() => removeFromCart(itemId)}
                                     className="hidden sm:flex items-center justify-end mt-2 text-xs text-gray-500 hover:text-red-600 transition-colors"
@@ -242,7 +243,7 @@ const Cart = () => {
               <dl className="space-y-2.5 sm:space-y-3.5 text-xs sm:text-sm">
                 <div className="flex justify-between">
                   <dt className="text-[#3D2817]/60">Subtotal</dt>
-                  <dd className="font-medium text-[#3D2817]">₹{getCartTotal().toLocaleString()}</dd>
+                  <dd className="font-medium text-[#3D2817]">₹{formatPrice(getCartTotal())}</dd>
                 </div>
                 <div className="flex justify-between items-center">
                   <dt className="flex items-center text-[#3D2817]/60">

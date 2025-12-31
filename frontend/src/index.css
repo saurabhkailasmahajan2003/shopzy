@@ -93,3 +93,49 @@ html {
 .animate-slide-up {
   animation: slide-up 0.3s ease-out;
 }
+
+/* Image Security - Prevent copying and downloading */
+img {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  pointer-events: auto;
+}
+
+/* Prevent image stretching - maintain aspect ratio */
+img {
+  object-fit: cover;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Secure image container */
+.secure-image-container {
+  position: relative;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: auto;
+}
+
+.secure-image-container img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+/* Disable text selection on images */
+img::selection {
+  background: transparent;
+}
+
+img::-moz-selection {
+  background: transparent;
+}

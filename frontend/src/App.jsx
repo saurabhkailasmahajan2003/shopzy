@@ -15,6 +15,7 @@ import Checkout from './pages/Checkout';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import LoginOTP from './pages/LoginOTP';
+import GetStarted from './pages/GetStarted';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
 import GeneralPage from './pages/mobile/GeneralPage';
@@ -68,6 +69,7 @@ function AppContent() {
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/get-started" element={<GetStarted />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login-otp" element={<LoginOTP />} />

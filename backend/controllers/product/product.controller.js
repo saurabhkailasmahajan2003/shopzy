@@ -6,6 +6,7 @@ import WatchNew from '../../models/product/watchNew.model.js';
 import Lens from '../../models/product/lens.model.js';
 import Accessory from '../../models/product/accessory.model.js';
 import SkincareProduct from '../../models/product/skincare.model.js';
+import WomensShoe from '../../models/product/shoe.model.js';
 
 // Normalization functions (duplicated from respective controllers)
 const normalizeOldWomen = (product) => ({
@@ -194,6 +195,42 @@ const normalizeSkincare = (product) => {
   };
 };
 
+const normalizeShoe = (product) => {
+  const normalized = product.toObject ? product.toObject() : product;
+  let imagesArray = [];
+  if (normalized.images && Array.isArray(normalized.images)) {
+    imagesArray = normalized.images.filter(img => img);
+  } else if (normalized.thumbnail) {
+    imagesArray = [normalized.thumbnail];
+  } else if (normalized.Images?.image1) {
+    imagesArray = [normalized.Images.image1];
+  }
+  const mrp = normalized.price || normalized.originalPrice || 0;
+  const discountPercent = normalized.discountPercent || 0;
+  const finalPrice = normalized.finalPrice || (discountPercent > 0 ? mrp - (mrp * discountPercent / 100) : mrp);
+  const originalPrice = normalized.originalPrice || mrp;
+  const sizes = normalized.sizes_inventory 
+    ? normalized.sizes_inventory.map(item => item.size).filter(Boolean)
+    : [];
+  return {
+    ...normalized,
+    title: normalized.title || normalized.name,
+    name: normalized.title || normalized.name,
+    mrp: mrp,
+    price: mrp,
+    originalPrice: originalPrice,
+    finalPrice: finalPrice,
+    discountPercent: discountPercent,
+    images: imagesArray.length > 0 ? imagesArray : [],
+    product_info: normalized.product_info || {
+      brand: normalized.brand || '',
+    },
+    category: normalized.category || "Women's Shoes",
+    subCategory: normalized.subCategory || '',
+    sizes: sizes,
+  };
+};
+
 // @desc    Get product by ID from all categories
 // @route   GET /api/products/:id
 // @access  Public
@@ -217,6 +254,7 @@ export const getProductById = async (req, res) => {
       lensProduct,
       accessoryProduct,
       skincareProduct,
+      shoeProduct,
     ] = await Promise.all([
       Women.findById(id).lean(),
       Saree.findById(id).lean(),
@@ -225,6 +263,7 @@ export const getProductById = async (req, res) => {
       Lens.findById(id).lean(),
       Accessory.findById(id).lean(),
       SkincareProduct.findById(id).lean(),
+      WomensShoe.findById(id).lean(),
     ]);
 
     let product = null;
@@ -258,6 +297,9 @@ export const getProductById = async (req, res) => {
     } else if (skincareProduct) {
       product = normalizeSkincare(skincareProduct);
       category = 'skincare';
+    } else if (shoeProduct) {
+      product = normalizeShoe(shoeProduct);
+      category = 'shoes';
     }
 
     if (!product) {

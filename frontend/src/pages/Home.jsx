@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 // import Footer from '../components/Footer'; 
 import ProductCard from '../components/ProductCard';
 import { productAPI } from '../utils/api';
 import { handleImageError } from '../utils/imageFallback';
+import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import { formatPriceWithCurrency } from '../utils/formatUtils';
 
 // --- ICONS (Embedded directly so no install needed) ---
 const IconChevronLeft = () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>;
@@ -367,11 +370,365 @@ const Home = () => {
     }
   };
 
+  const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpenDropdown(null);
+      }
+    };
+
+    if (openDropdown !== null) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [openDropdown]);
+
+  // Categories from Navbar with subcategory paths
+  const categories = [
+    { id: 'All', label: 'All', path: '/' },
+    { 
+      id: 'women', 
+      label: 'Fashion', 
+      path: '/women', 
+      subItems: [
+        { name: 'Shirts', path: '/women/shirt' },
+        { name: 'T-Shirts', path: '/women/tshirt' },
+        { name: 'Jeans', path: '/women/jeans' },
+        { name: 'Trousers', path: '/women/trousers' },
+        { name: 'Saree', path: '/women/saree' }
+      ] 
+    },
+    { 
+      id: 'shoes', 
+      label: 'Shoes', 
+      path: '/shoes', 
+      subItems: [
+        { name: 'Heels', path: '/shoes?subCategory=Heels' },
+        { name: 'Flats', path: '/shoes?subCategory=Flats' },
+        { name: 'Sneakers', path: '/shoes?subCategory=Sneakers' },
+        { name: 'Boots', path: '/shoes?subCategory=Boots' },
+        { name: 'Sandals', path: '/shoes?subCategory=Sandals' }
+      ] 
+    },
+    { 
+      id: 'watches', 
+      label: 'Watches', 
+      path: '/watches', 
+      subItems: [
+        { name: 'Classic Watches', path: '/watches?gender=women' },
+        { name: 'Smart Watches', path: '/watches?type=smart' }
+      ] 
+    },
+    { 
+      id: 'lenses', 
+      label: 'Eyewear', 
+      path: '/lenses', 
+      subItems: [
+        { name: 'Eyewear Collection', path: '/lenses?gender=women' },
+        { name: 'Sunglasses', path: '/lenses?type=sun' }
+      ] 
+    },
+    { 
+      id: 'accessories', 
+      label: 'Accessories', 
+      path: '/accessories', 
+      subItems: [
+        { name: 'Accessories Collection', path: '/accessories?gender=women' },
+        { name: 'Wallets & Belts', path: '/accessories?type=general' },
+        { name: 'Earrings', path: '/accessories?subCategory=earrings' }
+      ] 
+    },
+    { 
+      id: 'skincare', 
+      label: 'Skincare', 
+      path: '/skincare', 
+      subItems: [
+        { name: 'Serum', path: '/skincare?category=serum' },
+        { name: 'Facewash', path: '/skincare?category=facewash' },
+        { name: 'Sunscreen', path: '/skincare?category=sunscreen' },
+        { name: 'Moisturizer', path: '/skincare?category=moisturizer' },
+        { name: 'Cleanser', path: '/skincare?category=cleanser' }
+      ] 
+    },
+  ];
+
+  // Combine all products for mobile view - Mix products from all categories
+  const combineAndMixProducts = () => {
+    const allProducts = [];
+    
+    // Take a balanced sample from each category
+    const samplesPerCategory = 4; // Take 4 products from each category
+    
+    // Add products from each category
+    if (freshDrops.length > 0) {
+      allProducts.push(...freshDrops.slice(0, samplesPerCategory));
+    }
+    if (saleItems.length > 0) {
+      allProducts.push(...saleItems.slice(0, samplesPerCategory));
+    }
+    if (womenItems.length > 0) {
+      allProducts.push(...womenItems.slice(0, samplesPerCategory));
+    }
+    if (watches.length > 0) {
+      allProducts.push(...watches.slice(0, samplesPerCategory));
+    }
+    if (accessories.length > 0) {
+      allProducts.push(...accessories.slice(0, samplesPerCategory));
+    }
+    if (skincareProducts.length > 0) {
+      allProducts.push(...skincareProducts.slice(0, samplesPerCategory));
+    }
+    
+    // Shuffle the array to mix products from different categories
+    const shuffled = [...allProducts];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    
+    return shuffled.slice(0, 24); // Return up to 24 products (4 from each of 6 categories)
+  };
+  
+  const allMobileProducts = combineAndMixProducts();
+
+  // Show all products mixed (no category filtering) - only filter by search
+  const filteredProducts = allMobileProducts.filter(product => {
+    if (!searchQuery.trim()) return true;
+    const name = (product.name || product.productName || '').toLowerCase();
+    const query = searchQuery.toLowerCase();
+    return name.includes(query);
+  });
+
+  const handleAddToCart = async (product) => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+    try {
+      await addToCart(product, 1, product.sizes?.[0] || 'M', '');
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen font-sans text-gray-800">
-      
+      {/* MOBILE HOME PAGE - New Design */}
+      <div className="md:hidden bg-white min-h-screen">
+        {/* Promotional Banner */}
+        <div className="mx-4 mt-4 mb-4 bg-gradient-to-r from-[#3D2817] to-[#2C1F14] rounded-2xl p-6 relative overflow-hidden">
+          <div className="relative z-10">
+            <h2 className="text-white text-xl font-bold mb-2">
+              Get <span className="text-[#8B4513]">40%</span> off when you order 3 items! 🔥
+            </h2>
+            <button
+              onClick={() => navigate('/sale')}
+              className="mt-4 px-6 py-2.5 bg-gray-200 text-gray-800 font-semibold rounded-full hover:bg-gray-300 transition-colors"
+            >
+              Order Now
+            </button>
+          </div>
+          {/* Decorative Image Placeholder */}
+          <div className="absolute right-0 top-0 bottom-0 w-32 opacity-20">
+            <div className="w-full h-full bg-gradient-to-l from-[#8B4513] to-transparent"></div>
+          </div>
+        </div>
+
+        {/* Search Bar */}
+        <div className="px-4 mb-4">
+          <div className="relative">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2">
+              <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-12 py-3 bg-gray-100 rounded-full text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#8B4513]"
+            />
+            <button className="absolute right-4 top-1/2 -translate-y-1/2">
+              <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Categories Section */}
+        <div className="px-4 mb-6">
+          <h3 className="text-lg font-bold text-gray-800 mb-3">Categories</h3>
+          <div className="relative">
+            <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2" ref={dropdownRef}>
+              {categories.map((cat) => (
+                <div key={cat.id} className="relative flex-shrink-0 z-10">
+                {cat.id === 'All' ? (
+                  <button
+                    onClick={() => {
+                      setSelectedCategory('All');
+                      setOpenDropdown(null);
+                    }}
+                    className={`px-4 py-2 rounded-full font-medium text-sm transition-colors whitespace-nowrap ${
+                      selectedCategory === cat.id
+                        ? 'bg-[#3D2817] text-white'
+                        : 'bg-white text-gray-800 border border-gray-200'
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        if (openDropdown === cat.id) {
+                          setOpenDropdown(null);
+                        } else {
+                          setOpenDropdown(cat.id);
+                        }
+                      }}
+                      className={`px-4 py-2 rounded-full font-medium text-sm transition-colors flex items-center gap-1 whitespace-nowrap ${
+                        selectedCategory === cat.id || openDropdown === cat.id
+                          ? 'bg-[#3D2817] text-white'
+                          : 'bg-white text-gray-800 border border-gray-200'
+                      }`}
+                    >
+                      {cat.label}
+                      <svg 
+                        className={`w-4 h-4 transition-transform ${openDropdown === cat.id ? 'rotate-180' : ''}`}
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    
+                    {/* Dropdown Menu */}
+                    {openDropdown === cat.id && cat.subItems && (
+                      <>
+                        {/* Overlay to close dropdown when clicking outside */}
+                        <div 
+                          className="fixed inset-0 z-[90]"
+                          onClick={() => setOpenDropdown(null)}
+                        />
+                        <div className="absolute top-full left-0 mt-2 bg-white border-2 border-[#3D2817]/40 rounded-xl shadow-2xl z-[100] min-w-[200px] max-w-[250px] max-h-[300px] overflow-y-auto luxury-shadow-lg">
+                          {cat.subItems.map((subItem, index) => (
+                            <Link
+                              key={index}
+                              to={subItem.path}
+                              onClick={() => {
+                                setOpenDropdown(null);
+                                setSelectedCategory(cat.id);
+                              }}
+                              className="block px-4 py-3 text-sm font-semibold text-[#3D2817] hover:bg-[#3D2817] hover:text-white transition-all duration-200 border-b border-[#3D2817]/10 last:border-b-0 first:rounded-t-xl last:rounded-b-xl active:bg-[#3D2817]/90"
+                            >
+                              {subItem.name}
+                            </Link>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Products Grid */}
+        <div className="px-4 pb-6">
+          <div className="grid grid-cols-2 gap-4">
+            {filteredProducts.map((product) => {
+              const productId = product._id || product.id;
+              const productImage = product.image || product.images?.[0] || product.thumbnail || 'https://via.placeholder.com/200';
+              const productName = product.name || product.productName || 'Product';
+              const productPrice = product.finalPrice || product.price || 0;
+              const productCategory = product.category?.toLowerCase().includes('watch') ? 'watches' :
+                                    product.category?.toLowerCase().includes('lens') ? 'lenses' :
+                                    product.category?.toLowerCase().includes('skincare') ? 'skincare' :
+                                    product.category?.toLowerCase().includes('accessor') ? 'accessories' :
+                                    product.category?.toLowerCase().includes('women') || product.category?.toLowerCase().includes('saree') ? 'women' :
+                                    product.category?.toLowerCase().includes('shoe') ? 'shoes' : 'product';
+
+              // Calculate discount
+              const originalPrice = product.originalPrice || product.mrp || product.price || 0;
+              const finalPrice = product.finalPrice || product.price || 0;
+              const hasDiscount = originalPrice > finalPrice && finalPrice > 0 && originalPrice > 0;
+              const discountPercent = hasDiscount 
+                ? Math.round(((originalPrice - finalPrice) / originalPrice) * 100) 
+                : 0;
+
+              return (
+                <div key={productId} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden relative">
+                  {/* Discount Badge */}
+                  {hasDiscount && discountPercent > 0 && (
+                    <div className="absolute top-2 right-2 z-10 bg-[#8B4513] text-white px-2 py-1 rounded-md flex items-center">
+                      <span className="text-xs font-bold">{discountPercent}% OFF</span>
+                    </div>
+                  )}
+
+                  {/* Product Image */}
+                  <Link to={`/product/${productCategory}/${productId}`}>
+                    <div className="w-full aspect-square bg-gray-100 overflow-hidden">
+                      <img
+                        src={productImage}
+                        alt={productName}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src = 'https://via.placeholder.com/200';
+                        }}
+                      />
+                    </div>
+                  </Link>
+
+                  {/* Product Info */}
+                  <div className="p-3">
+                    <Link to={`/product/${productCategory}/${productId}`}>
+                      <h4 className="text-sm font-semibold text-gray-800 mb-1 line-clamp-1">{productName}</h4>
+                    </Link>
+                    <div className="mb-3">
+                      {hasDiscount && discountPercent > 0 ? (
+                        <div className="flex items-center gap-2">
+                          <p className="text-base font-bold text-gray-900">{formatPriceWithCurrency(finalPrice)}</p>
+                          <p className="text-sm text-gray-500 line-through">{formatPriceWithCurrency(originalPrice)}</p>
+                        </div>
+                      ) : (
+                        <p className="text-base font-bold text-gray-900">{formatPriceWithCurrency(productPrice)}</p>
+                      )}
+                    </div>
+
+                    {/* Add to Cart Button */}
+                    <button
+                      onClick={() => handleAddToCart(product)}
+                      className="w-full bg-[#3D2817] text-white rounded-full p-2 flex items-center justify-center hover:bg-[#8B4513] transition-colors"
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
       {/* --- HERO SECTION (Desktop: Text Left, Banners Right | Mobile: Banners Only) --- */}
-      <div className="relative w-full bg-[#FAF8F5]">
+      <div className="hidden md:block relative w-full bg-[#FAF8F5]">
         
         {/* Desktop Hero Layout */}
         <div className="hidden md:block relative w-full pb-8 lg:pb-12 xl:pb-16">

@@ -7,6 +7,7 @@ import LoginModal from '../components/LoginModal';
 import ProductCard from '../components/ProductCard';
 import { handleImageError } from '../utils/imageFallback';
 import { productAPI, reviewAPI } from '../utils/api';
+import { formatPrice } from '../utils/formatUtils';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
@@ -71,18 +72,23 @@ const ProductDetail = () => {
     setLoading(true);
     try {
       let foundData = null;
+      let lastError = null;
 
       // First, try the generic product endpoint (searches all categories)
       try {
+        console.log(`Fetching product from generic endpoint: ${API_BASE_URL}/products/${id}`);
         const res = await fetch(`${API_BASE_URL}/products/${id}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.success) {
-            foundData = data;
-          }
+        const data = await res.json();
+        console.log('Generic endpoint response:', { status: res.status, success: data.success, message: data.message });
+        
+        if (res.ok && data.success) {
+          foundData = data;
+        } else {
+          lastError = data.message || `HTTP ${res.status}`;
         }
       } catch (err) {
-        console.warn("Generic product endpoint failed, trying category-specific endpoints...");
+        console.warn("Generic product endpoint failed:", err);
+        lastError = err.message;
       }
 
       // Fallback to category-specific endpoints if generic endpoint didn't work
@@ -101,46 +107,65 @@ const ProductDetail = () => {
         if (category && category !== 'undefined') {
           const apiCategory = categoryMap[category] || category;
           try {
+            console.log(`Trying category-specific endpoint: ${API_BASE_URL}/products/${apiCategory}/${id}`);
             const res = await fetch(`${API_BASE_URL}/products/${apiCategory}/${id}`);
-            if (res.ok) {
-              const data = await res.json();
-              if (data.success) foundData = data;
+            const data = await res.json();
+            if (res.ok && data.success) {
+              foundData = data;
+              console.log('Found product in category:', apiCategory);
             }
           } catch (err) {
-            // continue to try other categories
+            console.warn(`Category ${apiCategory} endpoint failed:`, err);
           }
         }
 
         // Try all categories if still not found
         if (!foundData) {
+          console.log('Trying all categories...');
           for (const cat of validCategories) {
             try {
               const res = await fetch(`${API_BASE_URL}/products/${cat}/${id}`);
-              if (res.ok) {
-                const data = await res.json();
-                if (data.success) {
-                  foundData = data;
-                  break;
-                }
+              const data = await res.json();
+              if (res.ok && data.success) {
+                foundData = data;
+                console.log('Found product in category:', cat);
+                break;
               }
             } catch (e) {
-              // continue
+              console.warn(`Category ${cat} failed:`, e);
             }
           }
         }
       }
 
-      if (foundData) {
-        setProduct(foundData.data.product);
-        if (foundData.data.product.sizes?.length > 0) setSelectedSize(foundData.data.product.sizes[0]);
-        if (foundData.data.product.colors?.length > 0) setSelectedColor(foundData.data.product.colors[0]);
+      // Handle different response structures
+      // Some endpoints return { data: { product: ... } }
+      // Shoes endpoint returns { data: ... } (product directly in data)
+      let productData = null;
+      if (foundData && foundData.data) {
+        if (foundData.data.product) {
+          // Standard structure: data.product
+          productData = foundData.data.product;
+        } else if (foundData.data._id || foundData.data.id || foundData.data.title || foundData.data.name) {
+          // Shoes structure: product directly in data
+          productData = foundData.data;
+        }
+      }
+
+      if (productData) {
+        console.log('Setting product:', productData.name || productData.title);
+        setProduct(productData);
+        if (productData.sizes?.length > 0) setSelectedSize(productData.sizes[0]);
+        if (productData.colors?.length > 0) setSelectedColor(productData.colors[0]);
         // Fetch recommended products after product is loaded
-        fetchRecommendedProducts(foundData.data.product);
-        fetchTrendingProducts(foundData.data.product);
-        fetchSaleProducts(foundData.data.product);
-        fetchReviews(foundData.data.product);
+        fetchRecommendedProducts(productData);
+        fetchTrendingProducts(productData);
+        fetchSaleProducts(productData);
+        fetchReviews(productData);
       } else {
-        throw new Error('Product not found in any category');
+        console.error('Product not found. Last error:', lastError);
+        console.error('Response data structure:', foundData);
+        setProduct(null);
       }
     } catch (error) {
       console.error('Error fetching product:', error);
@@ -862,10 +887,10 @@ const ProductDetail = () => {
 
               {/* Price Section */}
               <div className="flex items-baseline gap-3 pb-4 border-b border-[#3D2817]/30">
-                <span className="text-3xl lg:text-4xl font-serif font-bold text-[#8B4513]">₹{finalPrice.toLocaleString()}</span>
+                <span className="text-3xl lg:text-4xl font-serif font-bold text-[#8B4513]">₹{formatPrice(finalPrice)}</span>
                 {originalPrice > finalPrice && (
                   <>
-                    <span className="text-lg text-[#3D2817]/40 line-through">₹{originalPrice.toLocaleString()}</span>
+                    <span className="text-lg text-[#3D2817]/40 line-through">₹{formatPrice(originalPrice)}</span>
                     <span className="text-sm font-semibold text-[#8B4513] bg-[#8B4513]/10 border border-[#8B4513]/30 px-2 py-1 rounded">
                       {Math.round(((originalPrice - finalPrice) / originalPrice) * 100)}% OFF
                     </span>

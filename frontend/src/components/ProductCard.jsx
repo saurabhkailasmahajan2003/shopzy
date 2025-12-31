@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../components/ToastContainer';
 import LoginModal from './LoginModal';
 import { handleImageError } from '../utils/imageFallback';
+import { formatPrice } from '../utils/formatUtils';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
@@ -49,6 +50,19 @@ const ProductCard = ({ product }) => {
     ? Math.round(((originalPrice - finalPrice) / originalPrice) * 100) 
     : 0;
   const productId = product._id || product.id;
+  
+  // Determine category for URL
+  const getCategoryForUrl = () => {
+    const category = (product.category || '').toLowerCase();
+    if (category.includes('watch')) return 'watches';
+    if (category.includes('lens')) return 'lenses';
+    if (category.includes('skincare') || category.includes('skin-care')) return 'skincare';
+    if (category.includes('accessor')) return 'accessories';
+    if (category.includes('women') || category.includes('saree')) return 'women';
+    if (category.includes('shoe')) return 'shoes';
+    return 'product'; // fallback
+  };
+  const productCategory = getCategoryForUrl();
   
   // Get reviews count and availability
   const reviewsCount = product.reviewsCount || product.reviewCount || product.numReviews || 0;
@@ -133,7 +147,7 @@ const ProductCard = ({ product }) => {
           }
         }}
       >
-        <Link to={`/product/${productId}`} className="block bg-[#FAF8F5] border border-[#3D2817]/30 p-2 sm:p-3 md:p-4 luxury-shadow rounded transition-shadow">
+        <Link to={`/product/${productCategory}/${productId}`} className="block bg-[#FAF8F5] border border-[#3D2817]/30 p-2 sm:p-3 md:p-4 luxury-shadow rounded transition-shadow">
           
           {/* IMAGE AREA */}
           <div className="relative w-full aspect-square overflow-hidden bg-white mb-2 sm:mb-3 md:mb-4 border border-[#3D2817]/20 rounded">
@@ -262,11 +276,11 @@ const ProductCard = ({ product }) => {
             <div className="flex items-baseline gap-1.5 sm:gap-2 pt-0.5 sm:pt-1">
               {hasDiscount && originalPrice > 0 && (
                 <span className="text-[10px] sm:text-xs text-[#3D2817]/50 line-through">
-                  Rs. {originalPrice.toLocaleString()}
+                  Rs. {formatPrice(originalPrice)}
                 </span>
               )}
               <span className="text-sm sm:text-base font-bold text-[#3D2817]">
-                Rs. {finalPrice > 0 ? finalPrice.toLocaleString() : '0'}
+                Rs. {formatPrice(finalPrice)}
               </span>
               {hasDiscount && discountPercent > 0 && (
                 <span className="text-[10px] sm:text-xs text-green-600 font-semibold">
