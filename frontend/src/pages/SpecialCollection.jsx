@@ -212,7 +212,7 @@ const SpecialCollection = ({ type }) => {
               showMobileFilters ? 'block' : 'hidden'
             } lg:block w-full lg:w-64 flex-shrink-0 ${
               showMobileFilters
-                ? 'fixed inset-0 z-50 bg-white p-4 overflow-y-auto lg:relative lg:z-auto lg:bg-transparent lg:p-0'
+                ? 'fixed top-14 left-0 right-0 bottom-0 z-40 bg-white p-4 overflow-y-auto lg:relative lg:z-auto lg:bg-transparent lg:p-0 lg:top-0'
                 : ''
             }`}
           >
@@ -266,11 +266,51 @@ const SpecialCollection = ({ type }) => {
                 </Link>
               </div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                {products.map((product) => (
-                  <ProductCard key={product._id || product.id} product={normalizeProduct(product)} />
-                ))}
-              </div>
+              <>
+                {/* Subcategories Section - Above Product Cards */}
+                {(() => {
+                  // Check if any products are accessories
+                  const hasAccessories = products.some(p => 
+                    p.category?.toLowerCase().includes('accessor') || 
+                    p.subCategory?.toLowerCase().includes('accessor')
+                  );
+                  
+                  if (hasAccessories) {
+                    return (
+                      <div className="mb-4 sm:mb-6 pb-4 border-b border-[#3D2817]/20">
+                        <p className="text-xs sm:text-sm uppercase tracking-wide text-[#3D2817]/60 font-semibold mb-3">Subcategories</p>
+                        <div className="flex flex-wrap gap-2 sm:gap-3">
+                          <Link
+                            to="/accessories"
+                            className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold border-2 rounded-lg transition-colors text-[#3D2817] border-[#3D2817]/30 hover:bg-[#3D2817] hover:text-[#fefcfb]"
+                          >
+                            Accessories Collection
+                          </Link>
+                          <Link
+                            to="/accessories?type=general"
+                            className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold border-2 rounded-lg transition-colors text-[#3D2817] border-[#3D2817]/30 hover:bg-[#3D2817] hover:text-[#fefcfb]"
+                          >
+                            Wallets & Belts
+                          </Link>
+                          <Link
+                            to="/accessories?subCategory=earrings"
+                            className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold border-2 rounded-lg transition-colors text-[#3D2817] border-[#3D2817]/30 hover:bg-[#3D2817] hover:text-[#fefcfb]"
+                          >
+                            Earrings
+                          </Link>
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                  {products.map((product) => (
+                    <ProductCard key={product._id || product.id} product={normalizeProduct(product)} />
+                  ))}
+                </div>
+              </>
             )}
           </div>
         </div>

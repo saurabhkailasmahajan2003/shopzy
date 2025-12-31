@@ -32,7 +32,7 @@ export const optimizeImageUrl = (imageUrl, quality = 50) => {
   return imageUrl;
 };
 
-/**
+/*
  * Optimizes multiple image URLs
  */
 export const optimizeImageUrls = (imageUrls, quality = 50) => {

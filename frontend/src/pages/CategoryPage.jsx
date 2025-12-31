@@ -498,7 +498,7 @@ const CategoryPage = () => {
             lg:w-1/4 
             lg:flex-shrink-0
             lg:transition-all lg:duration-300 lg:ease-in-out
-            ${showMobileFilters ? 'fixed inset-0 z-50 bg-[#FAF8F5] p-4 sm:p-6 overflow-y-auto lg:relative lg:z-auto lg:bg-transparent lg:p-0' : ''}
+            ${showMobileFilters ? 'fixed top-14 left-0 right-0 bottom-0 z-40 bg-[#FAF8F5] p-4 sm:p-6 overflow-y-auto lg:relative lg:z-auto lg:bg-transparent lg:p-0 lg:top-0' : ''}
           `}>
              {showMobileFilters && (
                <div className="lg:hidden flex items-center justify-between mb-4 sm:mb-6">
@@ -510,86 +510,6 @@ const CategoryPage = () => {
                  </button>
                </div>
              )}
-             
-             {/* Subcategories Section - Show for all categories */}
-             {(() => {
-               const getSubcategories = () => {
-                 if (pathname === '/women' || pathname.startsWith('/women/')) {
-                   return [
-                     { name: 'Shirts', path: '/women/shirt', key: 'shirt' },
-                     { name: 'T-Shirts', path: '/women/tshirt', key: 'tshirt' },
-                     { name: 'Jeans', path: '/women/jeans', key: 'jeans' },
-                     { name: 'Trousers', path: '/women/trousers', key: 'trousers' },
-                     { name: 'Saree', path: '/women/saree', key: 'saree' },
-                   ];
-                 } else if (pathname === '/shoes' || pathname.startsWith('/shoes')) {
-                   return [
-                     { name: 'All Shoes', path: '/shoes', key: 'all' },
-                     { name: 'Heels', path: '/shoes?subCategory=Heels', key: 'heels' },
-                     { name: 'Flats', path: '/shoes?subCategory=Flats', key: 'flats' },
-                     { name: 'Sneakers', path: '/shoes?subCategory=Sneakers', key: 'sneakers' },
-                     { name: 'Boots', path: '/shoes?subCategory=Boots', key: 'boots' },
-                     { name: 'Sandals', path: '/shoes?subCategory=Sandals', key: 'sandals' },
-                   ];
-                 } else if (pathname === '/watches' || pathname.startsWith('/watches')) {
-                   return [
-                     { name: 'Classic Watches', path: '/watches?gender=women', key: 'classic' },
-                     { name: 'Smart Watches', path: '/watches?type=smart', key: 'smart' },
-                   ];
-                 } else if (pathname === '/lenses' || pathname.startsWith('/lenses')) {
-                   return [
-                     { name: 'Eyewear Collection', path: '/lenses?gender=women', key: 'eyewear' },
-                     { name: 'Sunglasses', path: '/lenses?type=sun', key: 'sunglasses' },
-                   ];
-                 } else if (pathname === '/accessories' || pathname.startsWith('/accessories')) {
-                   return [
-                     { name: 'Accessories Collection', path: '/accessories?gender=women', key: 'collection' },
-                     { name: 'Wallets & Belts', path: '/accessories?type=general', key: 'wallets' },
-                     { name: 'Earrings', path: '/accessories?subCategory=earrings', key: 'earrings' },
-                   ];
-                 } else if (pathname === '/skincare' || pathname.startsWith('/skincare')) {
-                   return [
-                     { name: 'Serum', path: '/skincare?category=serum', key: 'serum' },
-                     { name: 'Facewash', path: '/skincare?category=facewash', key: 'facewash' },
-                     { name: 'Sunscreen', path: '/skincare?category=sunscreen', key: 'sunscreen' },
-                     { name: 'Moisturizer', path: '/skincare?category=moisturizer', key: 'moisturizer' },
-                     { name: 'Cleanser', path: '/skincare?category=cleanser', key: 'cleanser' },
-                   ];
-                 }
-                 return [];
-               };
-
-               const subcategories = getSubcategories();
-               if (subcategories.length === 0) return null;
-
-               return (
-                 <div className="mb-4 sm:mb-6 space-y-2">
-                   <p className="text-xs uppercase tracking-wide text-[#3D2817]/60 font-semibold">Subcategories</p>
-                   <div className="flex flex-wrap gap-2">
-                     {subcategories.map((sub) => {
-                       const isActive = location.pathname === sub.path || 
-                                      (sub.path.includes('?') && location.pathname + location.search === sub.path) ||
-                                      (derivedCategory && sub.key === derivedCategory);
-                       
-                       return (
-                         <Link
-                           key={sub.key}
-                           to={sub.path}
-                           className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold border-2 rounded-lg ${
-                             isActive 
-                               ? 'bg-[#3D2817] text-[#fefcfb] border-[#3D2817]' 
-                               : 'text-[#3D2817] border-[#3D2817]/30 hover:bg-[#3D2817] hover:text-[#fefcfb]'
-                           } transition-colors`}
-                           onClick={() => setShowMobileFilters(false)}
-                         >
-                           {sub.name}
-                         </Link>
-                       );
-                     })}
-                   </div>
-                 </div>
-               );
-             })()}
 
              {/* Sidebar Component */}
              <FilterSidebar
@@ -618,6 +538,85 @@ const CategoryPage = () => {
             {isLoading ? null : (
               products.length > 0 ? (
                 <>
+                  {/* Subcategories Section - Above Product Cards */}
+                  {(() => {
+                    const getSubcategories = () => {
+                      if (pathname === '/accessories' || pathname.startsWith('/accessories')) {
+                        return [
+                          { name: 'Accessories Collection', path: '/accessories', key: 'collection' },
+                          { name: 'Wallets & Belts', path: '/accessories?type=general', key: 'wallets' },
+                          { name: 'Earrings', path: '/accessories?subCategory=earrings', key: 'earrings' },
+                        ];
+                      } else if (pathname === '/women' || pathname.startsWith('/women/')) {
+                        return [
+                          { name: 'Shirts', path: '/women/shirt', key: 'shirt' },
+                          { name: 'T-Shirts', path: '/women/tshirt', key: 'tshirt' },
+                          { name: 'Jeans', path: '/women/jeans', key: 'jeans' },
+                          { name: 'Trousers', path: '/women/trousers', key: 'trousers' },
+                          { name: 'Saree', path: '/women/saree', key: 'saree' },
+                        ];
+                      } else if (pathname === '/shoes' || pathname.startsWith('/shoes')) {
+                        return [
+                          { name: 'All Shoes', path: '/shoes', key: 'all' },
+                          { name: 'Heels', path: '/shoes?subCategory=Heels', key: 'heels' },
+                          { name: 'Flats', path: '/shoes?subCategory=Flats', key: 'flats' },
+                          { name: 'Sneakers', path: '/shoes?subCategory=Sneakers', key: 'sneakers' },
+                          { name: 'Boots', path: '/shoes?subCategory=Boots', key: 'boots' },
+                          { name: 'Sandals', path: '/shoes?subCategory=Sandals', key: 'sandals' },
+                        ];
+                      } else if (pathname === '/watches' || pathname.startsWith('/watches')) {
+                        return [
+                          { name: 'Classic Watches', path: '/watches?gender=women', key: 'classic' },
+                          { name: 'Smart Watches', path: '/watches?type=smart', key: 'smart' },
+                        ];
+                      } else if (pathname === '/lenses' || pathname.startsWith('/lenses')) {
+                        return [
+                          { name: 'Eyewear Collection', path: '/lenses?gender=women', key: 'eyewear' },
+                          { name: 'Sunglasses', path: '/lenses?type=sun', key: 'sunglasses' },
+                        ];
+                      } else if (pathname === '/skincare' || pathname.startsWith('/skincare')) {
+                        return [
+                          { name: 'Serum', path: '/skincare?category=serum', key: 'serum' },
+                          { name: 'Facewash', path: '/skincare?category=facewash', key: 'facewash' },
+                          { name: 'Sunscreen', path: '/skincare?category=sunscreen', key: 'sunscreen' },
+                          { name: 'Moisturizer', path: '/skincare?category=moisturizer', key: 'moisturizer' },
+                          { name: 'Cleanser', path: '/skincare?category=cleanser', key: 'cleanser' },
+                        ];
+                      }
+                      return [];
+                    };
+
+                    const subcategories = getSubcategories();
+                    if (subcategories.length === 0) return null;
+
+                    return (
+                      <div className="mb-4 sm:mb-6 pb-4 border-b border-[#3D2817]/20">
+                        <p className="text-xs sm:text-sm uppercase tracking-wide text-[#3D2817]/60 font-semibold mb-3">Subcategories</p>
+                        <div className="flex flex-wrap gap-2 sm:gap-3">
+                          {subcategories.map((sub) => {
+                            const isActive = location.pathname === sub.path || 
+                                           (sub.path.includes('?') && location.pathname + location.search === sub.path) ||
+                                           (derivedCategory && sub.key === derivedCategory);
+                            
+                            return (
+                              <Link
+                                key={sub.key}
+                                to={sub.path}
+                                className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold border-2 rounded-lg transition-colors ${
+                                  isActive 
+                                    ? 'bg-[#3D2817] text-[#fefcfb] border-[#3D2817]' 
+                                    : 'text-[#3D2817] border-[#3D2817]/30 hover:bg-[#3D2817] hover:text-[#fefcfb]'
+                                }`}
+                              >
+                                {sub.name}
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })()}
+
                   <div className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 ${showFilters ? 'lg:grid-cols-3 xl:grid-cols-4' : 'lg:grid-cols-4 xl:grid-cols-5'}`}>
                     {products.map((product) => (
                       <ProductCard key={product._id || product.id} product={normalizeProduct(product)} />

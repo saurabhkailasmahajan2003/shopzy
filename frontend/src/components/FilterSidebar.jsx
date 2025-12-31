@@ -255,7 +255,7 @@ const FilterSidebar = ({ filters, onFilterChange, onClearFilters, brands = [], s
   };
 
   return (
-    <div className="w-full bg-white border border-[#3D2817]/20 overflow-hidden sticky top-[48px] mt-0 max-h-[calc(100vh-48px)] flex flex-col z-50 luxury-shadow-sm rounded-lg">
+    <div className="w-full bg-white border border-[#3D2817]/20 overflow-hidden sticky top-[50px] mt-0 max-h-[calc(100vh-48px)] flex flex-col z-40 luxury-shadow-sm rounded-lg m">
       
       {/* Header */}
       <div className="px-5 py-4 border-b border-[#3D2817]/20 bg-gradient-to-r from-[#FAF8F5] to-white flex items-center justify-between">

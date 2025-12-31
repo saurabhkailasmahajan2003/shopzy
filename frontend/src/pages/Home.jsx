@@ -1250,6 +1250,35 @@ const Home = () => {
         </div>
       </div>
 
+      {/* --- BANNER IMAGES SECTION --- */}
+      <div className="w-full bg-[#FAF8F5] border-t border-[#3D2817]/30">
+        <div className="flex flex-col md:flex-row gap-0">
+          {/* First Banner - Sale */}
+          <Link 
+            to="/sale" 
+            className="flex-1 w-full md:w-1/2 overflow-hidden hover:opacity-95 transition-opacity"
+          >
+            <img
+              src={optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1767171485/Mobile_Banner_resize_7_gyz5xo.jpg', 50)}
+              alt="Sale Banner"
+              className="w-full h-auto object-cover"
+            />
+          </Link>
+          
+          {/* Second Banner - Shirts */}
+          <Link 
+            to="/women/shirt" 
+            className="flex-1 w-full md:w-1/2 overflow-hidden hover:opacity-95 transition-opacity"
+          >
+            <img
+              src={optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1767171505/Mobile_Banner_resize_6_ybv1ud.jpg', 50)}
+              alt="Shirts Banner"
+              className="w-full h-auto object-cover"
+            />
+          </Link>
+        </div>
+      </div>
+
       {/* --- THE BEST OF SKINCARE SECTION (Luxury Style) --- */}
       <div className="bg-[#FAF8F5] py-8 sm:py-10 lg:py-12 xl:py-14 border-t border-[#3D2817]/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
@@ -1353,334 +1382,366 @@ const Home = () => {
         </div>
       </div>
 
-      {/* --- STORIES SECTION (Carousel Style) --- */}
-      <div className="py-8 sm:py-12 lg:py-16 bg-background">
+      {/* --- SHOP BY CATEGORY SECTION --- */}
+      <div className="py-12 sm:py-16 lg:py-20 bg-white border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative">
-            {/* Carousel Container */}
-            <div className="flex gap-3 sm:gap-4 lg:gap-6 overflow-x-auto scrollbar-hide pb-4 scroll-smooth" ref={categoryScrollRef}>
-              {/* Story Card 1 - Discover Our Stores */}
-              <div className="flex-shrink-0 w-56 sm:w-64 lg:w-80 rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 via-cta/10 to-background shadow-lg">
-                <div className="relative h-80 sm:h-96 flex flex-col justify-between p-4 sm:p-6">
-                  <div className="flex-1 flex items-center justify-center">
-                    <img 
-                      src={stories[0]?.image || 'https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=800&auto=format&fit=crop'} 
-                      alt="Discover" 
-                      className="w-full h-full object-cover rounded-xl"
-                    />
-                  </div>
-                  <div className="mt-3 sm:mt-4">
-                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-text mb-2" style={{ fontFamily: 'sans-serif' }}>
-                      Discover Our Stores
-                    </h3>
-                    <p className="text-xs sm:text-sm text-text-muted mb-4">Check out what's trending now.</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Story Card 2 - The Beauty Clearance Sale */}
-              <div className="flex-shrink-0 w-56 sm:w-64 lg:w-80 rounded-2xl overflow-hidden bg-gradient-to-br from-primary/30 to-primary/10 shadow-lg">
-                <div className="relative h-80 sm:h-96 flex flex-col justify-between p-4 sm:p-6">
-                  <div className="flex-1 flex items-center justify-center">
-                    <div className="text-center">
-                      <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-text mb-3 sm:mb-4" style={{ fontFamily: 'sans-serif' }}>
-                        THE BEAUTY CLEARANCE SALE
-                      </h3>
-                      <div className="inline-flex items-center gap-2 bg-cta text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full">
-                        <span className="text-xs sm:text-sm font-bold">UP TO 60% OFF</span>
-                      </div>
-                    </div>
-                  </div>
-                  <button className="bg-primary/80 hover:bg-primary text-text px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-semibold transition-colors">
-                    Stock up now!
-                  </button>
-                </div>
-              </div>
-
-              {/* Story Card 3 - Fragrance Collective */}
-              <div className="flex-shrink-0 w-56 sm:w-64 lg:w-80 rounded-2xl overflow-hidden bg-gradient-to-br from-background via-primary/5 to-background shadow-lg border border-primary/10">
-                <div className="relative h-80 sm:h-96 flex flex-col justify-between p-4 sm:p-6">
-                  <div className="flex-1 flex items-center justify-center">
-                    <div className="text-center">
-                      <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text mb-2" style={{ fontFamily: 'serif' }}>
-                        Fragrance
-                      </h3>
-                      <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-text uppercase tracking-wider" style={{ fontFamily: 'serif' }}>
-                        COLLECTIVE
-                      </h3>
-                    </div>
-                  </div>
-                  <button className="bg-background hover:bg-primary/10 text-text px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-semibold transition-colors border border-primary/20">
-                    Meet Your Scent Soulmate
-                  </button>
-                </div>
-              </div>
-
-              {/* Story Card 4 - The Ingredient Store */}
-              <div className="flex-shrink-0 w-56 sm:w-64 lg:w-80 rounded-2xl overflow-hidden bg-gradient-to-br from-primary/25 to-primary/5 shadow-lg">
-                <div className="relative h-80 sm:h-96 flex flex-col justify-between p-4 sm:p-6">
-                  <div className="flex-1 flex items-center justify-center">
-                    <div className="text-center">
-                      <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-text mb-1" style={{ fontFamily: 'sans-serif' }}>
-                        THE <span className="text-2xl sm:text-3xl lg:text-4xl text-cta">INGREDIENT</span> STORE
-                      </h3>
-                    </div>
-                  </div>
-                  <button className="bg-primary/80 hover:bg-primary text-text px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-semibold transition-colors">
-                    Find Your Ideal Match
-                  </button>
-                </div>
-              </div>
-
-              {/* Story Card 5 - The Ultimate Bridal Beauty Store */}
-              <div className="flex-shrink-0 w-56 sm:w-64 lg:w-80 rounded-2xl overflow-hidden bg-gradient-to-br from-background via-cta/5 to-background shadow-lg border border-cta/10">
-                <div className="relative h-80 sm:h-96 flex flex-col justify-between p-4 sm:p-6">
-                  <div className="flex-1 flex items-center justify-center">
-                    <div className="text-center">
-                      <h3 className="text-base sm:text-lg lg:text-xl font-bold text-cta mb-1" style={{ fontFamily: 'serif' }}>
-                        THE ULTIMATE
-                      </h3>
-                      <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-cta mb-1" style={{ fontFamily: 'serif' }}>
-                        Bridal Beauty
-                      </h3>
-                      <h3 className="text-base sm:text-lg lg:text-xl font-bold text-cta mb-2" style={{ fontFamily: 'serif' }}>
-                        STORE
-                      </h3>
-                      <div className="flex justify-center gap-2">
-                        <span className="text-cta">◆</span>
-                        <span className="text-cta">◆</span>
-                      </div>
-                    </div>
-                  </div>
-                  <button className="bg-cta/20 hover:bg-cta/30 text-text px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-semibold transition-colors">
-                    Get Shaadi Ready
-                  </button>
-                </div>
-              </div>
-
-              {/* Story Card 6 - The Travel Beauty Store */}
-              <div className="flex-shrink-0 w-56 sm:w-64 lg:w-80 rounded-2xl overflow-hidden bg-white shadow-lg border border-primary/10">
-                <div className="relative h-80 sm:h-96 flex flex-col justify-between p-4 sm:p-6">
-                  <div className="flex-1 flex items-center justify-center">
-                    <div className="text-center">
-                      <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-cta mb-2" style={{ fontFamily: 'sans-serif' }}>
-                        THE Travel Beauty STORE
-                      </h3>
-                      <div className="flex justify-center gap-1 mb-4">
-                        <div className="w-6 sm:w-8 h-1 bg-cta rounded-full"></div>
-                        <div className="w-6 sm:w-8 h-1 bg-cta rounded-full"></div>
-                        <div className="w-6 sm:w-8 h-1 bg-cta rounded-full"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <button className="bg-cta/20 hover:bg-cta/30 text-text px-4 sm:px-6 py-2 sm:py-3 rounded-full text-xs sm:text-sm font-semibold transition-colors">
-                    Glow On The Go
-                  </button>
-                </div>
+          {/* Section Header */}
+          <div className="mb-10 sm:mb-12">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
+                  Categories
+                </h2>
               </div>
             </div>
+          </div>
 
-            {/* Scroll Arrow - Right */}
-            <button
-              onClick={() => {
-                if (categoryScrollRef.current) {
-                  categoryScrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
-                }
-              }}
-              className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 sm:p-3 shadow-lg z-10"
+          {/* Category Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4 sm:gap-6">
+            
+            {/* Category 1 - Women's Fashion */}
+            <Link 
+              to="/women" 
+              className="group relative bg-white border border-gray-200 rounded-lg p-6 hover:border-[#3D2817] hover:shadow-lg transition-all duration-200"
             >
-              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
+              <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 mb-4 bg-gray-50 rounded-full flex items-center justify-center group-hover:bg-[#3D2817]/5 transition-colors">
+                  <svg className="w-6 h-6 sm:w-7 sm:h-7 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">
+                  Fashion
+                </h3>
+                <p className="text-xs text-gray-500 group-hover:text-gray-700 transition-colors">
+                  Women's
+                </p>
+              </div>
+            </Link>
+
+            {/* Category 2 - Sale */}
+            <Link 
+              to="/sale" 
+              className="group relative bg-white border-2 border-red-200 rounded-lg p-6 hover:border-red-400 hover:shadow-lg transition-all duration-200"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 mb-4 bg-red-50 rounded-full flex items-center justify-center group-hover:bg-red-100 transition-colors">
+                  <svg className="w-6 h-6 sm:w-7 sm:h-7 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+                  </svg>
+                </div>
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">
+                  Sale
+                </h3>
+                <p className="text-xs text-red-600 font-medium">
+                  Up to 60% OFF
+                </p>
+              </div>
+            </Link>
+
+            {/* Category 3 - Shoes */}
+            <Link 
+              to="/shoes" 
+              className="group relative bg-white border border-gray-200 rounded-lg p-6 hover:border-[#3D2817] hover:shadow-lg transition-all duration-200"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 mb-4 bg-gray-50 rounded-full flex items-center justify-center group-hover:bg-[#3D2817]/5 transition-colors">
+                  <svg className="w-6 h-6 sm:w-7 sm:h-7 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                  </svg>
+                </div>
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">
+                  Shoes
+                </h3>
+                <p className="text-xs text-gray-500 group-hover:text-gray-700 transition-colors">
+                  Footwear
+                </p>
+              </div>
+            </Link>
+
+            {/* Category 4 - Watches */}
+            <Link 
+              to="/watches" 
+              className="group relative bg-white border border-gray-200 rounded-lg p-6 hover:border-[#3D2817] hover:shadow-lg transition-all duration-200"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 mb-4 bg-gray-50 rounded-full flex items-center justify-center group-hover:bg-[#3D2817]/5 transition-colors">
+                  <svg className="w-6 h-6 sm:w-7 sm:h-7 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">
+                  Watches
+                </h3>
+                <p className="text-xs text-gray-500 group-hover:text-gray-700 transition-colors">
+                  Timepieces
+                </p>
+              </div>
+            </Link>
+
+            {/* Category 5 - Eyewear */}
+            <Link 
+              to="/lenses" 
+              className="group relative bg-white border border-gray-200 rounded-lg p-6 hover:border-[#3D2817] hover:shadow-lg transition-all duration-200"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 mb-4 bg-gray-50 rounded-full flex items-center justify-center group-hover:bg-[#3D2817]/5 transition-colors">
+                  <svg className="w-6 h-6 sm:w-7 sm:h-7 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </div>
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">
+                  Eyewear
+                </h3>
+                <p className="text-xs text-gray-500 group-hover:text-gray-700 transition-colors">
+                  Lenses
+                </p>
+              </div>
+            </Link>
+
+            {/* Category 6 - Skincare */}
+            <Link 
+              to="/skincare" 
+              className="group relative bg-white border border-gray-200 rounded-lg p-6 hover:border-[#3D2817] hover:shadow-lg transition-all duration-200"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 mb-4 bg-gray-50 rounded-full flex items-center justify-center group-hover:bg-[#3D2817]/5 transition-colors">
+                  <svg className="w-6 h-6 sm:w-7 sm:h-7 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                  </svg>
+                </div>
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">
+                  Skincare
+                </h3>
+                <p className="text-xs text-gray-500 group-hover:text-gray-700 transition-colors">
+                  Beauty
+                </p>
+              </div>
+            </Link>
+
+            {/* Category 7 - Accessories */}
+            <Link 
+              to="/accessories" 
+              className="group relative bg-white border border-gray-200 rounded-lg p-6 hover:border-[#3D2817] hover:shadow-lg transition-all duration-200"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 mb-4 bg-gray-50 rounded-full flex items-center justify-center group-hover:bg-[#3D2817]/5 transition-colors">
+                  <svg className="w-6 h-6 sm:w-7 sm:h-7 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                </div>
+                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">
+                  Accessories
+                </h3>
+                <p className="text-xs text-gray-500 group-hover:text-gray-700 transition-colors">
+                  Essentials
+                </p>
+              </div>
+            </Link>
           </div>
         </div>
       </div>
 
       
 
-      {/* --- THREE SECTION BANNER (Skincare Legends, Hot Sellers, Greatest Combos) --- */}
-      <section className="py-8 sm:py-12 bg-[#FAF8F5]">
+      {/* --- PROFESSIONAL SKINCARE SECTIONS (Legends, Hot Sellers, Combos) --- */}
+      <section className="relative py-8 sm:py-10 bg-[#FAF8F5] border-t border-[#3D2817]/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             
             {/* Left Section: SKINCARE LEGENDS */}
-            <div className="relative bg-gradient-to-b from-[#d4c5b8] to-[#c4b5a8] border border-[#3D2817]/30 p-6 sm:p-8 min-h-[500px] sm:min-h-[600px] flex flex-col">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6" style={{ color: '#3D2817' }}>
+            <div className="relative bg-white border border-[#3D2817]/20 rounded-lg p-4 sm:p-5 flex flex-col shadow-sm hover:shadow-md transition-shadow">
+              {/* Badge */}
+              <div className="mb-3">
+                <span className="inline-block px-3 py-1 text-[10px] font-bold uppercase tracking-wide bg-pink-500 text-white rounded-full">
+                  ✨ NEW LAUNCH
+                </span>
+              </div>
+
+              <h2 className="text-lg sm:text-xl font-bold mb-3 text-[#3D2817]">
                 Introducing the SKINCARE LEGENDS!
               </h2>
               
-              {/* Category Buttons */}
-              <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-6 sm:mb-8">
-                <Link to="/skincare?category=serum" className="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#3D2817] hover:text-white transition-colors text-center">
-                  Skin Brightening Star
-                </Link>
-                <Link to="/skincare?category=serum" className="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#3D2817] hover:text-white transition-colors text-center">
-                  De-tan Professional
-                </Link>
-                <Link to="/skincare?category=serum" className="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#3D2817] hover:text-white transition-colors text-center">
+              {/* Category Buttons - Compact */}
+              <div className="grid grid-cols-2 gap-2 mb-4">
+                <Link 
+                  to="/skincare?category=serum" 
+                  className="px-2 py-1.5 text-[10px] sm:text-xs font-semibold border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#8B4513] hover:text-white transition-colors text-center rounded"
+                >
                   Pigmentation Specialist
                 </Link>
-                <Link to="/skincare?category=serum" className="px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#3D2817] hover:text-white transition-colors text-center">
+                <Link 
+                  to="/skincare?category=serum" 
+                  className="px-2 py-1.5 text-[10px] sm:text-xs font-semibold border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#8B4513] hover:text-white transition-colors text-center rounded"
+                >
                   Acne Fighter
                 </Link>
               </div>
               
               {/* Moisturizer Section */}
-              <div className="mb-4 sm:mb-6">
+              <div className="mb-4">
                 <Link 
                   to="/skincare?category=moisturizer"
-                  className="block w-full px-4 sm:px-5 py-3 sm:py-3.5 text-sm sm:text-base font-bold border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#3D2817] hover:text-white transition-colors text-center"
+                  className="block w-full px-3 py-2 text-xs sm:text-sm font-semibold border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#8B4513] hover:text-white transition-colors text-center rounded"
                 >
                   Moisturizer - Skincare
                 </Link>
               </div>
               
               {/* Skincare Products */}
-              <div className="flex-1 flex items-center justify-center mb-6">
-                <div className="text-center w-full">
-                  <p className="text-sm sm:text-base text-[#3D2817]/70 mb-4">Premium Skincare Serums</p>
-                  <div className="grid grid-cols-2 gap-3">
-                    {skincareProducts.slice(0, 4).map((product, idx) => {
-                      const imageUrl = product.image || product.imageUrl || product.images?.[0];
-                      return (
-                        <Link
-                          key={product._id || product.id || idx}
-                          to={`/skincare/${product._id || product.id}`}
-                          className="w-full h-20 sm:h-24 bg-[#FAF8F5] border border-[#3D2817]/30 overflow-hidden flex items-center justify-center hover:border-[#8B4513] transition-colors"
-                        >
-                          {imageUrl ? (
-                            <img
-                              src={optimizeImageUrl(imageUrl, 50)}
-                              alt={product.name || product.productName}
-                              className="w-full h-full object-contain p-2"
-                              onError={(e) => {
-                                e.target.style.display = 'none';
-                                e.target.nextSibling.style.display = 'flex';
-                              }}
-                            />
-                          ) : null}
-                          <div className="w-full h-full flex items-center justify-center text-[8px] sm:text-[10px] text-[#3D2817] p-1" style={{ display: imageUrl ? 'none' : 'flex' }}>
-                            {product.name || product.productName || 'Product'}
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </div>
+              <div className="mb-4">
+                <p className="text-xs sm:text-sm font-semibold mb-3 text-[#3D2817]">
+                  Premium Skincare Serums
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {skincareProducts.slice(0, 4).map((product, idx) => {
+                    const imageUrl = product.image || product.imageUrl || product.images?.[0];
+                    return (
+                      <Link
+                        key={product._id || product.id || idx}
+                        to={`/skincare/${product._id || product.id}`}
+                        className="w-full h-16 sm:h-20 bg-[#FAF8F5] border border-[#3D2817]/20 rounded overflow-hidden flex items-center justify-center hover:border-[#8B4513] transition-colors"
+                      >
+                        {imageUrl ? (
+                          <img
+                            src={optimizeImageUrl(imageUrl, 50)}
+                            alt={product.name || product.productName}
+                            className="w-full h-full object-contain p-2"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <div className="w-full h-full flex items-center justify-center text-[9px] text-[#3D2817] p-1" style={{ display: imageUrl ? 'none' : 'flex' }}>
+                          {product.name || product.productName || 'Product'}
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
               
               {/* CTA Button */}
               <Link
                 to="/skincare"
-                className="w-full py-3 sm:py-3.5 text-sm sm:text-base font-bold text-center border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#3D2817] hover:text-white transition-colors"
+                className="w-full py-2 text-xs sm:text-sm font-semibold text-center border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#8B4513] hover:text-white transition-colors rounded"
               >
                 NEW LAUNCH
               </Link>
             </div>
 
             {/* Middle Section: HOT SELLERS */}
-            <div className="relative bg-[#e8e8e8] border border-[#3D2817]/30 p-6 sm:p-8 min-h-[500px] sm:min-h-[600px] flex flex-col">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3" style={{ color: '#3D2817' }}>
+            <div className="relative bg-white border border-[#3D2817]/20 rounded-lg p-4 sm:p-5 flex flex-col shadow-sm hover:shadow-md transition-shadow">
+              {/* Badge */}
+              <div className="mb-3">
+                <span className="inline-block px-3 py-1 text-[10px] font-bold uppercase tracking-wide bg-orange-500 text-white rounded-full">
+                  🔥 HOT SELLERS
+                </span>
+              </div>
+
+              <h2 className="text-lg sm:text-xl font-bold mb-2 text-[#3D2817]">
                 HOT SELLERS
               </h2>
-              <p className="text-sm sm:text-base mb-4 sm:mb-6" style={{ color: '#3D2817' }}>
+              <p className="text-xs sm:text-sm mb-4 text-[#3D2817]/70">
                 High In Demand Secure Yours Now!
               </p>
               
               {/* Hot Sellers Skincare Products */}
-              <div className="flex-1 flex items-center justify-center mb-6">
-                <div className="text-center w-full">
-                  <p className="text-sm sm:text-base text-[#3D2817]/70 mb-4">Best Selling Products</p>
-                  <div className="grid grid-cols-2 gap-3">
-                    {skincareProducts.slice(4, 9).map((product, idx) => {
-                      const imageUrl = product.image || product.imageUrl || product.images?.[0];
-                      return (
-                        <Link
-                          key={product._id || product.id || idx}
-                          to={`/skincare/${product._id || product.id}`}
-                          className="w-full h-20 sm:h-24 bg-[#FAF8F5] border border-[#3D2817]/30 overflow-hidden flex items-center justify-center hover:border-[#8B4513] transition-colors"
-                        >
-                          {imageUrl ? (
-                            <img
-                              src={optimizeImageUrl(imageUrl, 50)}
-                              alt={product.name || product.productName}
-                              className="w-full h-full object-contain p-2"
-                              onError={(e) => {
-                                e.target.style.display = 'none';
-                                e.target.nextSibling.style.display = 'flex';
-                              }}
-                            />
-                          ) : null}
-                          <div className="w-full h-full flex items-center justify-center text-[8px] sm:text-[10px] text-[#3D2817] p-1" style={{ display: imageUrl ? 'none' : 'flex' }}>
-                            {product.name || product.productName || 'Product'}
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </div>
+              <div className="mb-4">
+                <p className="text-xs sm:text-sm font-semibold mb-3 text-[#3D2817]">
+                  Best Selling Products
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {skincareProducts.slice(4, 10).map((product, idx) => {
+                    const imageUrl = product.image || product.imageUrl || product.images?.[0];
+                    return (
+                      <Link
+                        key={product._id || product.id || idx}
+                        to={`/skincare/${product._id || product.id}`}
+                        className="w-full h-16 sm:h-20 bg-[#FAF8F5] border border-[#3D2817]/20 rounded overflow-hidden flex items-center justify-center hover:border-[#8B4513] transition-colors"
+                      >
+                        {imageUrl ? (
+                          <img
+                            src={optimizeImageUrl(imageUrl, 50)}
+                            alt={product.name || product.productName}
+                            className="w-full h-full object-contain p-2"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <div className="w-full h-full flex items-center justify-center text-[9px] text-[#3D2817] p-1" style={{ display: imageUrl ? 'none' : 'flex' }}>
+                          {product.name || product.productName || 'Product'}
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
               
               {/* CTA Button */}
               <Link
                 to="/sale"
-                className="w-full py-3 sm:py-3.5 text-sm sm:text-base font-bold text-center border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#3D2817] hover:text-white transition-colors"
+                className="w-full py-2 text-xs sm:text-sm font-semibold text-center border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#8B4513] hover:text-white transition-colors rounded"
               >
                 Hot Sellers
               </Link>
             </div>
 
             {/* Right Section: Greatest Combos */}
-            <div className="relative bg-gradient-to-b from-[#d4c5b8] to-[#c4b5a8] border border-[#3D2817]/30 p-6 sm:p-8 min-h-[500px] sm:min-h-[600px] flex flex-col">
-              <div className="relative mb-4 sm:mb-6">
-                <div className="absolute -left-2 -top-2 bg-[#8B4513] border border-[#3D2817]/30 px-3 sm:px-4 py-2 sm:py-2.5 transform rotate-[-12deg] z-10">
-                  <span className="text-xs sm:text-sm font-bold text-white">UP TO 60% OFF</span>
+            <div className="relative bg-white border border-[#3D2817]/20 rounded-lg p-4 sm:p-5 flex flex-col shadow-sm hover:shadow-md transition-shadow">
+              {/* Discount Badge */}
+              <div className="relative mb-3">
+                <div className="absolute -left-2 -top-2 bg-[#8B4513] border border-white shadow-lg px-3 py-1.5 transform rotate-[-12deg] z-10 rounded">
+                  <span className="text-[10px] sm:text-xs font-bold text-white">UP TO 60% OFF</span>
                 </div>
               </div>
               
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6" style={{ color: '#3D2817' }}>
+              <h2 className="text-base sm:text-lg font-bold mb-3 text-[#3D2817] mt-4">
                 Grab your Biggest Savings with our Greatest Combos!
               </h2>
               
               {/* Combo Skincare Products */}
-              <div className="flex-1 flex items-center justify-center mb-6">
-                <div className="text-center w-full">
-                  <p className="text-sm sm:text-base text-[#3D2817]/70 mb-4">Combo Products</p>
-                  <div className="grid grid-cols-2 gap-3">
-                    {skincareProducts.slice(0, 8).map((product, idx) => {
-                      const imageUrl = product.image || product.imageUrl || product.images?.[0];
-                      return (
-                        <Link
-                          key={product._id || product.id || idx}
-                          to={`/skincare/${product._id || product.id}`}
-                          className="w-full h-16 sm:h-20 bg-[#FAF8F5] border border-[#3D2817]/30 overflow-hidden flex items-center justify-center hover:border-[#8B4513] transition-colors"
-                        >
-                          {imageUrl ? (
-                            <img
-                              src={optimizeImageUrl(imageUrl, 50)}
-                              alt={product.name || product.productName}
-                              className="w-full h-full object-contain p-2"
-                              onError={(e) => {
-                                e.target.style.display = 'none';
-                                e.target.nextSibling.style.display = 'flex';
-                              }}
-                            />
-                          ) : null}
-                          <div className="w-full h-full flex items-center justify-center text-[8px] sm:text-[10px] text-[#3D2817] p-1" style={{ display: imageUrl ? 'none' : 'flex' }}>
-                            {product.name || product.productName || 'Product'}
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </div>
+              <div className="mb-4">
+                <p className="text-xs sm:text-sm font-semibold mb-3 text-[#3D2817]">
+                  Combo Products
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {skincareProducts.slice(0, 8).map((product, idx) => {
+                    const imageUrl = product.image || product.imageUrl || product.images?.[0];
+                    return (
+                      <Link
+                        key={product._id || product.id || idx}
+                        to={`/skincare/${product._id || product.id}`}
+                        className="w-full h-14 sm:h-16 bg-[#FAF8F5] border border-[#3D2817]/20 rounded overflow-hidden flex items-center justify-center hover:border-[#8B4513] transition-colors"
+                      >
+                        {imageUrl ? (
+                          <img
+                            src={optimizeImageUrl(imageUrl, 50)}
+                            alt={product.name || product.productName}
+                            className="w-full h-full object-contain p-1.5"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <div className="w-full h-full flex items-center justify-center text-[8px] text-[#3D2817] p-1" style={{ display: imageUrl ? 'none' : 'flex' }}>
+                          {product.name || product.productName || 'Product'}
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
               
               {/* CTA Button */}
               <Link
                 to="/sale"
-                className="w-full py-3 sm:py-3.5 text-sm sm:text-base font-bold text-center border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#3D2817] hover:text-white transition-colors"
+                className="w-full py-2 text-xs sm:text-sm font-semibold text-center border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] hover:bg-[#8B4513] hover:text-white transition-colors rounded"
               >
                 Combos
               </Link>
@@ -1693,13 +1754,13 @@ const Home = () => {
 
 
       
-      {/* <div className="w-fit m-0 p-0 leading-none overflow-visible h-auto w-auto hidden lg:block">
+      <div className="w-fit m-0 p-0 leading-none overflow-visible h-auto w-auto hidden lg:block">
         <img
           src="https://res.cloudinary.com/de1bg8ivx/image/upload/v1765186240/d347cf32-1980-4355-9ac5-9168cf727263.png"
           alt="Full size"
           className="block w-auto h-auto m-0 p-0 border-none outline-none"
         />
-      </div> */}
+      </div>
 
 
 
@@ -1733,41 +1794,99 @@ const Home = () => {
         isLoading={isLoading}
       /> */}
 
-      {/* 3. Women - Grid Layout */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="grid lg:grid-cols-1 gap-4 lg:gap-12">
-          <div className="bg-pink-50 p-4 sm:p-6 border border-pink-200">
-            <div className="flex justify-between items-center mb-4 sm:mb-6">
-              <h2 className="text-xl sm:text-2xl font-extrabold text-pink-600">For Her</h2>
-              <Link to="/women" className="text-xs sm:text-sm font-semibold text-pink-600 hover:text-pink-800 transition">View All</Link>
+      {/* 3. Women - Enhanced "For Her" Section */}
+      <div className="relative w-full bg-gradient-to-br from-[#FAF8F5] via-[#FFF8F0] to-[#FAF8F5] py-12 sm:py-16 lg:py-20 overflow-hidden">
+        {/* Decorative Background Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-pink-200/20 to-rose-200/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-purple-200/20 to-pink-200/20 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-rose-100/10 to-pink-100/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header Section */}
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="inline-block mb-4">
+              <span className="inline-block px-4 py-1.5 text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full shadow-lg">
+                ✨ Exclusive Collection
+              </span>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-              {isLoading ? [1, 2, 3].map(i => <SkeletonCard key={i} />) : womenItems.slice(0, 3).map(p => (
-                <div key={p._id} className="transform scale-90 sm:scale-100">
-                  <ProductCard product={p} />
-            </div>
-              ))}
+            <h2 className="text-2xl sm:text-5xl lg:text-4xl font-serif font-bold mb-4 bg-gradient-to-r from-pink-600 via-rose-600 to-pink-600 bg-clip-text text-transparent">
+              For Her
+            </h2>
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+              Discover our curated collection of women's fashion, designed to elevate your style and celebrate your unique beauty
+            </p>
           </div>
-            {/* Content under the images */}
-            <div className="mt-6 sm:mt-8 text-center">
-              <p className="text-xs sm:text-sm mb-4" style={{ color: '#3D2817', opacity: 0.8 }}>
-                Discover our curated collection of women's fashion, designed to elevate your style
-              </p>
+
+          {/* Products Grid */}
+          <div className="relative mb-10 sm:mb-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+              {isLoading ? (
+                [1, 2, 3].map(i => (
+                  <div key={i} className="animate-pulse">
+                    <SkeletonCard />
+                  </div>
+                ))
+              ) : (
+                womenItems.slice(0, 3).map((p, index) => (
+                  <div 
+                    key={p._id} 
+                    className="group relative transform transition-all duration-500 hover:-translate-y-2"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    {/* Decorative Border on Hover */}
+                    <div className="absolute -inset-1 bg-gradient-to-r from-pink-500 via-rose-500 to-pink-500 rounded-2xl opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500"></div>
+                    <div className="relative">
+                      <ProductCard product={p} />
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* Call to Action Section */}
+          <div className="relative text-center">
+            <div className="inline-flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
               <Link
                 to="/women"
-                className="inline-block px-6 py-2.5 text-xs sm:text-sm font-semibold transition-colors border"
-                style={{ backgroundColor: '#8B4513', color: '#FAF8F5', borderColor: '#bb3435' }}
+                className="group relative px-8 py-4 text-sm sm:text-base font-bold text-white rounded-full overflow-hidden shadow-2xl transition-all duration-300 hover:shadow-pink-500/50"
+                style={{
+                  background: 'linear-gradient(135deg, #ec4899 0%, #f43f5e 50%, #ec4899 100%)',
+                  backgroundSize: '200% 200%',
+                }}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = '#120e0f';
-                  e.target.style.borderColor = '#120e0f';
+                  e.target.style.backgroundPosition = 'right center';
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = '#bb3435';
-                  e.target.style.borderColor = '#bb3435';
+                  e.target.style.backgroundPosition = 'left center';
                 }}
               >
-                Shop Women's Collection
+                <span className="relative z-10 flex items-center gap-2">
+                  <span>Shop Women's Collection</span>
+                  <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </span>
+                <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
               </Link>
+              
+              <Link
+                to="/women"
+                className="px-6 py-3 text-sm sm:text-base font-semibold text-pink-600 hover:text-rose-600 transition-colors border-2 border-pink-300 hover:border-rose-400 rounded-full hover:bg-pink-50"
+              >
+                View All →
+              </Link>
+            </div>
+
+            {/* Decorative Elements */}
+            <div className="mt-8 flex items-center justify-center gap-2 text-gray-400">
+              <div className="w-12 h-px bg-gradient-to-r from-transparent via-pink-300 to-transparent"></div>
+              <svg className="w-5 h-5 text-pink-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              <div className="w-12 h-px bg-gradient-to-r from-transparent via-pink-300 to-transparent"></div>
             </div>
           </div>
         </div>
@@ -1776,7 +1895,7 @@ const Home = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 sm:mt-12 mb-6 sm:mb-8">
         <div className="text-center mb-6 sm:mb-8">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Featured Collections</h2>
-          <p className="text-sm sm:text-base text-gray-500">Essential styles for her.</p>
+          
         </div>
         <div className="grid grid-cols-1 md:grid-cols-1 gap-6 w-full max-w-2xl mx-auto">
           <Link to="/women/shirt" className="block w-full overflow-hidden rounded-xl duration-300 group">

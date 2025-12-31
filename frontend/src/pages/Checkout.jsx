@@ -345,7 +345,7 @@ const Checkout = () => {
             }}
           >
             <div 
-              className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 max-w-md w-full mx-4 text-center transform transition-all duration-300"
+              className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 max-w-md w-full mx-3 sm:mx-4 text-center transform transition-all duration-300"
               style={{
                 animation: 'slideUp 0.4s ease-out'
               }}
@@ -460,8 +460,8 @@ const Checkout = () => {
 
         {/* Enhanced Processing Order Overlay with Steps */}
         {isProcessingOrder && (
-          <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 backdrop-blur-sm">
-            <div className="bg-white rounded-xl shadow-2xl p-6 sm:p-8 max-w-md w-full mx-4">
+          <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 backdrop-blur-sm p-3 sm:p-4">
+            <div className="bg-white rounded-xl shadow-2xl p-4 sm:p-6 md:p-8 max-w-md w-full max-h-[90vh] overflow-y-auto">
               <div className="text-center">
                 <div className="flex justify-center mb-4 sm:mb-6">
                   <div className="relative">
@@ -596,9 +596,9 @@ const Checkout = () => {
           </div>
         )}
 
-        <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
+        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {/* Left Column - Shipping Address Form */}
-          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6 order-2 lg:order-1">
             {/* Shipping Address Card */}
             <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
               <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
@@ -651,11 +651,11 @@ const Checkout = () => {
                     onChange={handleInputChange}
                     required
                     rows="3"
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors resize-none"
+                    className="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors resize-none"
                     placeholder="Enter your complete address"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">
                       City <span className="text-red-500">*</span>
@@ -682,7 +682,7 @@ const Checkout = () => {
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">ZIP Code</label>
                     <input
@@ -736,19 +736,19 @@ const Checkout = () => {
           </div>
 
           {/* Right Column - Order Summary */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg border border-gray-200 shadow-sm sticky top-24">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h2 className="text-base font-semibold text-gray-900">Order Summary</h2>
+          <div className="lg:col-span-1 order-1 lg:order-2">
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm lg:sticky lg:top-24">
+              <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
+                <h2 className="text-sm sm:text-base font-semibold text-gray-900">Order Summary</h2>
               </div>
-              <div className="p-6 space-y-4 max-h-64 overflow-y-auto">
+              <div className="p-4 sm:p-6 space-y-3 sm:space-y-4 max-h-48 sm:max-h-64 overflow-y-auto">
                 {cart.map((item) => {
                   const product = item.product || item;
                   const price = product.price || product.finalPrice || 0;
                   return (
-                    <div key={item._id || item.id} className="flex items-start gap-3 pb-4 border-b border-gray-100 last:border-0 last:pb-0">
+                    <div key={item._id || item.id} className="flex items-start gap-2 sm:gap-3 pb-3 sm:pb-4 border-b border-gray-100 last:border-0 last:pb-0">
                       {product.images?.[0] && (
-                        <div className="w-16 h-16 flex-shrink-0 bg-gray-50 rounded-md overflow-hidden border border-gray-200">
+                        <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-md overflow-hidden border border-gray-200">
                           <img
                             src={product.images[0]}
                             alt={product.name}
@@ -757,9 +757,9 @@ const Checkout = () => {
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">{product.name}</p>
-                        <p className="text-xs text-gray-500 mt-0.5">Qty: {item.quantity}</p>
-                        <p className="text-sm font-semibold text-gray-900 mt-1">
+                        <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">{product.name}</p>
+                        <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5">Qty: {item.quantity}</p>
+                        <p className="text-xs sm:text-sm font-semibold text-gray-900 mt-1">
                           ₹{formatPrice(price * item.quantity)}
                         </p>
                       </div>
@@ -767,26 +767,26 @@ const Checkout = () => {
                   );
                 })}
               </div>
-              <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 space-y-2.5">
-                <div className="flex justify-between text-sm">
+              <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200 bg-gray-50 space-y-2 sm:space-y-2.5">
+                <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-gray-600">Subtotal</span>
                   <span className="font-medium text-gray-900">₹{formatPrice(getCartTotal())}</span>
                 </div>
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-gray-600">Shipping</span>
                   <span className="font-medium text-green-600">Free</span>
                 </div>
-                <div className="border-t border-gray-200 pt-2.5 mt-2.5 flex justify-between">
-                  <span className="text-base font-semibold text-gray-900">Total</span>
-                  <span className="text-lg font-semibold text-gray-900">₹{getCartTotal().toLocaleString()}</span>
+                <div className="border-t border-gray-200 pt-2 sm:pt-2.5 mt-2 sm:mt-2.5 flex justify-between">
+                  <span className="text-sm sm:text-base font-semibold text-gray-900">Total</span>
+                  <span className="text-base sm:text-lg font-semibold text-gray-900">₹{getCartTotal().toLocaleString()}</span>
                 </div>
               </div>
 
               {/* Payment Method Selection */}
-              <div className="px-6 py-4 border-t border-gray-200">
-                <h3 className="text-sm font-semibold text-gray-900 mb-3">Payment Method</h3>
-                <div className="space-y-2.5">
-                  <label className={`flex items-start gap-3 p-3 border rounded-md cursor-pointer transition-all ${
+              <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200">
+                <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3">Payment Method</h3>
+                <div className="space-y-2 sm:space-y-2.5">
+                  <label className={`flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 border rounded-md cursor-pointer transition-all ${
                     paymentMethod === 'razorpay' 
                       ? 'border-gray-900 bg-gray-50' 
                       : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
@@ -797,14 +797,14 @@ const Checkout = () => {
                       value="razorpay"
                       checked={paymentMethod === 'razorpay'}
                       onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="w-4 h-4 text-gray-900 focus:ring-gray-900 mt-0.5"
+                      className="w-4 h-4 text-gray-900 focus:ring-gray-900 mt-0.5 flex-shrink-0"
                     />
-                    <div className="flex-1">
-                      <div className="text-sm font-medium text-gray-900">Online Payment</div>
-                      <div className="text-xs text-gray-500 mt-0.5">Cards, UPI, Wallets</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs sm:text-sm font-medium text-gray-900">Online Payment</div>
+                      <div className="text-[10px] sm:text-xs text-gray-500 mt-0.5">Cards, UPI, Wallets</div>
                     </div>
                   </label>
-                  <label className={`flex items-start gap-3 p-3 border rounded-md cursor-pointer transition-all ${
+                  <label className={`flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 border rounded-md cursor-pointer transition-all ${
                     paymentMethod === 'COD' 
                       ? 'border-gray-900 bg-gray-50' 
                       : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
@@ -815,22 +815,22 @@ const Checkout = () => {
                       value="COD"
                       checked={paymentMethod === 'COD'}
                       onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="w-4 h-4 text-gray-900 focus:ring-gray-900 mt-0.5"
+                      className="w-4 h-4 text-gray-900 focus:ring-gray-900 mt-0.5 flex-shrink-0"
                     />
-                    <div className="flex-1">
-                      <div className="text-sm font-medium text-gray-900">Cash on Delivery</div>
-                      <div className="text-xs text-gray-500 mt-0.5">Pay on delivery</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs sm:text-sm font-medium text-gray-900">Cash on Delivery</div>
+                      <div className="text-[10px] sm:text-xs text-gray-500 mt-0.5">Pay on delivery</div>
                     </div>
                   </label>
                 </div>
               </div>
 
               {/* Payment Button */}
-              <div className="px-6 py-4 border-t border-gray-200 bg-white">
+              <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200 bg-white">
                 <button
                   onClick={handlePayment}
                   disabled={loading || isProcessingOrder}
-                  className="w-full bg-cta text-white py-2.5 rounded-md hover:bg-cta-dark transition-colors text-sm font-medium disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full bg-cta text-white py-2.5 sm:py-3 rounded-md hover:bg-cta-dark transition-colors text-xs sm:text-sm font-medium disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {loading || isProcessingOrder ? (
                     <>
@@ -876,10 +876,10 @@ const Checkout = () => {
 
       {/* Invoice Preview Modal */}
       {showInvoicePreview && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 overflow-y-auto" onClick={() => setShowInvoicePreview(false)}>
-          <div className="bg-white rounded-lg max-w-4xl w-full my-8 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-gray-900">Invoice Preview</h2>
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto" onClick={() => setShowInvoicePreview(false)}>
+          <div className="bg-white rounded-lg max-w-4xl w-full my-4 sm:my-8 max-h-[95vh] sm:max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-3 sm:px-6 py-3 sm:py-4 flex justify-between items-center z-10">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900">Invoice Preview</h2>
               <button
                 onClick={() => setShowInvoicePreview(false)}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -889,7 +889,7 @@ const Checkout = () => {
                 </svg>
               </button>
             </div>
-            <div className="p-6">
+            <div className="p-3 sm:p-6">
               <Invoice 
                 order={{
                   items: cart.map(item => ({
