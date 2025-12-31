@@ -164,13 +164,29 @@ const Home = () => {
   const [watches, setWatches] = useState([]);
   const [accessories, setAccessories] = useState([]);
   const [skincareProducts, setSkincareProducts] = useState([]);
+  
+  // Mobile view specific products
+  const [tshirts, setTshirts] = useState([]);
+  const [watchesMobile, setWatchesMobile] = useState([]);
+  const [eyewear, setEyewear] = useState([]);
+  const [accessoriesMobile, setAccessoriesMobile] = useState([]);
 
   useEffect(() => {
     const loadAllData = async () => {
       setIsLoading(true);
       try {
-        const [freshDropsData, saleData, womenData, watchesData, accessoriesData, skincareData] = await Promise.all([
-          fetchFreshDrops(), fetchSaleItems(), fetchWomen(), fetchWatches(), fetchAccessories(), fetchSkincare()
+        const [freshDropsData, saleData, womenData, watchesData, accessoriesData, skincareData, tshirtsData, watchesMobileData, eyewearData, accessoriesMobileData] = await Promise.all([
+          fetchFreshDrops(), 
+          fetchSaleItems(), 
+          fetchWomen(), 
+          fetchWatches(), 
+          fetchAccessories(), 
+          fetchSkincare(),
+          // Fetch mobile-specific products
+          productAPI.getWomenItems({ subCategory: 'tshirt', limit: 5 }).then(res => res.success ? res.data.products : []),
+          productAPI.getWatches({ limit: 5 }).then(res => res.success ? res.data.products : []),
+          productAPI.getLenses({ limit: 5 }).then(res => res.success ? res.data.products : []),
+          productAPI.getAccessories({ limit: 5 }).then(res => res.success ? res.data.products : [])
         ]);
         setFreshDrops(freshDropsData);
         setSaleItems(saleData);
@@ -178,6 +194,10 @@ const Home = () => {
         setWatches(watchesData);
         setAccessories(accessoriesData);
         setSkincareProducts(skincareData);
+        setTshirts(tshirtsData);
+        setWatchesMobile(watchesMobileData);
+        setEyewear(eyewearData);
+        setAccessoriesMobile(accessoriesMobileData);
       } catch (error) {
         console.error("Error loading home page data:", error);
       } finally {
@@ -376,23 +396,6 @@ const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [openDropdown, setOpenDropdown] = useState(null);
-  const dropdownRef = useRef(null);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setOpenDropdown(null);
-      }
-    };
-
-    if (openDropdown !== null) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-      };
-    }
-  }, [openDropdown]);
 
   // Categories from Navbar with subcategory paths
   const categories = [
@@ -463,52 +466,15 @@ const Home = () => {
     },
   ];
 
-  // Combine all products for mobile view - Mix products from all categories
-  const combineAndMixProducts = () => {
-    const allProducts = [];
-    
-    // Take a balanced sample from each category
-    const samplesPerCategory = 4; // Take 4 products from each category
-    
-    // Add products from each category
-    if (freshDrops.length > 0) {
-      allProducts.push(...freshDrops.slice(0, samplesPerCategory));
-    }
-    if (saleItems.length > 0) {
-      allProducts.push(...saleItems.slice(0, samplesPerCategory));
-    }
-    if (womenItems.length > 0) {
-      allProducts.push(...womenItems.slice(0, samplesPerCategory));
-    }
-    if (watches.length > 0) {
-      allProducts.push(...watches.slice(0, samplesPerCategory));
-    }
-    if (accessories.length > 0) {
-      allProducts.push(...accessories.slice(0, samplesPerCategory));
-    }
-    if (skincareProducts.length > 0) {
-      allProducts.push(...skincareProducts.slice(0, samplesPerCategory));
-    }
-    
-    // Shuffle the array to mix products from different categories
-    const shuffled = [...allProducts];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    
-    return shuffled.slice(0, 24); // Return up to 24 products (4 from each of 6 categories)
+  // Helper function to filter products by search query
+  const filterProductsBySearch = (products) => {
+    if (!searchQuery.trim()) return products;
+    return products.filter(product => {
+      const name = (product.name || product.productName || '').toLowerCase();
+      const query = searchQuery.toLowerCase();
+      return name.includes(query);
+    });
   };
-  
-  const allMobileProducts = combineAndMixProducts();
-
-  // Show all products mixed (no category filtering) - only filter by search
-  const filteredProducts = allMobileProducts.filter(product => {
-    if (!searchQuery.trim()) return true;
-    const name = (product.name || product.productName || '').toLowerCase();
-    const query = searchQuery.toLowerCase();
-    return name.includes(query);
-  });
 
   const handleAddToCart = async (product) => {
     if (!isAuthenticated) {
@@ -527,7 +493,17 @@ const Home = () => {
       {/* MOBILE HOME PAGE - New Design */}
       <div className="md:hidden bg-white min-h-screen">
         {/* Promotional Banner */}
-        <div className="mx-4 mt-4 mb-4 bg-gradient-to-r from-[#3D2817] to-[#2C1F14] rounded-2xl p-6 relative overflow-hidden">
+        <div 
+          className="mx-4 mt-4 mb-4 rounded-2xl p-6 relative overflow-hidden"
+          style={{
+            backgroundImage: 'url(https://res.cloudinary.com/dvkxgrcbv/image/upload/v1767163767/663b9497381eaa3fcc256f05_1_vvv38z.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        >
+          {/* Overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#3D2817]/90 to-[#2C1F14]/80 rounded-2xl"></div>
           <div className="relative z-10">
             <h2 className="text-white text-xl font-bold mb-2">
               Get <span className="text-[#8B4513]">40%</span> off when you order 3 items! 🔥
@@ -538,10 +514,6 @@ const Home = () => {
             >
               Order Now
             </button>
-          </div>
-          {/* Decorative Image Placeholder */}
-          <div className="absolute right-0 top-0 bottom-0 w-32 opacity-20">
-            <div className="w-full h-full bg-gradient-to-l from-[#8B4513] to-transparent"></div>
           </div>
         </div>
 
@@ -570,112 +542,98 @@ const Home = () => {
 
         {/* Categories Section */}
         <div className="px-4 mb-6">
-          <h3 className="text-lg font-bold text-gray-800 mb-3">Categories</h3>
-          <div className="relative">
-            <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2" ref={dropdownRef}>
-              {categories.map((cat) => (
-                <div key={cat.id} className="relative flex-shrink-0 z-10">
-                {cat.id === 'All' ? (
-                  <button
-                    onClick={() => {
-                      setSelectedCategory('All');
-                      setOpenDropdown(null);
-                    }}
-                    className={`px-4 py-2 rounded-full font-medium text-sm transition-colors whitespace-nowrap ${
-                      selectedCategory === cat.id
-                        ? 'bg-[#3D2817] text-white'
-                        : 'bg-white text-gray-800 border border-gray-200'
-                    }`}
+          <h3 className="text-lg font-semibold text-gray-800 mb-3">Categories</h3>
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => {
+                  if (cat.id === 'All') {
+                    setOpenDropdown(null);
+                  } else {
+                    setOpenDropdown(openDropdown === cat.id ? null : cat.id);
+                  }
+                }}
+                className={`flex-shrink-0 px-4 py-2 rounded-lg font-medium text-sm transition-colors whitespace-nowrap flex items-center gap-1.5 ${
+                  openDropdown === cat.id
+                    ? 'bg-[#3D2817] text-white'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                {cat.label}
+                {cat.id !== 'All' && (
+                  <svg 
+                    className={`w-3.5 h-3.5 transition-transform ${openDropdown === cat.id ? 'rotate-180' : ''}`}
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                    strokeWidth={2}
                   >
-                    {cat.label}
-                  </button>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => {
-                        if (openDropdown === cat.id) {
-                          setOpenDropdown(null);
-                        } else {
-                          setOpenDropdown(cat.id);
-                        }
-                      }}
-                      className={`px-4 py-2 rounded-full font-medium text-sm transition-colors flex items-center gap-1 whitespace-nowrap ${
-                        selectedCategory === cat.id || openDropdown === cat.id
-                          ? 'bg-[#3D2817] text-white'
-                          : 'bg-white text-gray-800 border border-gray-200'
-                      }`}
-                    >
-                      {cat.label}
-                      <svg 
-                        className={`w-4 h-4 transition-transform ${openDropdown === cat.id ? 'rotate-180' : ''}`}
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        stroke="currentColor"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                    
-                    {/* Dropdown Menu */}
-                    {openDropdown === cat.id && cat.subItems && (
-                      <>
-                        {/* Overlay to close dropdown when clicking outside */}
-                        <div 
-                          className="fixed inset-0 z-[90]"
-                          onClick={() => setOpenDropdown(null)}
-                        />
-                        <div className="absolute top-full left-0 mt-2 bg-white border-2 border-[#3D2817]/40 rounded-xl shadow-2xl z-[100] min-w-[200px] max-w-[250px] max-h-[300px] overflow-y-auto luxury-shadow-lg">
-                          {cat.subItems.map((subItem, index) => (
-                            <Link
-                              key={index}
-                              to={subItem.path}
-                              onClick={() => {
-                                setOpenDropdown(null);
-                                setSelectedCategory(cat.id);
-                              }}
-                              className="block px-4 py-3 text-sm font-semibold text-[#3D2817] hover:bg-[#3D2817] hover:text-white transition-all duration-200 border-b border-[#3D2817]/10 last:border-b-0 first:rounded-t-xl last:rounded-b-xl active:bg-[#3D2817]/90"
-                            >
-                              {subItem.name}
-                            </Link>
-                          ))}
-                        </div>
-                      </>
-                    )}
-                  </>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
                 )}
-              </div>
+              </button>
             ))}
           </div>
+          
+          {/* Subcategories Section */}
+          {openDropdown && categories.find(cat => cat.id === openDropdown)?.subItems && (
+            <div className="mt-3 bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-sm font-semibold text-gray-800">
+                  {categories.find(cat => cat.id === openDropdown)?.label}
+                </h4>
+                <button
+                  onClick={() => setOpenDropdown(null)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {categories.find(cat => cat.id === openDropdown)?.subItems.map((subItem, index) => (
+                  <Link
+                    key={index}
+                    to={subItem.path}
+                    onClick={() => setOpenDropdown(null)}
+                    className="px-3 py-2 text-sm font-medium text-gray-700 bg-gray-50 hover:bg-[#3D2817] hover:text-white rounded-md transition-colors text-center border border-gray-200 hover:border-[#3D2817]"
+                  >
+                    {subItem.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Products Grid */}
+        {/* Products Grid - Mixed T-Shirts, Watches, Eyewear, and Accessories */}
         <div className="px-4 pb-6">
           <div className="grid grid-cols-2 gap-4">
-            {filteredProducts.map((product) => {
+            {filterProductsBySearch([...tshirts, ...watchesMobile, ...eyewear, ...accessoriesMobile]).map((product) => {
               const productId = product._id || product.id;
               const productImage = product.image || product.images?.[0] || product.thumbnail || 'https://via.placeholder.com/200';
               const productName = product.name || product.productName || 'Product';
               const productPrice = product.finalPrice || product.price || 0;
+              const originalPrice = product.originalPrice || product.mrp || product.price || 0;
+              const hasDiscount = originalPrice > productPrice && productPrice > 0;
+              const discountPercent = hasDiscount && originalPrice > 0 
+                ? Math.round(((originalPrice - productPrice) / originalPrice) * 100) 
+                : 0;
+              
+              // Determine product category for routing
               const productCategory = product.category?.toLowerCase().includes('watch') ? 'watches' :
                                     product.category?.toLowerCase().includes('lens') ? 'lenses' :
-                                    product.category?.toLowerCase().includes('skincare') ? 'skincare' :
                                     product.category?.toLowerCase().includes('accessor') ? 'accessories' :
-                                    product.category?.toLowerCase().includes('women') || product.category?.toLowerCase().includes('saree') ? 'women' :
-                                    product.category?.toLowerCase().includes('shoe') ? 'shoes' : 'product';
-
-              // Calculate discount
-              const originalPrice = product.originalPrice || product.mrp || product.price || 0;
-              const finalPrice = product.finalPrice || product.price || 0;
-              const hasDiscount = originalPrice > finalPrice && finalPrice > 0 && originalPrice > 0;
-              const discountPercent = hasDiscount 
-                ? Math.round(((originalPrice - finalPrice) / originalPrice) * 100) 
-                : 0;
+                                    product.category?.toLowerCase().includes('tshirt') || product.subCategory === 'tshirt' ? 'women' :
+                                    'product';
 
               return (
                 <div key={productId} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden relative">
                   {/* Discount Badge */}
                   {hasDiscount && discountPercent > 0 && (
-                    <div className="absolute top-2 right-2 z-10 bg-[#8B4513] text-white px-2 py-1 rounded-md flex items-center">
+                    <div className="absolute top-2 right-2 z-10 bg-[#8B4513] text-white px-2.5 py-1 rounded-full flex items-center">
                       <span className="text-xs font-bold">{discountPercent}% OFF</span>
                     </div>
                   )}
@@ -699,16 +657,7 @@ const Home = () => {
                     <Link to={`/product/${productCategory}/${productId}`}>
                       <h4 className="text-sm font-semibold text-gray-800 mb-1 line-clamp-1">{productName}</h4>
                     </Link>
-                    <div className="mb-3">
-                      {hasDiscount && discountPercent > 0 ? (
-                        <div className="flex items-center gap-2">
-                          <p className="text-base font-bold text-gray-900">{formatPriceWithCurrency(finalPrice)}</p>
-                          <p className="text-sm text-gray-500 line-through">{formatPriceWithCurrency(originalPrice)}</p>
-                        </div>
-                      ) : (
-                        <p className="text-base font-bold text-gray-900">{formatPriceWithCurrency(productPrice)}</p>
-                      )}
-                    </div>
+                    <p className="text-base font-bold text-gray-900 mb-3">{formatPriceWithCurrency(productPrice)}</p>
 
                     {/* Add to Cart Button */}
                     <button
