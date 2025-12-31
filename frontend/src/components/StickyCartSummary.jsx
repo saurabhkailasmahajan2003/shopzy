@@ -26,11 +26,11 @@ const StickyCartSummary = () => {
 
   // Check if we should show the sticky bar
   useEffect(() => {
-    if (cartCount === 0) {
+    if (cartCount > 0) {
+      setIsVisible(true);
+    } else {
       setIsVisible(false);
-      return;
     }
-    setIsVisible(true);
   }, [cartCount]);
 
   // Handle sticky positioning - stick at bottom until footer appears
@@ -96,18 +96,15 @@ const StickyCartSummary = () => {
       <div
         ref={containerRef}
         className={`bg-[#FAF8F5] border-t-2 border-[#3D2817]/30 transition-all duration-300 luxury-shadow-sm ${
-          shouldStick ? 'fixed bottom-0 right-0 z-20 ml-auto' : 'relative'
+          shouldStick ? 'fixed bottom-0 left-0 right-0 z-50' : 'relative'
         }`}
-        style={{ 
-          width: shouldStick ? '75%' : '100%',
-        }}
       >
-        <div className="px-4 sm:px-6 lg:px-8">
-          <div className="py-3">
-            <div className="flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="py-2 sm:py-3">
+            <div className="flex items-center justify-between gap-2 sm:gap-4">
             
             {/* Left: Close Button & Subtotal */}
-            <div className="flex items-center gap-4 flex-1">
+            <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
               {/* Close Button */}
               <button
                 onClick={() => setIsVisible(false)}
@@ -119,20 +116,20 @@ const StickyCartSummary = () => {
               </button>
 
               {/* Subtotal & Savings */}
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-[#3D2817]">Subtotal</span>
+              <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+                <span className="text-xs sm:text-sm font-medium text-[#3D2817] whitespace-nowrap">Subtotal</span>
                 {savings > 0 && (
-                  <span className="bg-green-600 text-white text-xs font-bold px-2 py-1">
+                  <span className="bg-green-600 text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded whitespace-nowrap">
                     Save: ₹{savings.toLocaleString()}
                   </span>
                 )}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2">
                   {originalTotal > cartTotal && (
-                    <span className="text-sm text-[#3D2817]/50 line-through">
+                    <span className="text-xs sm:text-sm text-[#3D2817]/50 line-through">
                       ₹{originalTotal.toLocaleString()}
                     </span>
                   )}
-                  <span className="text-base font-bold text-[#3D2817]">
+                  <span className="text-sm sm:text-base font-bold text-[#3D2817] whitespace-nowrap">
                     ₹{cartTotal.toLocaleString()}
                   </span>
                 </div>
@@ -183,16 +180,18 @@ const StickyCartSummary = () => {
                 {itemsNeeded > 0 ? (
                   <button
                     onClick={handleViewCart}
-                    className="px-4 py-2 border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] font-medium text-sm hover:bg-[#3D2817] hover:text-white transition-colors whitespace-nowrap"
+                    className="px-2 sm:px-4 py-1.5 sm:py-2 border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] font-medium text-xs sm:text-sm hover:bg-[#3D2817] hover:text-white transition-colors whitespace-nowrap"
                   >
-                    Add {itemsNeeded} More Item{itemsNeeded > 1 ? '(s)' : ''}
+                    <span className="hidden sm:inline">Add {itemsNeeded} More Item{itemsNeeded > 1 ? 's' : ''}</span>
+                    <span className="sm:hidden">+{itemsNeeded}</span>
                   </button>
                 ) : (
                   <button
                     onClick={handleViewCart}
-                    className="px-4 py-2 border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] font-medium text-sm hover:bg-[#3D2817] hover:text-white transition-colors whitespace-nowrap"
+                    className="px-2 sm:px-4 py-1.5 sm:py-2 border border-[#3D2817]/30 bg-[#FAF8F5] text-[#3D2817] font-medium text-xs sm:text-sm hover:bg-[#3D2817] hover:text-white transition-colors whitespace-nowrap"
                   >
-                    View Cart ({cartCount})
+                    <span className="hidden sm:inline">View Cart ({cartCount})</span>
+                    <span className="sm:hidden">Cart ({cartCount})</span>
                   </button>
                 )}
               </div>

@@ -1000,6 +1000,208 @@ const Home = () => {
         </div>
       </div>
 
+      {/* --- SHOP BY CATEGORY SECTION --- */}
+      <div className="py-8 sm:py-12 lg:py-16 bg-white border-t border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="mb-6 sm:mb-8">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
+              Categories
+            </h2>
+          </div>
+
+          {/* Category Carousel - Horizontal Scroll */}
+          <div className="relative">
+            <div className="overflow-x-auto scrollbar-hide pb-4">
+              <div className="flex gap-3 sm:gap-4 lg:gap-5" style={{ width: 'max-content' }}>
+                
+                {/* Category 1 - Women's Fashion */}
+                <Link 
+                  to="/women" 
+                  className="group relative flex-shrink-0 w-32 sm:w-40 lg:w-48 bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-[#3D2817] hover:shadow-lg transition-all duration-200"
+                >
+                  <div className="relative w-full h-32 sm:h-40 lg:h-48">
+                    <img
+                      src={optimizeImageUrl('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop', 50)}
+                      alt="Fashion"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/400x400?text=Fashion';
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+                      <h3 className="text-sm sm:text-base font-bold text-white mb-0.5">
+                        Fashion
+                      </h3>
+                      <p className="text-xs text-white/90">
+                        Women's
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+
+                {/* Category 2 - Sale */}
+                <Link 
+                  to="/sale" 
+                  className="group relative flex-shrink-0 w-32 sm:w-40 lg:w-48 bg-white border-2 border-red-200 rounded-lg overflow-hidden hover:border-red-400 hover:shadow-lg transition-all duration-200"
+                >
+                  <div className="relative w-full h-32 sm:h-40 lg:h-48">
+                    <img
+                      src={optimizeImageUrl('https://images.unsplash.com/photo-1607082349566-187342175e2f?w=400&h=400&fit=crop', 50)}
+                      alt="Sale"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/400x400?text=Sale';
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-red-900/70 via-red-500/30 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+                      <h3 className="text-sm sm:text-base font-bold text-white mb-0.5">
+                        Sale
+                      </h3>
+                      <p className="text-xs text-white/90 font-medium">
+                        Up to 60% OFF
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+
+                {/* Category 3 - Shoes */}
+                <Link 
+                  to="/shoes" 
+                  className="group relative flex-shrink-0 w-32 sm:w-40 lg:w-48 bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-[#3D2817] hover:shadow-lg transition-all duration-200"
+                >
+                  <div className="relative w-full h-32 sm:h-40 lg:h-48">
+                    <img
+                      src={optimizeImageUrl('https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop', 50)}
+                      alt="Shoes"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/400x400?text=Shoes';
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+                      <h3 className="text-sm sm:text-base font-bold text-white mb-0.5">
+                        Shoes
+                      </h3>
+                      <p className="text-xs text-white/90">
+                        Footwear
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+
+                {/* Category 4 - Watches */}
+                <Link 
+                  to="/watches" 
+                  className="group relative flex-shrink-0 w-32 sm:w-40 lg:w-48 bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-[#3D2817] hover:shadow-lg transition-all duration-200"
+                >
+                  <div className="relative w-full h-32 sm:h-40 lg:h-48">
+                    <img
+                      src={optimizeImageUrl('https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop', 50)}
+                      alt="Watches"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/400x400?text=Watches';
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+                      <h3 className="text-sm sm:text-base font-bold text-white mb-0.5">
+                        Watches
+                      </h3>
+                      <p className="text-xs text-white/90">
+                        Timepieces
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+
+                {/* Category 5 - Eyewear */}
+                <Link 
+                  to="/lenses" 
+                  className="group relative flex-shrink-0 w-32 sm:w-40 lg:w-48 bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-[#3D2817] hover:shadow-lg transition-all duration-200"
+                >
+                  <div className="relative w-full h-32 sm:h-40 lg:h-48">
+                    <img
+                      src={optimizeImageUrl('https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=400&fit=crop', 50)}
+                      alt="Eyewear"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/400x400?text=Eyewear';
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+                      <h3 className="text-sm sm:text-base font-bold text-white mb-0.5">
+                        Eyewear
+                      </h3>
+                      <p className="text-xs text-white/90">
+                        Lenses
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+
+                {/* Category 6 - Skincare */}
+                <Link 
+                  to="/skincare" 
+                  className="group relative flex-shrink-0 w-32 sm:w-40 lg:w-48 bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-[#3D2817] hover:shadow-lg transition-all duration-200"
+                >
+                  <div className="relative w-full h-32 sm:h-40 lg:h-48">
+                    <img
+                      src={optimizeImageUrl('https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=400&fit=crop', 50)}
+                      alt="Skincare"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/400x400?text=Skincare';
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+                      <h3 className="text-sm sm:text-base font-bold text-white mb-0.5">
+                        Skincare
+                      </h3>
+                      <p className="text-xs text-white/90">
+                        Beauty
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+
+                {/* Category 7 - Accessories */}
+                <Link 
+                  to="/accessories" 
+                  className="group relative flex-shrink-0 w-32 sm:w-40 lg:w-48 bg-white border border-gray-200 rounded-lg overflow-hidden hover:border-[#3D2817] hover:shadow-lg transition-all duration-200"
+                >
+                  <div className="relative w-full h-32 sm:h-40 lg:h-48">
+                    <img
+                      src={optimizeImageUrl('https://images.unsplash.com/photo-1594223274512-ad4803739b7c?w=400&h=400&fit=crop', 50)}
+                      alt="Accessories"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        e.target.src = 'https://via.placeholder.com/400x400?text=Accessories';
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+                      <h3 className="text-sm sm:text-base font-bold text-white mb-0.5">
+                        Accessories
+                      </h3>
+                      <p className="text-xs text-white/90">
+                        Essentials
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* --- THREE BANNERS CAROUSEL (Visible on all devices) --- */}
       <div className="relative w-full bg-[#FAF8F5] border-t border-[#3D2817]/30 overflow-hidden">
         <div className="relative w-full">
@@ -1314,9 +1516,8 @@ const Home = () => {
                 const bgStyle = bgStyles[index % bgStyles.length];
 
                 return (
-                  <Link
+                  <div
                     key={product.id || product._id || index}
-                    to={`/skincare/${product.id || product._id}`}
                     className="group relative overflow-hidden rounded border border-[#3D2817]/30 luxury-shadow transition-all duration-300 bg-[#FAF8F5]"
                   >
                     {/* Card Background with Gradient */}
@@ -1324,31 +1525,62 @@ const Home = () => {
                       {/* Brand Badge */}
                       <div className="absolute top-2 left-2 bg-[#FAF8F5]/95 backdrop-blur-sm px-2 py-0.5 rounded text-[8px] sm:text-[9px] font-bold uppercase tracking-wide z-10 border border-[#3D2817]/20" style={{ color: '#3D2817' }}>
                         {brandName.length > 12 ? brandName.substring(0, 12) + '...' : brandName}
-                  </div>
+                      </div>
 
-                      {/* Product Image */}
-                      <div className="flex-1 flex items-center justify-center mt-6 sm:mt-8 mb-3">
+                      {/* Product Image - Clickable Link */}
+                      <Link
+                        to={`/skincare/${product.id || product._id}`}
+                        className="flex-1 flex items-center justify-center mt-6 sm:mt-8 mb-3"
+                      >
                         <img
                           src={optimizeImageUrl(product.image || product.imageUrl || product.images?.[0], 50)}
                           alt={product.name || product.productName}
                           className="max-w-full max-h-24 sm:max-h-28 md:max-h-32 lg:max-h-36 object-contain"
                           onError={(e) => handleImageError(e, 300, 300)}
                         />
-                </div>
+                      </Link>
 
-                      {/* Product Info */}
-                      <div className="mt-auto space-y-1">
+                      {/* Product Info - Clickable Link */}
+                      <Link
+                        to={`/skincare/${product.id || product._id}`}
+                        className="mt-auto space-y-1"
+                      >
                         <p className="text-xs sm:text-sm font-semibold line-clamp-2 min-h-[2.5em]" style={{ color: '#3D2817' }}>
                           {product.name || product.productName}
                         </p>
                         <p className="text-[8px] sm:text-[9px] font-bold uppercase tracking-wide" style={{ color: '#8B4513' }}>
                           {offerText}
                         </p>
-              </div>
+                      </Link>
+
+                      {/* Add to Cart Button */}
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleAddToCart(product);
+                        }}
+                        className="mt-2 w-full py-1.5 sm:py-2 px-2 sm:px-3 text-[9px] sm:text-[10px] font-semibold rounded transition-all duration-200 flex items-center justify-center gap-1 sm:gap-1.5"
+                        style={{ 
+                          backgroundColor: '#8B4513', 
+                          color: '#FAF8F5' 
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = '#3D2817';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = '#8B4513';
+                        }}
+                      >
+                        <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <span>Add to Cart</span>
+                      </button>
 
                       {/* Hover Overlay Effect */}
-          </div>
-                  </Link>
+                    </div>
+                  </div>
                 );
               })}
         </div>
@@ -1379,167 +1611,6 @@ const Home = () => {
               </Link>
             </div>
           )}
-        </div>
-      </div>
-
-      {/* --- SHOP BY CATEGORY SECTION --- */}
-      <div className="py-12 sm:py-16 lg:py-20 bg-white border-t border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Section Header */}
-          <div className="mb-10 sm:mb-12">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
-                  Categories
-                </h2>
-              </div>
-            </div>
-          </div>
-
-          {/* Category Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4 sm:gap-6">
-            
-            {/* Category 1 - Women's Fashion */}
-            <Link 
-              to="/women" 
-              className="group relative bg-white border border-gray-200 rounded-lg p-6 hover:border-[#3D2817] hover:shadow-lg transition-all duration-200"
-            >
-              <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 mb-4 bg-gray-50 rounded-full flex items-center justify-center group-hover:bg-[#3D2817]/5 transition-colors">
-                  <svg className="w-6 h-6 sm:w-7 sm:h-7 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </div>
-                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">
-                  Fashion
-                </h3>
-                <p className="text-xs text-gray-500 group-hover:text-gray-700 transition-colors">
-                  Women's
-                </p>
-              </div>
-            </Link>
-
-            {/* Category 2 - Sale */}
-            <Link 
-              to="/sale" 
-              className="group relative bg-white border-2 border-red-200 rounded-lg p-6 hover:border-red-400 hover:shadow-lg transition-all duration-200"
-            >
-              <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 mb-4 bg-red-50 rounded-full flex items-center justify-center group-hover:bg-red-100 transition-colors">
-                  <svg className="w-6 h-6 sm:w-7 sm:h-7 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
-                  </svg>
-                </div>
-                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">
-                  Sale
-                </h3>
-                <p className="text-xs text-red-600 font-medium">
-                  Up to 60% OFF
-                </p>
-              </div>
-            </Link>
-
-            {/* Category 3 - Shoes */}
-            <Link 
-              to="/shoes" 
-              className="group relative bg-white border border-gray-200 rounded-lg p-6 hover:border-[#3D2817] hover:shadow-lg transition-all duration-200"
-            >
-              <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 mb-4 bg-gray-50 rounded-full flex items-center justify-center group-hover:bg-[#3D2817]/5 transition-colors">
-                  <svg className="w-6 h-6 sm:w-7 sm:h-7 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                  </svg>
-                </div>
-                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">
-                  Shoes
-                </h3>
-                <p className="text-xs text-gray-500 group-hover:text-gray-700 transition-colors">
-                  Footwear
-                </p>
-              </div>
-            </Link>
-
-            {/* Category 4 - Watches */}
-            <Link 
-              to="/watches" 
-              className="group relative bg-white border border-gray-200 rounded-lg p-6 hover:border-[#3D2817] hover:shadow-lg transition-all duration-200"
-            >
-              <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 mb-4 bg-gray-50 rounded-full flex items-center justify-center group-hover:bg-[#3D2817]/5 transition-colors">
-                  <svg className="w-6 h-6 sm:w-7 sm:h-7 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">
-                  Watches
-                </h3>
-                <p className="text-xs text-gray-500 group-hover:text-gray-700 transition-colors">
-                  Timepieces
-                </p>
-              </div>
-            </Link>
-
-            {/* Category 5 - Eyewear */}
-            <Link 
-              to="/lenses" 
-              className="group relative bg-white border border-gray-200 rounded-lg p-6 hover:border-[#3D2817] hover:shadow-lg transition-all duration-200"
-            >
-              <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 mb-4 bg-gray-50 rounded-full flex items-center justify-center group-hover:bg-[#3D2817]/5 transition-colors">
-                  <svg className="w-6 h-6 sm:w-7 sm:h-7 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                </div>
-                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">
-                  Eyewear
-                </h3>
-                <p className="text-xs text-gray-500 group-hover:text-gray-700 transition-colors">
-                  Lenses
-                </p>
-              </div>
-            </Link>
-
-            {/* Category 6 - Skincare */}
-            <Link 
-              to="/skincare" 
-              className="group relative bg-white border border-gray-200 rounded-lg p-6 hover:border-[#3D2817] hover:shadow-lg transition-all duration-200"
-            >
-              <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 mb-4 bg-gray-50 rounded-full flex items-center justify-center group-hover:bg-[#3D2817]/5 transition-colors">
-                  <svg className="w-6 h-6 sm:w-7 sm:h-7 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                  </svg>
-                </div>
-                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">
-                  Skincare
-                </h3>
-                <p className="text-xs text-gray-500 group-hover:text-gray-700 transition-colors">
-                  Beauty
-                </p>
-              </div>
-            </Link>
-
-            {/* Category 7 - Accessories */}
-            <Link 
-              to="/accessories" 
-              className="group relative bg-white border border-gray-200 rounded-lg p-6 hover:border-[#3D2817] hover:shadow-lg transition-all duration-200"
-            >
-              <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 mb-4 bg-gray-50 rounded-full flex items-center justify-center group-hover:bg-[#3D2817]/5 transition-colors">
-                  <svg className="w-6 h-6 sm:w-7 sm:h-7 text-[#3D2817]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                  </svg>
-                </div>
-                <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1">
-                  Accessories
-                </h3>
-                <p className="text-xs text-gray-500 group-hover:text-gray-700 transition-colors">
-                  Essentials
-                </p>
-              </div>
-            </Link>
-          </div>
         </div>
       </div>
 
