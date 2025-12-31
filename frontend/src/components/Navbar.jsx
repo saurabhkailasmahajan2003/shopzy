@@ -90,12 +90,10 @@ const Navbar = () => {
   const [isDesktopSearchExpanded, setIsDesktopSearchExpanded] = useState(false); // Desktop search animation
   const [expandedMobileCategory, setExpandedMobileCategory] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isNavHidden, setIsNavHidden] = useState(false);
   const [isCartSidebarOpen, setIsCartSidebarOpen] = useState(false);
   
   // Refs for click outside
   const searchInputRef = useRef(null);
-  const lastScrollY = useRef(0);
 
   // --- EFFECTS ---
 
@@ -115,28 +113,14 @@ const Navbar = () => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
-  // Handle Scroll Styling
+  // Handle Scroll Styling - Simple shadow on scroll
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
-
-      const currentY = window.scrollY;
-      const isScrollingDown = currentY > lastScrollY.current;
-
-      // Hide on scroll down, show only when scrolling up; avoid hiding when menus are open
-      if (!isMobileMenuOpen && !isSearchOpen) {
-        if (isScrollingDown && currentY > 80) {
-          setIsNavHidden(true);
-        } else if (!isScrollingDown) {
-          setIsNavHidden(false);
-        }
-      }
-
-      lastScrollY.current = currentY;
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [isMobileMenuOpen, isSearchOpen]);
+  }, []);
 
   // Handle Body Lock
   useEffect(() => {
@@ -173,91 +157,91 @@ const Navbar = () => {
   return (
     <>
       {/* =======================
-               MAIN NAVBAR (Dribbble Style)
+               MAIN NAVBAR
           ======================= */}
       <nav 
-        className={`sticky top-0 left-0 right-0 z-50 transition-all duration-300 transform glass-effect        ${isNavHidden ? '-translate-y-full' : 'translate-y-0'}`}
-        style={{ backgroundColor: 'rgba(250, 248, 245, 0.85)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+        className={`sticky top-0 left-0 right-0 z-50 bg-white border-b ${
+          isScrolled ? 'border-gray-200 shadow-sm' : 'border-transparent'
+        } transition-colors duration-200`}
       >
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 xl:px-8">
-          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-18 gap-3 sm:gap-4 lg:gap-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14 gap-4 lg:gap-6">
 
-            {/* LEFT: Logo - Luxury styling */}
-            <div className="flex-shrink-0 bg-transparent">
-              <Link to="/" className="flex items-center bg-transparent">
+            {/* LEFT: Logo */}
+            <div className="flex-shrink-0">
+              <Link to="/" className="flex items-center">
                 <img 
                   src="https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766755411/White_and_Beige_Neutral_Clean_Women_Bags_Instagram_Post_1_xytoa9.png"
                   alt="Shopzy Logo"
-                  className="h-7 sm:h-8 lg:h-10 w-auto object-contain lg:ml-4 sm:pl-6"
-                  style={{ backgroundColor: 'transparent', background: 'transparent' }}
+                  className="h-7 lg:h-8 w-auto object-contain"
                 />
               </Link>
             </div>
 
-            {/* CENTER: Search Bar (Rounded with black border) */}
-            <div className="hidden sm:flex flex-1 max-w-lg mx-2 lg:mx-6">
-                <form 
-                  onSubmit={handleSearch} 
+            {/* CENTER: Search Bar */}
+            <div className="hidden md:flex flex-1 max-w-md mx-4 lg:mx-6">
+              <form 
+                onSubmit={handleSearch} 
                 ref={searchInputRef}
-                className="flex items-center w-full bg-white/60 backdrop-blur-sm border border-[#3D2817]/20 rounded-full overflow-hidden focus-within:border-[#8B4513] focus-within:ring-2 focus-within:ring-[#8B4513]/20 transition-all luxury-shadow"
+                className="flex items-center w-full bg-gray-50 border border-gray-200 rounded-full overflow-hidden focus-within:border-[#3D2817] focus-within:ring-1 focus-within:ring-[#3D2817] transition-colors"
+              >
+                <button 
+                  type="submit" 
+                  className="p-2 text-gray-500 hover:text-[#3D2817] transition-colors flex-shrink-0"
                 >
-                  <button 
-                    type="submit" 
-                    className="p-2 sm:p-2.5 text-[#3D2817] hover:text-[#8B4513] transition-colors flex-shrink-0"
-                  >
-                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  </button>
-                  <input 
-                    type="text" 
-                  className="flex-1 bg-transparent border-none outline-none px-2 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm text-[#3D2817] placeholder-[#3D2817]/50"
-                  placeholder="Search products..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </button>
+                <input 
+                  type="text" 
+                  className="flex-1 bg-transparent border-none outline-none px-2 py-1.5 text-sm text-gray-900 placeholder-gray-400"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setIsDesktopSearchExpanded(true)}
-                  />
-                </form>
-              </div>
+                />
+              </form>
+            </div>
 
             {/* RIGHT: Icons */}
-            <div className="flex items-center gap-2 sm:gap-4 lg:gap-6">
-              {/* User Icon - Hidden on mobile, shown on desktop */}
-                {isAuthenticated ? (
-                <Link to="/profile" className="hidden sm:block relative p-1 sm:p-1.5 text-[#3D2817] hover:text-[#8B4513] transition-colors">
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center gap-3 lg:gap-4">
+              {/* User Icon */}
+              {isAuthenticated ? (
+                <Link to="/profile" className="hidden md:block p-1.5 text-gray-600 hover:text-[#3D2817] transition-colors">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
-                  </Link>
-                ) : (
-                <Link to="/get-started" className="hidden sm:block relative p-1 sm:p-1.5 text-[#3D2817] hover:text-[#8B4513] transition-colors">
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                </Link>
+              ) : (
+                <Link to="/get-started" className="hidden md:block p-1.5 text-gray-600 hover:text-[#3D2817] transition-colors">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
-                  </Link>
-                )}
+                </Link>
+              )}
               
               {/* Shopping Bag Icon */}
               <button 
                 onClick={() => setIsCartSidebarOpen(true)}
-                className="relative p-1 sm:p-1.5 text-[#3D2817] hover:text-[#8B4513] transition-colors"
+                className="relative p-1.5 text-gray-600 hover:text-[#3D2817] transition-colors"
               >
-                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
-                 {getCartItemsCount() > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 bg-[#8B4513] text-white text-[8px] sm:text-[10px] w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center font-bold rounded-full luxury-shadow">
-                     {getCartItemsCount()}
-                   </span>
-                 )}
+                {getCartItemsCount() > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[#3D2817] text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full leading-none">
+                    {getCartItemsCount() > 99 ? '99+' : getCartItemsCount()}
+                  </span>
+                )}
               </button>
 
-              {/* Hamburger Menu - After Cart */}
+              {/* Hamburger Menu - Visible on all screens */}
               <button 
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="p-1 sm:p-1.5 text-[#3D2817] hover:text-[#8B4513] transition-colors"
+                className="p-1.5 text-gray-600 hover:text-[#3D2817] transition-colors"
               >
-                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
@@ -275,28 +259,28 @@ const Navbar = () => {
       ======================== */}
       {/* Overlay */}
       <div 
-        className={`fixed inset-0 bg-black/20 z-[60] transition-opacity duration-300 ${
+        className={`fixed inset-0 bg-black/40 z-[60] transition-opacity ${
           isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
         onClick={() => setIsMobileMenuOpen(false)}
       />
 
-      {/* Drawer - Opens from right like cart sidebar */}
+      {/* Drawer */}
       <div 
-        className={`fixed top-0 right-0 h-full w-full sm:w-[420px] bg-[#FAF8F5] z-[61] flex flex-col border-l border-[#3D2817]/20 overflow-hidden transition-transform duration-300 ease-out luxury-shadow-lg ${
+        className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white z-[61] flex flex-col border-l border-gray-200 overflow-hidden shadow-xl transition-transform ${
           isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-[#3D2817]/20 bg-white/60 backdrop-blur-sm">
-          <h2 className="text-lg font-serif font-bold text-[#3D2817]">
-            MENU
+        <div className="flex items-center justify-between p-5 border-b border-gray-200 bg-white">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Menu
           </h2>
           <button 
             onClick={() => setIsMobileMenuOpen(false)}
-            className="p-1 text-[#3D2817] hover:text-[#8B4513] transition-colors"
+            className="p-2 text-gray-500 hover:text-gray-900 transition-colors"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -306,26 +290,26 @@ const Navbar = () => {
         <div className="flex-1 overflow-y-auto">
           {/* User Info */}
           {isAuthenticated && (
-            <div className="p-4 border-b border-[#3D2817]/20">
-              <p className="text-sm text-[#3D2817]/70">Hello, <span className="font-bold text-[#3D2817]">{user?.name}</span></p>
+            <div className="p-5 border-b border-gray-200 bg-gray-50">
+              <p className="text-sm text-gray-600">Hello, <span className="font-semibold text-gray-900">{user?.name}</span></p>
             </div>
           )}
 
           {/* Auth quick actions */}
-          <div className="p-4 flex items-center gap-3 border-b border-[#3D2817]/20">
+          <div className="p-5 flex items-center gap-3 border-b border-gray-200">
             {isAuthenticated ? (
               <>
                 <Link
                   to="/profile"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 sm:py-3 text-sm font-bold text-white bg-[#3D2817] hover:bg-[#8B4513] transition-colors luxury-shadow rounded"
+                  className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold text-white bg-[#3D2817] hover:bg-[#2C1F14] transition-colors rounded-lg"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                   Profile
                 </Link>
                 <button
                   onClick={() => { logout(); setIsMobileMenuOpen(false); }}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 sm:py-3 text-sm font-bold text-[#3D2817] border border-[#3D2817]/30 bg-white/60 hover:bg-[#3D2817] hover:text-white transition-colors rounded"
+                  className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold text-gray-700 border border-gray-300 bg-white hover:bg-gray-50 transition-colors rounded-lg"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                   Logout
@@ -335,7 +319,7 @@ const Navbar = () => {
               <Link
                 to="/get-started"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="w-full py-2.5 sm:py-3 text-center text-sm font-bold text-white bg-[#3D2817] hover:bg-[#8B4513] transition-colors rounded luxury-shadow"
+                className="w-full py-3 text-center text-sm font-semibold text-white bg-[#3D2817] hover:bg-[#2C1F14] transition-colors rounded-lg"
               >
                 Get Started
               </Link>
@@ -343,65 +327,58 @@ const Navbar = () => {
           </div>
 
           {/* Categories */}
-          <div className="p-4 space-y-1">
-            <p className="text-xs font-bold text-[#3D2817]/70 uppercase tracking-widest mb-3">Categories</p>
-            <Link to="/" className="block py-3 text-sm font-bold text-[#3D2817] border-b border-[#3D2817]/20 hover:text-[#8B4513] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+          <div className="p-5 space-y-1">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Categories</p>
+            <Link to="/" className="block py-2.5 text-sm font-medium text-gray-900 hover:text-[#3D2817] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
               Home
             </Link>
             {NAV_LINKS.map((link) => (
-              <div key={link.id} className="border-b border-[#3D2817]/20 last:border-0">
+              <div key={link.id} className="border-b border-gray-100 last:border-0">
                 <button 
                   onClick={() => toggleMobileAccordion(link.id)}
-                  className="w-full flex items-center justify-between py-3 text-sm font-bold text-[#3D2817] hover:text-[#8B4513] transition-colors"
+                  className="w-full flex items-center justify-between py-2.5 text-sm font-medium text-gray-900 hover:text-[#3D2817] transition-colors"
                 >
                   <span>{link.label}</span>
-                  <svg className={`w-4 h-4 transition-transform duration-300 ${expandedMobileCategory === link.id ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className={`w-4 h-4 text-gray-400 transition-transform ${expandedMobileCategory === link.id ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
                 
-                <div className={`overflow-hidden transition-all duration-300 ease-in-out ${expandedMobileCategory === link.id ? 'max-h-96 opacity-100 pb-3' : 'max-h-0 opacity-0'}`}>
-                  <div className="pl-4 space-y-2">
+                <div className={`overflow-hidden transition-all ${expandedMobileCategory === link.id ? 'max-h-96 opacity-100 pb-2' : 'max-h-0 opacity-0'}`}>
+                  <div className="pl-4 space-y-2 pt-1">
                     {link.subItems.map((sub, idx) => (
                       <Link 
                         key={idx} 
                         to={sub.path} 
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="block text-xs text-[#3D2817]/70 hover:text-[#8B4513] font-medium transition-colors"
+                        className="block text-sm text-gray-600 hover:text-[#3D2817] transition-colors"
                       >
                         {sub.name}
                       </Link>
                     ))}
-                    <Link to={link.path} onClick={() => setIsMobileMenuOpen(false)} className="block text-xs font-bold text-[#3D2817] hover:text-[#8B4513] pt-2 transition-colors">Shop All</Link>
+                    <Link to={link.path} onClick={() => setIsMobileMenuOpen(false)} className="block text-sm font-medium text-[#3D2817] hover:text-[#2C1F14] pt-2 transition-colors">Shop All</Link>
                   </div>
                 </div>
               </div>
             ))}
-            <Link to="/sale" className="block py-3 text-sm font-bold text-[#8B4513] border-b border-[#3D2817]/20 hover:text-[#A0522D] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+            <Link to="/sale" className="block py-2.5 text-sm font-medium text-[#3D2817] hover:text-[#2C1F14] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
               Sale
             </Link>
           </div>
         </div>
 
         {/* Footer Actions */}
-        <div className="border-t border-[#3D2817]/20 bg-white/60 backdrop-blur-sm p-4">
-          {isAuthenticated ? (
-            <button
-              onClick={() => { logout(); setIsMobileMenuOpen(false); }}
-              className="w-full py-3 text-sm font-bold text-[#3D2817] border border-[#3D2817]/30 bg-white/60 hover:bg-[#3D2817] hover:text-white transition-colors rounded"
-            >
-              Sign Out
-            </button>
-          ) : (
+        {!isAuthenticated && (
+          <div className="border-t border-gray-200 bg-white p-4">
             <Link
               to="/get-started" 
               onClick={() => setIsMobileMenuOpen(false)} 
-              className="w-full py-3 text-center text-sm font-bold text-white bg-[#3D2817] hover:bg-[#8B4513] transition-colors rounded luxury-shadow"
+              className="w-full py-2.5 text-center text-sm font-semibold text-white bg-[#3D2817] hover:bg-[#2C1F14] transition-colors rounded-lg"
             >
               Get Started
             </Link>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Cart Sidebar */}

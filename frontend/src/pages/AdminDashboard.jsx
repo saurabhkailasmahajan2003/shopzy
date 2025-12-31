@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { adminAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
+import { clearCacheForEndpoint, clearProductCache } from '../utils/productCache';
 
 const categoryOptions = [
   { label: 'Women', value: 'women' },
@@ -284,6 +285,8 @@ const AdminDashboard = () => {
           : [],
       };
       await adminAPI.createProduct(payload);
+      // Clear cache for the category to force refresh
+      clearCacheForEndpoint(`/products/${productCategory}`);
       setMessage({ type: 'success', text: 'Product created' });
       resetForm();
       fetchProducts(productCategory);
@@ -307,6 +310,9 @@ const AdminDashboard = () => {
           : [],
       };
       await adminAPI.updateProduct(editingProduct._id, { ...payload, category: productCategory });
+      // Clear cache for the category and product ID to force refresh
+      clearCacheForEndpoint(`/products/${productCategory}`);
+      clearCacheForEndpoint(`/products/${productCategory}/${editingProduct._id}`);
       setMessage({ type: 'success', text: 'Product updated' });
       resetForm();
       fetchProducts(productCategory);
@@ -320,6 +326,9 @@ const AdminDashboard = () => {
     if (!window.confirm('Delete this product?')) return;
     try {
       await adminAPI.deleteProduct(id, productCategory);
+      // Clear cache for the category and product ID to force refresh
+      clearCacheForEndpoint(`/products/${productCategory}`);
+      clearCacheForEndpoint(`/products/${productCategory}/${id}`);
       setMessage({ type: 'success', text: 'Product deleted' });
       fetchProducts(productCategory);
     } catch (error) {

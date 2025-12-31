@@ -7,6 +7,7 @@ import { handleImageError } from '../utils/imageFallback';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { formatPriceWithCurrency } from '../utils/formatUtils';
+import { optimizeImageUrl } from '../utils/imageOptimizer';
 
 // --- ICONS (Embedded directly so no install needed) ---
 const IconChevronLeft = () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>;
@@ -86,7 +87,7 @@ const fetchAccessories = async () => {
 
 const fetchSkincare = async () => {
   try {
-    const res = await productAPI.getSkincareProducts({ limit: 12 });
+    const res = await productAPI.getSkincareProducts({ limit: 16 });
     return res.success ? res.data.products : [];
   } catch (error) {
     console.error("Error fetching skincare:", error);
@@ -151,6 +152,7 @@ const Home = () => {
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
   const categoryScrollRef = useRef(null);
   const lifestyleScrollRef = useRef(null);
   const bannerCarouselRef = useRef(null);
@@ -170,6 +172,16 @@ const Home = () => {
   const [watchesMobile, setWatchesMobile] = useState([]);
   const [eyewear, setEyewear] = useState([]);
   const [accessoriesMobile, setAccessoriesMobile] = useState([]);
+
+  // Track window width for responsive product count
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Set initial value
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const loadAllData = async () => {
@@ -209,20 +221,20 @@ const Home = () => {
 
 
   const stories = [
-    { hashtag: 'Xmas', emoji: '🎄', image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1764741928/IMG_20251123_161820_skzchs.png' },
-    { hashtag: 'Desi', emoji: '😎', image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1764741995/image-104_iuyyuw.png' },
-    { hashtag: 'Street', emoji: '🔥', image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1764742092/ZfLAMkmNsf2sHkoW_DELHI-FACES-1_fjnvcb.avif' },
-    { hashtag: 'FitCheck', emoji: '✨', image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1764742199/0d37737c8c2c7536422e411fb68eeeb3_ylhf3n.jpg' },
-    { hashtag: 'Tees', emoji: '👕', image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1764742259/0424-TSHIRT-06_1_7c30d8ed-155d-47a6-a52f-52858221a302_fjdfpo.webp', link: '/women/tshirt' },
-    { hashtag: 'Denim', emoji: '👖', image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1764742467/GettyImages-2175843730_q21gse.jpg' },
-    { hashtag: 'Scarf', emoji: '🧣', image: 'https://res.cloudinary.com/de1bg8ivx/image/upload/v1764742548/NECK_20SCARF_20TREND_20190625_20GettyImages-1490484490_ccdwdy.webp' }
+    { hashtag: 'Xmas', emoji: '🎄', image: optimizeImageUrl('https://res.cloudinary.com/de1bg8ivx/image/upload/v1764741928/IMG_20251123_161820_skzchs.png', 50) },
+    { hashtag: 'Desi', emoji: '😎', image: optimizeImageUrl('https://res.cloudinary.com/de1bg8ivx/image/upload/v1764741995/image-104_iuyyuw.png', 50) },
+    { hashtag: 'Street', emoji: '🔥', image: optimizeImageUrl('https://res.cloudinary.com/de1bg8ivx/image/upload/v1764742092/ZfLAMkmNsf2sHkoW_DELHI-FACES-1_fjnvcb.avif', 50) },
+    { hashtag: 'FitCheck', emoji: '✨', image: optimizeImageUrl('https://res.cloudinary.com/de1bg8ivx/image/upload/v1764742199/0d37737c8c2c7536422e411fb68eeeb3_ylhf3n.jpg', 50) },
+    { hashtag: 'Tees', emoji: '👕', image: optimizeImageUrl('https://res.cloudinary.com/de1bg8ivx/image/upload/v1764742259/0424-TSHIRT-06_1_7c30d8ed-155d-47a6-a52f-52858221a302_fjdfpo.webp', 50), link: '/women/tshirt' },
+    { hashtag: 'Denim', emoji: '👖', image: optimizeImageUrl('https://res.cloudinary.com/de1bg8ivx/image/upload/v1764742467/GettyImages-2175843730_q21gse.jpg', 50) },
+    { hashtag: 'Scarf', emoji: '🧣', image: optimizeImageUrl('https://res.cloudinary.com/de1bg8ivx/image/upload/v1764742548/NECK_20SCARF_20TREND_20190625_20GettyImages-1490484490_ccdwdy.webp', 50) }
   ];
 
   // Banner carousel images
   const banners = [
-    'https://res.cloudinary.com/de1bg8ivx/image/upload/v1766476937/Brown_Modern_New_Arrival_Leaderboard_Ad_gzs4iv.svg',
-    'https://res.cloudinary.com/de1bg8ivx/image/upload/v1766476935/Cream_Brown_Minimalist_Fashion_Sale_Leaderboard_Ad_tpvvpj.svg',
-    'https://res.cloudinary.com/de1bg8ivx/image/upload/v1766476935/Women_Fashion_Leaderboard_Ad_trr3pe.svg'
+    optimizeImageUrl('https://res.cloudinary.com/de1bg8ivx/image/upload/v1766476937/Brown_Modern_New_Arrival_Leaderboard_Ad_gzs4iv.svg', 50),
+    optimizeImageUrl('https://res.cloudinary.com/de1bg8ivx/image/upload/v1766476935/Cream_Brown_Minimalist_Fashion_Sale_Leaderboard_Ad_tpvvpj.svg', 50),
+    optimizeImageUrl('https://res.cloudinary.com/de1bg8ivx/image/upload/v1766476935/Women_Fashion_Leaderboard_Ad_trr3pe.svg', 50)
   ];
 
   // Detect mobile viewport
@@ -496,7 +508,7 @@ const Home = () => {
         <div 
           className="mx-4 mt-4 mb-4 rounded-2xl p-6 relative overflow-hidden"
           style={{
-            backgroundImage: 'url(https://res.cloudinary.com/dvkxgrcbv/image/upload/v1767163767/663b9497381eaa3fcc256f05_1_vvv38z.jpg)',
+            backgroundImage: `url(${optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1767163767/663b9497381eaa3fcc256f05_1_vvv38z.jpg', 50)})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat'
@@ -642,7 +654,7 @@ const Home = () => {
                   <Link to={`/product/${productCategory}/${productId}`}>
                     <div className="w-full aspect-square bg-gray-100 overflow-hidden">
                       <img
-                        src={productImage}
+                        src={optimizeImageUrl(productImage, 50)}
                         alt={productName}
                         className="w-full h-full object-cover"
                         onError={(e) => {
@@ -753,10 +765,10 @@ const Home = () => {
                   >
                     {(() => {
                       const promoBanners = [
-                        'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656659/Pink_and_Gold_Simple_Diwali_Skincare_Cosmetic_Beauty_Offers_Instagram_Post_1_xzglzv.png',
-                        'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656833/Purple_Women_Clothing_Promo_Instagram_Post_d2cxg9.png',
-                        'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656392/Brown_White_Modern_Elegant_Sale_and_Discount_Instagram_Post_frmjoo.svg',
-                        'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766655996/Red_and_White_Modern_Bridal_Shower_Social_Media_Graphic_1_v9pexp.svg'
+                        optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656659/Pink_and_Gold_Simple_Diwali_Skincare_Cosmetic_Beauty_Offers_Instagram_Post_1_xzglzv.png', 50),
+                        optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656833/Purple_Women_Clothing_Promo_Instagram_Post_d2cxg9.png', 50),
+                        optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656392/Brown_White_Modern_Elegant_Sale_and_Discount_Instagram_Post_frmjoo.svg', 50),
+                        optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766655996/Red_and_White_Modern_Bridal_Shower_Social_Media_Graphic_1_v9pexp.svg', 50)
                       ];
                       // Duplicate banners for infinite scroll
                       return [...promoBanners, ...promoBanners].map((banner, index) => (
@@ -811,12 +823,12 @@ const Home = () => {
               onTouchEnd={onTouchEnd}
             >
               {(() => {
-                const promoBanners = [
-                  'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656833/Purple_Women_Clothing_Promo_Instagram_Post_d2cxg9.png',
-                  'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656659/Pink_and_Gold_Simple_Diwali_Skincare_Cosmetic_Beauty_Offers_Instagram_Post_1_xzglzv.png',
-                  'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656392/Brown_White_Modern_Elegant_Sale_and_Discount_Instagram_Post_frmjoo.svg',
-                  'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766655996/Red_and_White_Modern_Bridal_Shower_Social_Media_Graphic_1_v9pexp.svg'
-                ];
+                  const promoBanners = [
+                    optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656833/Purple_Women_Clothing_Promo_Instagram_Post_d2cxg9.png', 50),
+                    optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656659/Pink_and_Gold_Simple_Diwali_Skincare_Cosmetic_Beauty_Offers_Instagram_Post_1_xzglzv.png', 50),
+                    optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656392/Brown_White_Modern_Elegant_Sale_and_Discount_Instagram_Post_frmjoo.svg', 50),
+                    optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766655996/Red_and_White_Modern_Bridal_Shower_Social_Media_Graphic_1_v9pexp.svg', 50)
+                  ];
                 // Duplicate banners for infinite scroll
                 return [...promoBanners, ...promoBanners].map((banner, index) => (
                   <div
@@ -909,7 +921,7 @@ const Home = () => {
             <div className="relative">
               <div className="relative h-full sm:h-64 md:h-80 lg:h-96 xl:h-[500px] bg-[#FAF8F5] border border-[#3D2817]/30 overflow-hidden luxury-shadow">
                 <img
-                  src="https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766657960/White_and_Beige_Neutral_Clean_Women_Bags_Instagram_Post_ymve41.png"
+                  src={optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766657960/White_and_Beige_Neutral_Clean_Women_Bags_Instagram_Post_ymve41.png', 50)}
                   alt="Women Bags Promo"
                   className="w-full h-full object-cover"
                 />
@@ -977,7 +989,7 @@ const Home = () => {
             <div className="relative">
               <div className="relative h-full sm:h-64 md:h-80 lg:h-96 xl:h-[500px] bg-[#FAF8F5] border border-[#3D2817]/30 overflow-hidden luxury-shadow">
                 <img
-                  src="https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766658151/Beige_Modern_Minimalist_Fashion_Clothing_Sale_Promotional_Instagram_Post_q8geu5.png"
+                  src={optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766658151/Beige_Modern_Minimalist_Fashion_Clothing_Sale_Promotional_Instagram_Post_q8geu5.png', 50)}
                   alt="Fashion Sale Promo"
                   className="w-full h-full object-cover"
                 />
@@ -1025,7 +1037,7 @@ const Home = () => {
                 {/* Brand/Logo */}
                 <div className="mb-4 bg-transparent">
                   <img 
-                    src="https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766755411/White_and_Beige_Neutral_Clean_Women_Bags_Instagram_Post_1_xytoa9.png"
+                    src={optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766755411/White_and_Beige_Neutral_Clean_Women_Bags_Instagram_Post_1_xytoa9.png', 50)}
                     alt="Shopzy Logo"
                     className="h-8 sm:h-10 w-auto object-contain mb-2"
                     style={{ backgroundColor: 'transparent', background: 'transparent' }}
@@ -1060,7 +1072,7 @@ const Home = () => {
                         <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 flex-shrink-0 overflow-hidden flex items-center justify-center border border-[#3D2817]/20">
                           {imageUrl ? (
                             <img
-                              src={imageUrl}
+                              src={optimizeImageUrl(imageUrl, 50)}
                               alt={product.name || product.productName || 'Product'}
                               className="w-full h-full object-cover"
                               onError={(e) => {
@@ -1250,7 +1262,7 @@ const Home = () => {
           {/* Skincare Products Grid */}
           {skincareProducts.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
-              {skincareProducts.slice(0, 12).map((product, index) => {
+              {skincareProducts.slice(0, windowWidth < 640 ? 14 : 16).map((product, index) => {
                 // Group products by brand for better display
                 const brandName = product.brand || 'Skincare';
                 const discount = product.discountPercent || 0;
@@ -1288,7 +1300,7 @@ const Home = () => {
                       {/* Product Image */}
                       <div className="flex-1 flex items-center justify-center mt-6 sm:mt-8 mb-3">
                         <img
-                          src={product.image || product.imageUrl || product.images?.[0]}
+                          src={optimizeImageUrl(product.image || product.imageUrl || product.images?.[0], 50)}
                           alt={product.name || product.productName}
                           className="max-w-full max-h-24 sm:max-h-28 md:max-h-32 lg:max-h-36 object-contain"
                           onError={(e) => handleImageError(e, 300, 300)}
@@ -1303,14 +1315,6 @@ const Home = () => {
                         <p className="text-[8px] sm:text-[9px] font-bold uppercase tracking-wide" style={{ color: '#8B4513' }}>
                           {offerText}
                         </p>
-                        {product.price && (
-                          <p className="text-xs sm:text-sm font-bold mt-1" style={{ color: '#8B4513' }}>
-                            ₹{product.finalPrice || product.price}
-                            {product.mrp && product.mrp > (product.finalPrice || product.price) && (
-                              <span className="line-through ml-2 text-[9px] sm:text-[10px]" style={{ color: '#3D2817', opacity: 0.5 }}>₹{product.mrp}</span>
-                            )}
-                          </p>
-                        )}
               </div>
 
                       {/* Hover Overlay Effect */}
@@ -1547,7 +1551,7 @@ const Home = () => {
                         >
                           {imageUrl ? (
                             <img
-                              src={imageUrl}
+                              src={optimizeImageUrl(imageUrl, 50)}
                               alt={product.name || product.productName}
                               className="w-full h-full object-contain p-2"
                               onError={(e) => {
@@ -1599,7 +1603,7 @@ const Home = () => {
                         >
                           {imageUrl ? (
                             <img
-                              src={imageUrl}
+                              src={optimizeImageUrl(imageUrl, 50)}
                               alt={product.name || product.productName}
                               className="w-full h-full object-contain p-2"
                               onError={(e) => {
@@ -1654,7 +1658,7 @@ const Home = () => {
                         >
                           {imageUrl ? (
                             <img
-                              src={imageUrl}
+                              src={optimizeImageUrl(imageUrl, 50)}
                               alt={product.name || product.productName}
                               className="w-full h-full object-contain p-2"
                               onError={(e) => {

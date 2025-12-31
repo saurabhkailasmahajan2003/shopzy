@@ -8,6 +8,7 @@ import ProductCard from '../components/ProductCard';
 import { handleImageError } from '../utils/imageFallback';
 import { productAPI, reviewAPI } from '../utils/api';
 import { formatPrice } from '../utils/formatUtils';
+import { optimizeImageUrl } from '../utils/imageOptimizer';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
@@ -626,12 +627,12 @@ const ProductDetail = () => {
   };
 
   const handlePrevImage = () => {
-    const productImages = product.images || [product.image || product.thumbnail];
+    const productImages = (product.images || [product.image || product.thumbnail]).map(img => optimizeImageUrl(img, 50));
     setSelectedImageIndex((prev) => (prev === 0 ? productImages.length - 1 : prev - 1));
   };
 
   const handleNextImage = () => {
-    const productImages = product.images || [product.image || product.thumbnail];
+    const productImages = (product.images || [product.image || product.thumbnail]).map(img => optimizeImageUrl(img, 50));
     setSelectedImageIndex((prev) => (prev === productImages.length - 1 ? 0 : prev + 1));
   };
 
@@ -702,7 +703,7 @@ const ProductDetail = () => {
   if (loading) return <LoadingState />;
   if (!product) return <NotFoundState />;
 
-  const productImages = product.images || [product.image || product.thumbnail];
+  const productImages = (product.images || [product.image || product.thumbnail]).map(img => optimizeImageUrl(img, 50));
   const finalPrice = product.finalPrice || product.price;
   const originalPrice = product.originalPrice || product.mrp || product.price;
 

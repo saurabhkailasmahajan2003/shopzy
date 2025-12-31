@@ -1,3 +1,5 @@
+import { getCachedProductResponse, cacheProductResponse } from './productCache';
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
 // Helper function to make API requests
@@ -170,60 +172,264 @@ export const profileAPI = {
   },
 };
 
-// Product API calls
+// Product API calls with caching
 export const productAPI = {
   getWatches: async (params = {}) => {
+    const endpoint = '/products/watches';
+    
+    // Check cache first
+    const cached = getCachedProductResponse(endpoint, params);
+    if (cached) {
+      console.log('📦 Using cached watches data');
+      return cached;
+    }
+
+    // Fetch from API
     const queryString = new URLSearchParams(params).toString();
-    return apiRequest(`/products/watches${queryString ? `?${queryString}` : ''}`);
+    const response = await apiRequest(`/products/watches${queryString ? `?${queryString}` : ''}`);
+    
+    // Cache the response
+    if (response.success) {
+      cacheProductResponse(endpoint, params, response);
+    }
+    
+    return response;
   },
 
   getWatchById: async (id) => {
-    return apiRequest(`/products/watches/${id}`);
+    const endpoint = `/products/watches/${id}`;
+    
+    // Check cache first
+    const cached = getCachedProductResponse(endpoint, {});
+    if (cached) {
+      console.log(`📦 Using cached watch data for ID: ${id}`);
+      return cached;
+    }
+
+    // Fetch from API
+    const response = await apiRequest(`/products/watches/${id}`);
+    
+    // Cache the response
+    if (response.success) {
+      cacheProductResponse(endpoint, {}, response);
+    }
+    
+    return response;
   },
 
   getLenses: async (params = {}) => {
+    const endpoint = '/products/lens';
+    
+    // Check cache first
+    const cached = getCachedProductResponse(endpoint, params);
+    if (cached) {
+      console.log('📦 Using cached lenses data');
+      return cached;
+    }
+
+    // Fetch from API
     const queryString = new URLSearchParams(params).toString();
-    return apiRequest(`/products/lens${queryString ? `?${queryString}` : ''}`);
+    const response = await apiRequest(`/products/lens${queryString ? `?${queryString}` : ''}`);
+    
+    // Cache the response
+    if (response.success) {
+      cacheProductResponse(endpoint, params, response);
+    }
+    
+    return response;
   },
 
   getLensById: async (id) => {
-    return apiRequest(`/products/lens/${id}`);
+    const endpoint = `/products/lens/${id}`;
+    
+    // Check cache first
+    const cached = getCachedProductResponse(endpoint, {});
+    if (cached) {
+      console.log(`📦 Using cached lens data for ID: ${id}`);
+      return cached;
+    }
+
+    // Fetch from API
+    const response = await apiRequest(`/products/lens/${id}`);
+    
+    // Cache the response
+    if (response.success) {
+      cacheProductResponse(endpoint, {}, response);
+    }
+    
+    return response;
   },
 
   getAccessories: async (params = {}) => {
+    const endpoint = '/products/accessories';
+    
+    // Check cache first
+    const cached = getCachedProductResponse(endpoint, params);
+    if (cached) {
+      console.log('📦 Using cached accessories data');
+      return cached;
+    }
+
+    // Fetch from API
     const queryString = new URLSearchParams(params).toString();
-    return apiRequest(`/products/accessories${queryString ? `?${queryString}` : ''}`);
+    const response = await apiRequest(`/products/accessories${queryString ? `?${queryString}` : ''}`);
+    
+    // Cache the response
+    if (response.success) {
+      cacheProductResponse(endpoint, params, response);
+    }
+    
+    return response;
   },
 
   getAccessoryById: async (id) => {
-    return apiRequest(`/products/accessories/${id}`);
+    const endpoint = `/products/accessories/${id}`;
+    
+    // Check cache first
+    const cached = getCachedProductResponse(endpoint, {});
+    if (cached) {
+      console.log(`📦 Using cached accessory data for ID: ${id}`);
+      return cached;
+    }
+
+    // Fetch from API
+    const response = await apiRequest(`/products/accessories/${id}`);
+    
+    // Cache the response
+    if (response.success) {
+      cacheProductResponse(endpoint, {}, response);
+    }
+    
+    return response;
   },
 
   getWomenItems: async (params = {}) => {
+    const endpoint = '/products/women';
+    
+    // Check cache first
+    const cached = getCachedProductResponse(endpoint, params);
+    if (cached) {
+      console.log('📦 Using cached women items data');
+      return cached;
+    }
+
+    // Fetch from API
     const queryString = new URLSearchParams(params).toString();
-    return apiRequest(`/products/women${queryString ? `?${queryString}` : ''}`);
+    const response = await apiRequest(`/products/women${queryString ? `?${queryString}` : ''}`);
+    
+    // Cache the response
+    if (response.success) {
+      cacheProductResponse(endpoint, params, response);
+    }
+    
+    return response;
   },
 
   getWomenItemById: async (id) => {
-    return apiRequest(`/products/women/${id}`);
+    const endpoint = `/products/women/${id}`;
+    
+    // Check cache first
+    const cached = getCachedProductResponse(endpoint, {});
+    if (cached) {
+      console.log(`📦 Using cached women item data for ID: ${id}`);
+      return cached;
+    }
+
+    // Fetch from API
+    const response = await apiRequest(`/products/women/${id}`);
+    
+    // Cache the response
+    if (response.success) {
+      cacheProductResponse(endpoint, {}, response);
+    }
+    
+    return response;
   },
 
   getSkincareProducts: async (params = {}) => {
+    const endpoint = '/products/skincare';
+    
+    // Check cache first
+    const cached = getCachedProductResponse(endpoint, params);
+    if (cached) {
+      console.log('📦 Using cached skincare data');
+      return cached;
+    }
+
+    // Fetch from API
     const queryString = new URLSearchParams(params).toString();
-    return apiRequest(`/products/skincare${queryString ? `?${queryString}` : ''}`);
+    const response = await apiRequest(`/products/skincare${queryString ? `?${queryString}` : ''}`);
+    
+    // Cache the response
+    if (response.success) {
+      cacheProductResponse(endpoint, params, response);
+    }
+    
+    return response;
   },
 
   getSkincareProductById: async (id) => {
-    return apiRequest(`/products/skincare/${id}`);
+    const endpoint = `/products/skincare/${id}`;
+    
+    // Check cache first
+    const cached = getCachedProductResponse(endpoint, {});
+    if (cached) {
+      console.log(`📦 Using cached skincare product data for ID: ${id}`);
+      return cached;
+    }
+
+    // Fetch from API
+    const response = await apiRequest(`/products/skincare/${id}`);
+    
+    // Cache the response
+    if (response.success) {
+      cacheProductResponse(endpoint, {}, response);
+    }
+    
+    return response;
   },
 
   getShoes: async (params = {}) => {
+    const endpoint = '/products/shoes';
+    
+    // Check cache first
+    const cached = getCachedProductResponse(endpoint, params);
+    if (cached) {
+      console.log('📦 Using cached shoes data');
+      return cached;
+    }
+
+    // Fetch from API
     const queryString = new URLSearchParams(params).toString();
-    return apiRequest(`/products/shoes${queryString ? `?${queryString}` : ''}`);
+    const response = await apiRequest(`/products/shoes${queryString ? `?${queryString}` : ''}`);
+    
+    // Cache the response
+    if (response.success) {
+      cacheProductResponse(endpoint, params, response);
+    }
+    
+    return response;
   },
 
   getShoeById: async (id) => {
-    return apiRequest(`/products/shoes/${id}`);
+    const endpoint = `/products/shoes/${id}`;
+    
+    // Check cache first
+    const cached = getCachedProductResponse(endpoint, {});
+    if (cached) {
+      console.log(`📦 Using cached shoe data for ID: ${id}`);
+      return cached;
+    }
+
+    // Fetch from API
+    const response = await apiRequest(`/products/shoes/${id}`);
+    
+    // Cache the response
+    if (response.success) {
+      cacheProductResponse(endpoint, {}, response);
+    }
+    
+    return response;
   },
 
   // Helper to get all products from all categories

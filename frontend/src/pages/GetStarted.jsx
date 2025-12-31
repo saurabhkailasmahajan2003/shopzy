@@ -16,6 +16,22 @@ const GetStarted = () => {
     'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1767158813/Indian_Saree_2_aa5ox6.jpg',
   ];
 
+  // Text content for each slide
+  const slideContent = [
+    {
+      headline: 'Lights. Camera. Shop!',
+      subtitle: 'Dive into your favorite fashion and lifestyle products in seconds.'
+    },
+    {
+      headline: 'Discover Your Style',
+      subtitle: 'Explore curated collections designed just for you.'
+    },
+    {
+      headline: 'Shop with Confidence',
+      subtitle: 'Quality products delivered right to your doorstep.'
+    }
+  ];
+
   // Auto-advance slides
   useEffect(() => {
     const interval = setInterval(() => {
@@ -58,11 +74,11 @@ const GetStarted = () => {
 
         {/* Middle Section - Text and Navigation Dots */}
         <div className="px-6 py-6 text-center">
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-            Lights. Camera. Shop!
+          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3 transition-opacity duration-500">
+            {slideContent[currentSlide].headline}
           </h1>
-          <p className="text-white/80 text-sm sm:text-base mb-6">
-            Dive into your favorite fashion and lifestyle products in seconds.
+          <p className="text-white/80 text-sm sm:text-base mb-6 transition-opacity duration-500">
+            {slideContent[currentSlide].subtitle}
           </p>
           
           {/* Navigation Dots */}
@@ -86,7 +102,7 @@ const GetStarted = () => {
             onClick={() => navigate('/signup')}
             className="w-full py-4 bg-[#8B4513] hover:bg-[#A0522D] text-white font-bold text-lg rounded-lg transition-colors shadow-lg"
           >
-            START SHOPPING
+            SIGN UP
           </button>
           <button
             onClick={() => navigate('/login')}
@@ -124,11 +140,11 @@ const GetStarted = () => {
 
           {/* Text Section */}
           <div className="text-center mb-8">
-            <h1 className="text-5xl font-bold text-white mb-4">
-              Lights. Camera. Shop!
+            <h1 className="text-5xl font-bold text-white mb-4 transition-opacity duration-500">
+              {slideContent[currentSlide].headline}
             </h1>
-            <p className="text-white/80 text-lg mb-8">
-              Dive into your favorite fashion and lifestyle products in seconds.
+            <p className="text-white/80 text-lg mb-8 transition-opacity duration-500">
+              {slideContent[currentSlide].subtitle}
             </p>
             
             {/* Navigation Dots */}
@@ -152,7 +168,7 @@ const GetStarted = () => {
               onClick={() => navigate('/signup')}
               className="flex-1 py-4 bg-[#8B4513] hover:bg-[#A0522D] text-white font-bold text-lg rounded-lg transition-colors shadow-lg"
             >
-              START SHOPPING
+              SIGN UP
             </button>
             <button
               onClick={() => navigate('/login')}

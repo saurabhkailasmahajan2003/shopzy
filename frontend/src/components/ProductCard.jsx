@@ -6,6 +6,7 @@ import { useToast } from '../components/ToastContainer';
 import LoginModal from './LoginModal';
 import { handleImageError } from '../utils/imageFallback';
 import { formatPrice } from '../utils/formatUtils';
+import { optimizeImageUrl } from '../utils/imageOptimizer';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
