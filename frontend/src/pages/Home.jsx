@@ -503,28 +503,56 @@ const Home = () => {
     <div className="min-h-screen font-sans text-gray-800">
       {/* MOBILE HOME PAGE - New Design */}
       <div className="md:hidden bg-white min-h-screen">
-        {/* Promotional Banner */}
-        <div 
-          className="mx-4 mt-4 mb-4 rounded-2xl p-6 relative overflow-hidden"
-          style={{
-            backgroundImage: `url(${optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1767163767/663b9497381eaa3fcc256f05_1_vvv38z.jpg', 50)})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat'
-          }}
-        >
-          {/* Overlay for better text readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#3D2817]/90 to-[#2C1F14]/80 rounded-2xl"></div>
-          <div className="relative z-10">
-            <h2 className="text-white text-xl font-bold mb-2">
-              Get <span className="text-[#8B4513]">40%</span> off when you order 3 items! 🔥
-            </h2>
-            <button
-              onClick={() => navigate('/sale')}
-              className="mt-4 px-6 py-2.5 bg-gray-200 text-gray-800 font-semibold rounded-full hover:bg-gray-300 transition-colors"
-            >
-              Order Now
-            </button>
+        {/* Desktop Banner Carousel - Original View */}
+        <div className="relative w-full bg-white px-4 pt-4 pb-4">
+          <div className="relative w-full flex items-center justify-center mx-auto">
+            <div className="relative overflow-hidden w-full rounded-3xl">
+              <div 
+                ref={promoBannerCarouselRef}
+                className="flex overflow-x-hidden scroll-smooth scrollbar-hide"
+                style={{ scrollSnapType: 'x mandatory' }}
+              >
+                {(() => {
+                  const promoBanners = [
+                    optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656659/Pink_and_Gold_Simple_Diwali_Skincare_Cosmetic_Beauty_Offers_Instagram_Post_1_xzglzv.png', 50),
+                    optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656833/Purple_Women_Clothing_Promo_Instagram_Post_d2cxg9.png', 50),
+                    optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656392/Brown_White_Modern_Elegant_Sale_and_Discount_Instagram_Post_frmjoo.svg', 50),
+                    optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766655996/Red_and_White_Modern_Bridal_Shower_Social_Media_Graphic_1_v9pexp.svg', 50)
+                  ];
+                  // Duplicate banners for infinite scroll
+                  return [...promoBanners, ...promoBanners].map((banner, index) => (
+                    <div
+                      key={index}
+                      className="flex-shrink-0 w-full"
+                      style={{ scrollSnapAlign: 'start' }}
+                    >
+                      <img
+                        src={banner}
+                        alt={`Promo Banner ${(index % 4) + 1}`}
+                        className="w-full h-auto object-contain"
+                        loading={index < 4 ? 'eager' : 'lazy'}
+                      />
+                    </div>
+                  ));
+                })()}
+              </div>
+            </div>
+
+            {/* Carousel Indicators */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10 bg-white/80 backdrop-blur-sm px-2 py-1 rounded-full border border-[#3D2817]/30/20">
+              {[0, 1, 2, 3].map((index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentPromoBannerIndex(index)}
+                  className={`h-1.5 transition-all rounded-full ${
+                    index === currentPromoBannerIndex 
+                      ? 'w-6 bg-[#3D2817]' 
+                      : 'w-1.5 bg-[#3D2817]/30 hover:bg-[#3D2817]/50'
+                  }`}
+                  aria-label={`Go to banner ${index + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
 
