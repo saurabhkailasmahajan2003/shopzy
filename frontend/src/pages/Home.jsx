@@ -269,6 +269,30 @@ const Home = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Auto-rotate mobile promo banner carousel (using promoBannerCarouselRef)
+  useEffect(() => {
+    const carousel = promoBannerCarouselRef.current;
+    if (!carousel) return;
+
+    const interval = setInterval(() => {
+      // Only auto-rotate on mobile
+      if (window.innerWidth < 768) {
+        const bannerWidth = carousel.offsetWidth;
+        const currentScrollLeft = carousel.scrollLeft;
+        const currentIndex = Math.floor((currentScrollLeft + bannerWidth / 2) / bannerWidth) % 4;
+        const nextIndex = (currentIndex + 1) % 4;
+        const scrollPosition = nextIndex * bannerWidth;
+
+        carousel.scrollTo({
+          left: scrollPosition,
+          behavior: 'smooth'
+        });
+      }
+    }, 3000); // Change banner every 3 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   // Auto-rotate mobile promo banner carousel - Infinite scroll
   useEffect(() => {
     const interval = setInterval(() => {
@@ -549,10 +573,22 @@ const Home = () => {
               >
                 {(() => {
                   const promoBanners = [
-                    optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656659/Pink_and_Gold_Simple_Diwali_Skincare_Cosmetic_Beauty_Offers_Instagram_Post_1_xzglzv.png', 50),
-                    optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656833/Purple_Women_Clothing_Promo_Instagram_Post_d2cxg9.png', 50),
-                    optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656392/Brown_White_Modern_Elegant_Sale_and_Discount_Instagram_Post_frmjoo.svg', 50),
-                    optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766655996/Red_and_White_Modern_Bridal_Shower_Social_Media_Graphic_1_v9pexp.svg', 50)
+                    { 
+                      image: optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656659/Pink_and_Gold_Simple_Diwali_Skincare_Cosmetic_Beauty_Offers_Instagram_Post_1_xzglzv.png', 50),
+                      path: '/skincare'
+                    },
+                    { 
+                      image: optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656833/Purple_Women_Clothing_Promo_Instagram_Post_d2cxg9.png', 50),
+                      path: '/women'
+                    },
+                    { 
+                      image: optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656392/Brown_White_Modern_Elegant_Sale_and_Discount_Instagram_Post_frmjoo.svg', 50),
+                      path: '/sale'
+                    },
+                    { 
+                      image: optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766655996/Red_and_White_Modern_Bridal_Shower_Social_Media_Graphic_1_v9pexp.svg', 50),
+                      path: '/sale'
+                    }
                   ];
                   // Duplicate banners for infinite scroll
                   return [...promoBanners, ...promoBanners].map((banner, index) => (
@@ -563,11 +599,12 @@ const Home = () => {
                         scrollSnapAlign: 'start',
                         scrollSnapStop: 'always'
                       }}
+                      onClick={() => navigate(banner.path)}
                     >
                       <img
-                        src={banner}
+                        src={banner.image}
                         alt={`Promo Banner ${(index % 4) + 1}`}
-                        className="w-full h-auto object-contain"
+                        className="w-full h-auto object-contain cursor-pointer"
                         loading={index < 4 ? 'eager' : 'lazy'}
                         draggable="false"
                       />
@@ -575,33 +612,6 @@ const Home = () => {
                   ));
                 })()}
               </div>
-            </div>
-
-            {/* Carousel Indicators */}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10 bg-white/80 backdrop-blur-sm px-2 py-1 rounded-full border border-[#3D2817]/30/20">
-              {[0, 1, 2, 3].map((index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    if (promoBannerCarouselRef.current && window.innerWidth < 768) {
-                      const carousel = promoBannerCarouselRef.current;
-                      const bannerWidth = carousel.offsetWidth;
-                      carousel.scrollTo({
-                        left: index * bannerWidth,
-                        behavior: 'smooth'
-                      });
-                    } else {
-                      setCurrentPromoBannerIndex(index);
-                    }
-                  }}
-                  className={`h-1.5 transition-all rounded-full ${
-                    index === currentPromoBannerIndex 
-                      ? 'w-6 bg-[#3D2817]' 
-                      : 'w-1.5 bg-[#3D2817]/30 hover:bg-[#3D2817]/50'
-                  }`}
-                  aria-label={`Go to banner ${index + 1}`}
-                />
-              ))}
             </div>
           </div>
         </div>
@@ -837,10 +847,22 @@ const Home = () => {
                   >
                     {(() => {
                       const promoBanners = [
-                        optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656659/Pink_and_Gold_Simple_Diwali_Skincare_Cosmetic_Beauty_Offers_Instagram_Post_1_xzglzv.png', 50),
-                        optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656833/Purple_Women_Clothing_Promo_Instagram_Post_d2cxg9.png', 50),
-                        optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656392/Brown_White_Modern_Elegant_Sale_and_Discount_Instagram_Post_frmjoo.svg', 50),
-                        optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766655996/Red_and_White_Modern_Bridal_Shower_Social_Media_Graphic_1_v9pexp.svg', 50)
+                        { 
+                          image: optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656659/Pink_and_Gold_Simple_Diwali_Skincare_Cosmetic_Beauty_Offers_Instagram_Post_1_xzglzv.png', 50),
+                          path: '/skincare'
+                        },
+                        { 
+                          image: optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656833/Purple_Women_Clothing_Promo_Instagram_Post_d2cxg9.png', 50),
+                          path: '/women'
+                        },
+                        { 
+                          image: optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656392/Brown_White_Modern_Elegant_Sale_and_Discount_Instagram_Post_frmjoo.svg', 50),
+                          path: '/sale'
+                        },
+                        { 
+                          image: optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766655996/Red_and_White_Modern_Bridal_Shower_Social_Media_Graphic_1_v9pexp.svg', 50),
+                          path: '/sale'
+                        }
                       ];
                       // Duplicate banners for infinite scroll
                       return [...promoBanners, ...promoBanners].map((banner, index) => (
@@ -849,12 +871,14 @@ const Home = () => {
                           className="flex-shrink-0 w-full"
                           style={{ scrollSnapAlign: 'start' }}
                         >
-                          <img
-                            src={banner}
-                            alt={`Promo Banner ${(index % 4) + 1}`}
-                            className="w-full h-auto object-contain"
-                            loading={index < 4 ? 'eager' : 'lazy'}
-                          />
+                          <Link to={banner.path} className="block w-full">
+                            <img
+                              src={banner.image}
+                              alt={`Promo Banner ${(index % 4) + 1}`}
+                              className="w-full h-auto object-contain cursor-pointer"
+                              loading={index < 4 ? 'eager' : 'lazy'}
+                            />
+                          </Link>
                         </div>
                       ));
                     })()}
@@ -896,10 +920,22 @@ const Home = () => {
             >
               {(() => {
                   const promoBanners = [
-                    optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656833/Purple_Women_Clothing_Promo_Instagram_Post_d2cxg9.png', 50),
-                    optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656659/Pink_and_Gold_Simple_Diwali_Skincare_Cosmetic_Beauty_Offers_Instagram_Post_1_xzglzv.png', 50),
-                    optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656392/Brown_White_Modern_Elegant_Sale_and_Discount_Instagram_Post_frmjoo.svg', 50),
-                    optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766655996/Red_and_White_Modern_Bridal_Shower_Social_Media_Graphic_1_v9pexp.svg', 50)
+                    { 
+                      image: optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656833/Purple_Women_Clothing_Promo_Instagram_Post_d2cxg9.png', 50),
+                      path: '/women'
+                    },
+                    { 
+                      image: optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656659/Pink_and_Gold_Simple_Diwali_Skincare_Cosmetic_Beauty_Offers_Instagram_Post_1_xzglzv.png', 50),
+                      path: '/skincare'
+                    },
+                    { 
+                      image: optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766656392/Brown_White_Modern_Elegant_Sale_and_Discount_Instagram_Post_frmjoo.svg', 50),
+                      path: '/sale'
+                    },
+                    { 
+                      image: optimizeImageUrl('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766655996/Red_and_White_Modern_Bridal_Shower_Social_Media_Graphic_1_v9pexp.svg', 50),
+                      path: '/sale'
+                    }
                   ];
                 // Duplicate banners for infinite scroll
                 return [...promoBanners, ...promoBanners].map((banner, index) => (
@@ -908,12 +944,14 @@ const Home = () => {
                     className="flex-shrink-0 w-full"
                     style={{ scrollSnapAlign: 'start' }}
                   >
-                    <img
-                      src={banner}
-                      alt={`Promo Banner ${(index % 4) + 1}`}
-                      className="w-full h-auto object-contain"
-                      loading={index < 4 ? 'eager' : 'lazy'}
-                    />
+                    <Link to={banner.path} className="block w-full">
+                      <img
+                        src={banner.image}
+                        alt={`Promo Banner ${(index % 4) + 1}`}
+                        className="w-full h-auto object-contain cursor-pointer"
+                        loading={index < 4 ? 'eager' : 'lazy'}
+                      />
+                    </Link>
                   </div>
                 ));
               })()}
