@@ -293,9 +293,9 @@ const Home = () => {
     }
   }, [currentBannerIndex]);
 
-  // Infinite scroll for desktop promo banner
+  // Infinite scroll for desktop promo banner (desktop only)
   useEffect(() => {
-    if (promoBannerCarouselRef.current) {
+    if (promoBannerCarouselRef.current && window.innerWidth >= 768) {
       const carousel = promoBannerCarouselRef.current;
       const bannerWidth = carousel.offsetWidth;
       const scrollPosition = currentPromoBannerIndex * bannerWidth;
@@ -321,10 +321,10 @@ const Home = () => {
     }
   }, [currentMobilePromoBannerIndex]);
 
-  // Handle infinite scroll on scroll event for desktop - seamless loop
+  // Handle infinite scroll on scroll event for desktop - seamless loop (desktop only)
   useEffect(() => {
     const carousel = promoBannerCarouselRef.current;
-    if (!carousel) return;
+    if (!carousel || window.innerWidth < 768) return;
 
     const handleScroll = () => {
       const bannerWidth = carousel.offsetWidth;
@@ -371,8 +371,6 @@ const Home = () => {
 
   // Touch swipe handlers for mobile hero banners
   const minSwipeDistance = 50;
-  const [promoTouchStart, setPromoTouchStart] = useState(null);
-  const [promoTouchEnd, setPromoTouchEnd] = useState(null);
 
   const onTouchStart = (e) => {
     setTouchEnd(null);
@@ -404,36 +402,36 @@ const Home = () => {
     }
   };
 
-  // Touch handlers for desktop promo banner on mobile
-  const onPromoTouchStart = (e) => {
-    setPromoTouchEnd(null);
-    setPromoTouchStart(e.targetTouches[0].clientX);
-  };
+  // Track scroll position and handle infinite scroll for mobile banner carousel
+  useEffect(() => {
+    const carousel = promoBannerCarouselRef.current;
+    if (!carousel) return;
 
-  const onPromoTouchMove = (e) => {
-    setPromoTouchEnd(e.targetTouches[0].clientX);
-  };
+    const handleScroll = () => {
+      // Only handle on mobile
+      if (window.innerWidth < 768) {
+        const bannerWidth = carousel.offsetWidth;
+        const scrollLeft = carousel.scrollLeft;
+        const totalBanners = 4;
+        const totalWidth = bannerWidth * totalBanners;
+        
+        // Update indicator based on scroll position - use Math.floor for better accuracy
+        const currentIndex = Math.floor((scrollLeft + bannerWidth / 2) / bannerWidth) % 4;
+        setCurrentPromoBannerIndex(currentIndex >= 0 ? currentIndex : 3);
+        
+        // Handle infinite scroll - jump back seamlessly when reaching the end
+        if (scrollLeft >= totalWidth) {
+          carousel.scrollTo({
+            left: scrollLeft - totalWidth,
+            behavior: 'auto'
+          });
+        }
+      }
+    };
 
-  const onPromoTouchEnd = () => {
-    if (!promoTouchStart || !promoTouchEnd) return;
-    
-    const distance = promoTouchStart - promoTouchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-
-    if (isLeftSwipe) {
-      setCurrentPromoBannerIndex((prev) => {
-        const next = prev + 1;
-        return next >= 4 ? 0 : next;
-      });
-    }
-    if (isRightSwipe) {
-      setCurrentPromoBannerIndex((prev) => {
-        const next = prev - 1;
-        return next < 0 ? 3 : next;
-      });
-    }
-  };
+    carousel.addEventListener('scroll', handleScroll, { passive: true });
+    return () => carousel.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
@@ -543,10 +541,11 @@ const Home = () => {
               <div 
                 ref={promoBannerCarouselRef}
                 className="flex overflow-x-auto scroll-smooth scrollbar-hide"
-                style={{ scrollSnapType: 'x mandatory' }}
-                onTouchStart={onPromoTouchStart}
-                onTouchMove={onPromoTouchMove}
-                onTouchEnd={onPromoTouchEnd}
+                style={{ 
+                  scrollSnapType: 'x mandatory',
+                  scrollBehavior: 'smooth',
+                  WebkitOverflowScrolling: 'touch'
+                }}
               >
                 {(() => {
                   const promoBanners = [
@@ -560,13 +559,17 @@ const Home = () => {
                     <div
                       key={index}
                       className="flex-shrink-0 w-full"
-                      style={{ scrollSnapAlign: 'start' }}
+                      style={{ 
+                        scrollSnapAlign: 'start',
+                        scrollSnapStop: 'always'
+                      }}
                     >
                       <img
                         src={banner}
                         alt={`Promo Banner ${(index % 4) + 1}`}
                         className="w-full h-auto object-contain"
                         loading={index < 4 ? 'eager' : 'lazy'}
+                        draggable="false"
                       />
                     </div>
                   ));
@@ -579,7 +582,18 @@ const Home = () => {
               {[0, 1, 2, 3].map((index) => (
                 <button
                   key={index}
-                  onClick={() => setCurrentPromoBannerIndex(index)}
+                  onClick={() => {
+                    if (promoBannerCarouselRef.current && window.innerWidth < 768) {
+                      const carousel = promoBannerCarouselRef.current;
+                      const bannerWidth = carousel.offsetWidth;
+                      carousel.scrollTo({
+                        left: index * bannerWidth,
+                        behavior: 'smooth'
+                      });
+                    } else {
+                      setCurrentPromoBannerIndex(index);
+                    }
+                  }}
                   className={`h-1.5 transition-all rounded-full ${
                     index === currentPromoBannerIndex 
                       ? 'w-6 bg-[#3D2817]' 
@@ -595,21 +609,16 @@ const Home = () => {
         {/* Search Bar */}
         <div className="px-4 mb-4">
           <div className="relative">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2">
-              <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
             <input
               type="text"
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-12 py-3 bg-gray-100 rounded-full text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#8B4513]"
+              className="w-full pl-4 pr-14 py-3 bg-gray-100 rounded-full text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#8B4513]"
             />
-            <button className="absolute right-4 top-1/2 -translate-y-1/2">
-              <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            <button className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-[#8B4513] rounded-full">
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
           </div>
