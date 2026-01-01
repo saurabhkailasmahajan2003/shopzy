@@ -2,17 +2,40 @@ import Women from '../../models/product/womenModel.js';
 import Saree from '../../models/product/saree.model.js';
 
 // Helper function to normalize old women schema
-const normalizeOldWomen = (product) => ({
-  ...product,
-  _id: product._id,
-  id: product._id,
-  name: product.name || product.title,
-  title: product.name || product.title,
-  price: product.finalPrice || product.price,
-  mrp: product.originalPrice || product.price,
-  images: Array.isArray(product.images) ? product.images : (product.thumbnail ? [product.thumbnail] : []),
-  category: 'women',
-});
+const normalizeOldWomen = (product) => {
+  const normalized = product.toObject ? product.toObject() : product;
+  
+  // Keep images as array (frontend expects array format)
+  let imagesArray = [];
+  if (normalized.images && Array.isArray(normalized.images)) {
+    imagesArray = normalized.images.filter(img => img); // Remove empty/null values
+  } else if (normalized.thumbnail) {
+    imagesArray = [normalized.thumbnail];
+  } else if (normalized.image) {
+    imagesArray = [normalized.image];
+  }
+
+  // Calculate prices
+  const mrp = normalized.price || normalized.originalPrice || normalized.mrp || 0;
+  const discountPercent = normalized.discountPercent || 0;
+  const finalPrice = normalized.finalPrice || (discountPercent > 0 ? mrp - (mrp * discountPercent / 100) : mrp);
+  const originalPrice = normalized.originalPrice || mrp;
+
+  return {
+    ...normalized,
+    _id: normalized._id,
+    id: normalized._id,
+    name: normalized.name || normalized.title,
+    title: normalized.name || normalized.title,
+    mrp: mrp,
+    price: mrp, // Keep price for frontend (use mrp as base)
+    originalPrice: originalPrice,
+    finalPrice: finalPrice, // Ensure finalPrice is always set
+    discountPercent: discountPercent,
+    images: imagesArray.length > 0 ? imagesArray : [],
+    category: 'women',
+  };
+};
 
 // Helper function to normalize saree schema
 const normalizeSaree = (product) => {

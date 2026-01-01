@@ -431,7 +431,6 @@ const Home = () => {
       subItems: [
         { name: 'Heels', path: '/shoes?subCategory=Heels' },
         { name: 'Flats', path: '/shoes?subCategory=Flats' },
-        { name: 'Sneakers', path: '/shoes?subCategory=Sneakers' },
         { name: 'Boots', path: '/shoes?subCategory=Boots' },
         { name: 'Sandals', path: '/shoes?subCategory=Sandals' }
       ] 

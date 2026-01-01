@@ -50,8 +50,8 @@ const CategoryPage = () => {
   useEffect(() => {
     fetchProducts();
     // Reset filters when category changes
-    // Set default sort to price low-to-high for shoes and t-shirts sections
-    const defaultSort = (pathname === '/shoes' || pathname === '/women/tshirt') ? 'price-low-high' : null;
+    // Set default sort to price low-to-high for shoes, shirts, and t-shirts sections
+    const defaultSort = (pathname === '/shoes' || pathname === '/women/shirt' || pathname === '/women/tshirt') ? 'price-low-high' : null;
     setFilters({
       priceRange: null,
       brands: [],
@@ -126,8 +126,8 @@ const CategoryPage = () => {
     }
 
     // Sort
-    // Apply default sort for shoes and t-shirts (price low-to-high) if no sort is selected
-    const sortToApply = filters.sortBy || ((pathname === '/shoes' || pathname === '/women/tshirt') ? 'price-low-high' : null);
+    // Apply default sort for shoes, shirts, and t-shirts (price low-to-high) if no sort is selected
+    const sortToApply = filters.sortBy || ((pathname === '/shoes' || pathname === '/women/shirt' || pathname === '/women/tshirt') ? 'price-low-high' : null);
     if (sortToApply && sortToApply !== 'default') {
       filtered.sort((a, b) => {
         const priceA = a.finalPrice || a.price;
@@ -560,7 +560,6 @@ const CategoryPage = () => {
                           { name: 'All Shoes', path: '/shoes', key: 'all' },
                           { name: 'Heels', path: '/shoes?subCategory=Heels', key: 'heels' },
                           { name: 'Flats', path: '/shoes?subCategory=Flats', key: 'flats' },
-                          { name: 'Sneakers', path: '/shoes?subCategory=Sneakers', key: 'sneakers' },
                           { name: 'Boots', path: '/shoes?subCategory=Boots', key: 'boots' },
                           { name: 'Sandals', path: '/shoes?subCategory=Sandals', key: 'sandals' },
                         ];

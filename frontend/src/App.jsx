@@ -49,6 +49,59 @@ function AppContent() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [location.pathname, location.search]);
 
+  // Disable right-click on all images globally
+  useEffect(() => {
+    const handleContextMenu = (e) => {
+      // Check if the event target is an image
+      if (e.target.tagName === 'IMG') {
+        e.preventDefault();
+        return false;
+      }
+    };
+
+    const handleDragStart = (e) => {
+      // Disable drag on images
+      if (e.target.tagName === 'IMG') {
+        e.preventDefault();
+        return false;
+      }
+    };
+
+    // Add event listeners with capture phase to catch all events
+    document.addEventListener('contextmenu', handleContextMenu, true);
+    document.addEventListener('dragstart', handleDragStart, true);
+
+    // Set draggable to false on existing images
+    const disableImageDrag = () => {
+      const images = document.querySelectorAll('img');
+      images.forEach(img => {
+        img.setAttribute('draggable', 'false');
+        img.style.userSelect = 'none';
+        img.style.webkitUserSelect = 'none';
+        img.style.webkitUserDrag = 'none';
+      });
+    };
+
+    // Run immediately for existing images
+    disableImageDrag();
+
+    // Use MutationObserver to handle dynamically loaded images
+    const observer = new MutationObserver(() => {
+      disableImageDrag();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu, true);
+      document.removeEventListener('dragstart', handleDragStart, true);
+      observer.disconnect();
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {!isAdminRoute && <Navbar />}

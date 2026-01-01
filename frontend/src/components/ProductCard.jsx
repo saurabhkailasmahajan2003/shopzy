@@ -43,6 +43,7 @@ const ProductCard = ({ product }) => {
   const isWatch = (product.category || '').toLowerCase().includes('watch');
   const isLens = (product.category || '').toLowerCase().includes('lens');
   const isSkincare = (product.category || '').toLowerCase().includes('skincare') || (product.category || '').toLowerCase().includes('skin-care');
+  const isJeans = (product.subCategory || '').toLowerCase().includes('jeans');
   const sizes = isWatch ? [] : (product.sizes || ['S', 'M', 'L', 'XL']); 
   const finalPrice = product.finalPrice || product.price || product.mrp || 0;
   const originalPrice = product.originalPrice || product.mrp || product.price || 0;
@@ -283,7 +284,7 @@ const ProductCard = ({ product }) => {
               <span className="text-sm sm:text-base font-bold text-[#3D2817]">
                 Rs. {formatPrice(finalPrice)}
               </span>
-              {hasDiscount && discountPercent > 0 && (
+              {hasDiscount && discountPercent > 0 && !isJeans && (
                 <span className="text-[10px] sm:text-xs text-green-600 font-semibold">
                   ({discountPercent}% off)
                 </span>

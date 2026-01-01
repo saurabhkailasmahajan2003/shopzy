@@ -35,7 +35,7 @@ async function initWomenShoesCollection() {
         discountPercent: 0,
         finalPrice: 1000,
         category: "Women's Shoes",
-        subCategory: 'Sneakers',
+        subCategory: 'Heels',
         subSubCategory: 'Trainer',
         product_info: {
           brand: 'Sample Brand',

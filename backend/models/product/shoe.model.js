@@ -17,7 +17,7 @@ const womensShoeSchema = new Schema({
   subCategory: { 
     type: String, 
     required: true, 
-    enum: ['Heels', 'Flats', 'Sneakers', 'Boots', 'Sandals'],
+    enum: ['Heels', 'Flats', 'Boots', 'Sandals'],
     description: 'The main women\'s shoe category'
   },
   subSubCategory: { type: String, trim: true }, // e.g., 'Stiletto', 'Ballet Flat', 'Trainer'

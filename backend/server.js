@@ -55,7 +55,7 @@ mongoose
           title: 'Sample Shoe - Delete This',
           description: 'Initializing collection',
           price: 1,
-          subCategory: 'Sneakers',
+          subCategory: 'Heels',
           product_info: { brand: 'Sample', gender: 'Women' },
           sizes_inventory: [{ size: 'US 7', quantity: 0 }],
         };
