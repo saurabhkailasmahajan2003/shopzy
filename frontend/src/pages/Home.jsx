@@ -371,6 +371,8 @@ const Home = () => {
 
   // Touch swipe handlers for mobile hero banners
   const minSwipeDistance = 50;
+  const [promoTouchStart, setPromoTouchStart] = useState(null);
+  const [promoTouchEnd, setPromoTouchEnd] = useState(null);
 
   const onTouchStart = (e) => {
     setTouchEnd(null);
@@ -396,6 +398,37 @@ const Home = () => {
     }
     if (isRightSwipe) {
       setCurrentMobilePromoBannerIndex((prev) => {
+        const next = prev - 1;
+        return next < 0 ? 3 : next;
+      });
+    }
+  };
+
+  // Touch handlers for desktop promo banner on mobile
+  const onPromoTouchStart = (e) => {
+    setPromoTouchEnd(null);
+    setPromoTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onPromoTouchMove = (e) => {
+    setPromoTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onPromoTouchEnd = () => {
+    if (!promoTouchStart || !promoTouchEnd) return;
+    
+    const distance = promoTouchStart - promoTouchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      setCurrentPromoBannerIndex((prev) => {
+        const next = prev + 1;
+        return next >= 4 ? 0 : next;
+      });
+    }
+    if (isRightSwipe) {
+      setCurrentPromoBannerIndex((prev) => {
         const next = prev - 1;
         return next < 0 ? 3 : next;
       });
@@ -509,8 +542,11 @@ const Home = () => {
             <div className="relative overflow-hidden w-full rounded-3xl">
               <div 
                 ref={promoBannerCarouselRef}
-                className="flex overflow-x-hidden scroll-smooth scrollbar-hide"
+                className="flex overflow-x-auto scroll-smooth scrollbar-hide"
                 style={{ scrollSnapType: 'x mandatory' }}
+                onTouchStart={onPromoTouchStart}
+                onTouchMove={onPromoTouchMove}
+                onTouchEnd={onPromoTouchEnd}
               >
                 {(() => {
                   const promoBanners = [
